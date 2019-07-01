@@ -1,18 +1,20 @@
 package com.jd.innovation.repository.domain;
 
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 
 /**
- * 用户表
+ * 权限表
  */
 @Data
 @Entity
-public class TUser {
+public class TPower {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String userName;
+    private String powerValue;
 }

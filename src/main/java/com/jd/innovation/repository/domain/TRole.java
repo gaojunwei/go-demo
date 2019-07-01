@@ -5,14 +5,14 @@ import lombok.Data;
 import javax.persistence.*;
 
 /**
- * 用户表
+ * 角色表
  */
 @Data
 @Entity
-public class TUser {
+public class TRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String userName;
+    private String roleName;
 }
