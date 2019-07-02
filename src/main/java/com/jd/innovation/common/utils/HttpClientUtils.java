@@ -2,6 +2,7 @@ package com.jd.innovation.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jd.innovation.common.enums.SystemCodeEnums;
+import com.jd.innovation.common.utils.http.HttpDeleteWithBody;
 import com.jd.innovation.exception.AppException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -40,9 +41,9 @@ public class HttpClientUtils {
     /**
      * DELETE请求
      */
-    public static String delete(String url,Integer connectTimeOut) throws IOException {
-        HttpDelete httpDelete = new HttpDelete(url);
-        return sendRequest(httpDelete,connectTimeOut);
+    public static String delete(String url,JSONObject jsonObject,Integer connectTimeOut) throws IOException {
+        HttpDeleteWithBody httpDeleteWithBody = new HttpDeleteWithBody(url);
+        return sendRequest(jsonObject,connectTimeOut,httpDeleteWithBody);
     }
 
     /**
