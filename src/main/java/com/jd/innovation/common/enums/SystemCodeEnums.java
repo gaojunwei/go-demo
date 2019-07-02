@@ -10,7 +10,9 @@ public enum SystemCodeEnums {
     ERROR("999999","系统异常,请联系管理员"),
     HttpRequestMethodNotSupportedException("900000","HTTP请求方法错误"),
     MissingServletRequestParameterException("900001","缺失请求参数错误"),
-    TypeMismatchException("900001","缺失请求参数错误");
+    TypeMismatchException("900001","缺失请求参数错误"),
+    JWT_EXPIRED("900002", "TOKEN已过期"),
+    JWT_SIGNATURE_FAIL("900003", "TOKEN签名验证失败");
 
     private String code;
     private String msg;
