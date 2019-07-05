@@ -115,17 +115,6 @@
             <version>${fastjson.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${java-jwt.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <version>2.2.4</version>
@@ -135,16 +124,6 @@
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.el</artifactId>
             <version>2.2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wangyin.schedule</groupId>
-            <artifactId>schedule-sdk-premium</artifactId>
-            <version>2.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.fernandospr</groupId>
-            <artifactId>javapns-jdk16</artifactId>
-            <version>2.4.0</version>
         </dependency>
     </dependencies>
     <build>

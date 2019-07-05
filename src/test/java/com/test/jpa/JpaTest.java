@@ -28,7 +28,7 @@ public class JpaTest {
     public void test001(){
         for (int i = 0; i < 10; i++) {
             TUser user = new TUser();
-            user.setName("name"+i);
+            user.setUserName("name"+i);
             tUserRepository.save(user);
         }
         List<TUser> list = tUserRepository.findAll();
