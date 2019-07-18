@@ -1,5 +1,7 @@
 package com.test.validator;
 
+import com.test.validator.group.GroupA;
+import com.test.validator.group.GroupB;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -40,7 +42,7 @@ public class Param {
     @NotNull(message = "签证生效时间不能为NULL")
     private Date visaDate;//签证生效时间
 
-    @NotNull(message = "邮箱地址不能为NULL")
+    @NotEmpty(message = "邮箱地址不能为空")
     private String email;//邮箱地址
 
     @Pattern(regexp = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*",message = "备用邮箱地址格式错误")

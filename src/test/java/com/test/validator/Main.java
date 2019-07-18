@@ -1,7 +1,10 @@
 package com.test.validator;
 
 import com.alibaba.fastjson.JSON;
+import com.jd.innovation.common.utils.ValidationUtil;
 import com.jd.innovation.common.utils.ValidatorHelper;
+import com.test.validator.group.GroupA;
+import com.test.validator.group.GroupB;
 
 import java.util.Date;
 import java.util.List;
@@ -19,14 +22,19 @@ public class Main {
         param.setBloodSugar(50.8);
         param.setCreatedDate(new Date());
         param.setVisaDate(new Date(new Date().getTime()+1234234));
-        param.setEmail("gjw.5@qqcom");
-        param.setEmailBack("gjw.5@qq..com");
+        param.setEmail("sfsdf");
+        param.setEmailBack("gjw.5@qq.com");
         param.setMarryYears("2");
         param.setUrl("http://www.jd.com/ss.action");
-        param.setUserName("上三");
-        test(param);
+        param.setUserName("上1");
+        test002(param);
     }
-    public static void test(Param param){
+    public static void test002(Param param){
+        // 参数验证
+        ValidationUtil.ValidResult validResult = ValidationUtil.validateBean(param);
+        System.out.println(JSON.toJSONString(validResult));
+    }
+    public static void test001(Param param){
         // 参数验证
         List<String> errors = ValidatorHelper.validate(param);
         System.out.println(JSON.toJSONString(errors));
