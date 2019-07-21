@@ -39,10 +39,11 @@ public class ValidationUtil {
      */
     public static <T> ValidResult validateBean(T t,Class<?>...groups) {
         Set<ConstraintViolation<T>> violationSet;
-        if(groups == null)
+        if(groups == null){
             violationSet = validator.validate(t);
-        else
+        }else{
             violationSet = validator.validate(t,groups);
+        }
         return bindResult(violationSet);
     }
 
