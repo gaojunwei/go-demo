@@ -1,10 +1,8 @@
 package com.test.validator;
 
 import com.alibaba.fastjson.JSON;
-import com.jd.innovation.common.utils.ValidationUtil;
-import com.jd.innovation.common.utils.ValidatorHelper;
-import com.test.validator.group.GroupA;
-import com.test.validator.group.GroupB;
+import com.gjw.innovation.common.utils.ValidationUtil;
+import com.gjw.innovation.common.utils.ValidatorHelper;
 
 import java.util.Date;
 import java.util.List;
