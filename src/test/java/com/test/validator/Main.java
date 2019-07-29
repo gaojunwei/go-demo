@@ -1,7 +1,7 @@
 package com.test.validator;
 
 import com.alibaba.fastjson.JSON;
-import com.gjw.innovation.common.utils.ValidationUtil;
+import com.gjw.common.utils.ValidationUtil;
 
 import java.util.Date;
 
