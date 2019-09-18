@@ -35,7 +35,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.gjw.demo</groupId>
+            <groupId>com.go.demo</groupId>
             <artifactId>go-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

@@ -10,8 +10,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.gjw.demo</groupId>
-    <artifactId>gjw-demo</artifactId>
+    <groupId>com.go.demo</groupId>
+    <artifactId>go-demo</artifactId>
 
     <packaging>pom</packaging>
 
