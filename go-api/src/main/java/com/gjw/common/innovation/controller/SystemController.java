@@ -1,5 +1,6 @@
 package com.gjw.common.innovation.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.gjw.common.enums.SystemCodeEnums;
 import com.gjw.common.result.BasicResult;
 import com.gjw.common.utils.UuidUtils;
@@ -25,7 +26,7 @@ public class SystemController {
         BasicResult result = new BasicResult();
         result.setCode(SystemCodeEnums.SUCCESS.getCode());
         result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
-        logger.info("SystemController_refresh end 刷新系统配置 result:{}",result);
+        logger.info("SystemController_refresh end 刷新系统配置 logId:{},result:{}",logId,JSON.toJSONString(result));
         return result;
     }
 }
