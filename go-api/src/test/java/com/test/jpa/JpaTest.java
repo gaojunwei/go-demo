@@ -2,8 +2,8 @@ package com.test.jpa;
 
 import com.alibaba.fastjson.JSON;
 import com.gjw.common.innovation.TApplication;
-import com.gjw.common.innovation.repository.TUserRepository;
-import com.gjw.common.innovation.repository.domain.TUser;
+import com.gjw.common.innovation.repository.db1.TUserRepository;
+import com.gjw.common.innovation.repository.db1.domain.TUser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
