@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="1 seconds">
+    <!--
+    1.根节点configuration，有以下属性
+        a. scan,当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+        b. scanPeriod,设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+        c. debug,当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+    全文地址请点击：https://blog.csdn.net/yingxiake/article/details/51274426?utm_source=copy
+
+    日志级别：
+        DEBUG：输出调试信息；指出细粒度信息事件对调试应用程序是非常有帮助的。
+        INFO：    输出提示信息；消息在粗粒度级别上突出强调应用程序的运行过程。
+        WARN：  输出警告信息；表明会出现潜在错误的情形。
+        ERROR：输出错误信息；指出虽然发生错误事件，但仍然不影响系统的继续运行。
+        FATAL：  输出致命错误；指出每个严重的错误事件将会导致应用程序的退出。
+        ALL level：打开所有日志记录开关；是最低等级的，用于打开所有日志记录。
+        OFF level：关闭所有日志记录开关；是最高等级的，用于关闭所有日志记录。
+
+        按照范围从小到大排序：OFF level > FATAL > ERROR > WARN > INFO > DEBUG > ALL level；
+        Log4j建议只使用四个级别，优先级从高到低分别是 ERROR、WARN、INFO、DEBUG。
+    全文地址请点击：https://blog.csdn.net/wang_yunj/article/details/43793975?utm_source=copy
+    -->
+    <contextName>logback</contextName>
+    <!--2.contextName ，设置日志上下文名称，可以通过%contextName来打印日志上下文名称;-->
+    <property name="log.path" value="/var/logs/go" />
+
+    <!--控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} %M [%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--DEBUG日志-->
+    <appender name="SYS_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/info/go_debug.log</file>
+
+        <append>true</append><!--<append>：如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。-->
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter><!--filter:它可以提供最大的自定义输出，如果需要用到系统定义的拦截器，例如我们用ThresholdFilter来过滤掉ERROR级别以下的日志不输出到文件中-->
+
+        <!-- 按天来回滚，如果需要按小时来回滚，则设置为{yyyy-MM-dd_HH} -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/info/go_debug.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory><!-- 按天来回滚，最大保存时间为5天，5天之前的都将被清理掉 -->
+        </rollingPolicy>
+
+        <encoder><!--对记录事件进行格式化-->
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%L] - %msg%n</pattern><!--用来设置日志的输入格式-->
+        </encoder>
+    </appender>
+    <!--INFO日志-->
+    <appender name="SYS_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/info/go_info.log</file>
+
+        <append>true</append><!--<append>：如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。-->
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter><!--filter:它可以提供最大的自定义输出，如果需要用到系统定义的拦截器，例如我们用ThresholdFilter来过滤掉ERROR级别以下的日志不输出到文件中-->
+
+        <!-- 按天来回滚，如果需要按小时来回滚，则设置为{yyyy-MM-dd_HH} -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/info/go_info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory><!-- 按天来回滚，最大保存时间为5天，5天之前的都将被清理掉 -->
+        </rollingPolicy>
+
+        <encoder><!--对记录事件进行格式化-->
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%L] - %msg%n</pattern><!--用来设置日志的输入格式-->
+        </encoder>
+    </appender>
+    <!--WARN日志-->
+    <appender name="SYS_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/warn/go_warn.log</file>
+        <append>true</append><!--<append>：如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter><!--filter:它可以提供最大的自定义输出，如果需要用到系统定义的拦截器，例如我们用ThresholdFilter来过滤掉ERROR级别以下的日志不输出到文件中-->
+        <!-- 按天来回滚，如果需要按小时来回滚，则设置为{yyyy-MM-dd_HH} -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/warn/go_warn.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>5</maxHistory><!-- 按天来回滚，最大保存时间为5天，5天之前的都将被清理掉 -->
+        </rollingPolicy>
+
+        <encoder><!--对记录事件进行格式化-->
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%L] - %msg%n</pattern><!--用来设置日志的输入格式-->
+        </encoder>
+    </appender>
+    <!--异常日志-->
+    <appender name="SYS_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/error/go_error.log</file>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch><!--过滤 器会根据 onMatch 和 onMismatch 属性接受或拒绝事件-->
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/error/go_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory><!-- 按天来回滚，最大保存时间为5天，5天之前的都将被清理掉 -->
+        </rollingPolicy>
+
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} [%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="SYS_DEBUG" />
+        <appender-ref ref="SYS_INFO" />
+        <appender-ref ref="SYS_WARN" />
+        <appender-ref ref="SYS_ERROR" />
+    </root>
+</configuration>

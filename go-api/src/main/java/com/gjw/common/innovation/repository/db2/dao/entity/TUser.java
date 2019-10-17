@@ -1,4 +1,4 @@
-package com.gjw.common.innovation.repository.db1.domain;
+package com.gjw.common.innovation.repository.db2.dao.entity;
 
 import lombok.Data;
 
@@ -9,6 +9,7 @@ import javax.persistence.*;
  */
 @Data
 @Entity
+@Table(name = "t_user")
 public class TUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

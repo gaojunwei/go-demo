@@ -1,18 +1,19 @@
-package com.gjw.common.innovation.repository.db1.domain;
+package com.gjw.common.innovation.repository.db1.dao.entity;
 
 import lombok.Data;
 
 import javax.persistence.*;
 
 /**
- * 角色表
+ * 用户表
  */
 @Data
 @Entity
-public class TRole {
+@Table(name = "t_user")
+public class TUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String roleName;
+    private String userName;
 }

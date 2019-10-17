@@ -1,7 +1,7 @@
 package com.gjw.common.innovation.controller;
 
 import com.gjw.common.enums.SystemCodeEnums;
-import com.gjw.common.innovation.repository.db1.domain.TUser;
+import com.gjw.common.innovation.repository.db1.dao.entity.TUser;
 import com.gjw.common.innovation.service.TUserService;
 import com.gjw.common.result.SingleResult;
 import lombok.extern.slf4j.Slf4j;

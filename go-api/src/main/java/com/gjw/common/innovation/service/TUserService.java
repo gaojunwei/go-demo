@@ -1,6 +1,6 @@
 package com.gjw.common.innovation.service;
 
-import com.gjw.common.innovation.repository.db1.domain.TUser;
+import com.gjw.common.innovation.repository.db1.dao.entity.TUser;
 
 /**
  * @author gaojunwei
