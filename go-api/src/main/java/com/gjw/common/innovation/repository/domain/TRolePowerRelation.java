@@ -1,6 +1,6 @@
-package com.gjw.common.innovation.repository.db1.domain;
+package com.gjw.common.innovation.repository.domain;
 
-import com.gjw.common.innovation.repository.db1.domain.key.RolePowerKey;
+import com.gjw.common.innovation.repository.domain.key.RolePowerKey;
 import lombok.Data;
 
 import javax.persistence.Entity;

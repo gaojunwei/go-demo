@@ -1,7 +1,7 @@
 package com.gjw.common.innovation.service.impl;
 
-import com.gjw.common.innovation.repository.db1.TUserRepository;
-import com.gjw.common.innovation.repository.db1.domain.TUser;
+import com.gjw.common.innovation.repository.TUserRepository;
+import com.gjw.common.innovation.repository.domain.TUser;
 import com.gjw.common.innovation.service.TUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

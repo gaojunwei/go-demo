@@ -1,18 +1,18 @@
-package com.gjw.common.innovation.repository.db1.domain;
+package com.gjw.common.innovation.repository.domain;
 
 import lombok.Data;
 
 import javax.persistence.*;
 
 /**
- * 权限表
+ * 角色表
  */
 @Data
 @Entity
-public class TPower {
+public class TRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String powerValue;
+    private String roleName;
 }

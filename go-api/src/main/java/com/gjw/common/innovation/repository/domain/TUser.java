@@ -1,4 +1,4 @@
-package com.gjw.common.innovation.repository.db1.domain;
+package com.gjw.common.innovation.repository.domain;
 
 import lombok.Data;
 

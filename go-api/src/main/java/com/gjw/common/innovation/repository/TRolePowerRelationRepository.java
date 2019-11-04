@@ -1,6 +1,6 @@
-package com.gjw.common.innovation.repository.db1;
+package com.gjw.common.innovation.repository;
 
-import com.gjw.common.innovation.repository.db1.domain.TRolePowerRelation;
+import com.gjw.common.innovation.repository.domain.TRolePowerRelation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
