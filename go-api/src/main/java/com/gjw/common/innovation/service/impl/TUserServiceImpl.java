@@ -1,7 +1,6 @@
 package com.gjw.common.innovation.service.impl;
 
-import com.gjw.common.innovation.repository.db1.TUserRepository;
-import com.gjw.common.innovation.repository.db1.domain.TUser;
+import com.gjw.common.innovation.repository.domain.TUser;
 import com.gjw.common.innovation.service.TUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,19 +15,6 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class TUserServiceImpl implements TUserService {
-    @Resource
-    private TUserRepository tUserRepository;
 
-    @Override
-    public TUser insert(TUser user) {
-        return tUserRepository.save(user);
-    }
 
-    @Override
-    public TUser getById(Long id) {
-        Optional<TUser> optional = tUserRepository.findById(id);
-        if(optional.isPresent())
-            return optional.get();
-        return null;
-    }
 }

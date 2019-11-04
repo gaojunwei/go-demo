@@ -1,7 +1,7 @@
 package com.gjw.common.innovation.controller;
 
 import com.gjw.common.enums.SystemCodeEnums;
-import com.gjw.common.innovation.repository.db1.domain.TUser;
+import com.gjw.common.innovation.repository.domain.TUser;
 import com.gjw.common.innovation.service.TUserService;
 import com.gjw.common.result.SingleResult;
 import lombok.extern.slf4j.Slf4j;
@@ -29,18 +29,18 @@ public class UserController {
 
         TUser user = new TUser();
         user.setUserName("张三");
-        user = tUserService.insert(user);
+        //user = tUserService.insert(user);
         SystemCodeEnums.SUCCESS.applyValue(result);
-        result.setData(user);
+        //result.setData(user);
         return result;
     }
 
     @RequestMapping("get")
     public SingleResult<TUser> getuser(@RequestParam Long id){
         SingleResult<TUser> result = new SingleResult<>();
-        TUser user = tUserService.getById(id);
+        //TUser user = tUserService.getById(id);
         SystemCodeEnums.SUCCESS.applyValue(result);
-        result.setData(user);
+        //result.setData(user);
         return result;
     }
 }

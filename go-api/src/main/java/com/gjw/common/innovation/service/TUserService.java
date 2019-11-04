@@ -1,6 +1,6 @@
 package com.gjw.common.innovation.service;
 
-import com.gjw.common.innovation.repository.db1.domain.TUser;
+import com.gjw.common.innovation.repository.domain.TUser;
 
 /**
  * @author gaojunwei
@@ -10,10 +10,10 @@ public interface TUserService {
     /**
      * 保存用户
      */
-    TUser insert(TUser user);
+    //TUser insert(TUser user);
 
     /**
      * 保存用户
      */
-    TUser getById(Long id);
+    //TUser getById(Long id);
 }
