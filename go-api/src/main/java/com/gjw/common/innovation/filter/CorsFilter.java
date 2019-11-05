@@ -31,7 +31,7 @@ public class CorsFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String originHeader = request.getHeader("Origin");
-        if(allowedOrigins.contains(originHeader)){
+        if (allowedOrigins.contains(originHeader)) {
             response.setHeader("Access-Control-Allow-Origin", originHeader);
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type,token");

@@ -30,7 +30,7 @@ public class MainTest {
         // 加载一个模板，创建一个模板对象。
         Template template = configuration.getTemplate("test.ftl");
         // 创建一个模板使用的数据集，可以是pojo也可以是map。一般是Map。
-        Map<String,Object> dataModel = new HashMap<>();
+        Map<String, Object> dataModel = new HashMap<>();
         dataModel.put("eplModel", "740_BWR_480_800_1");
 
         // 创建一个Writer对象，一般创建一FileWriter对象，指定生成的文件名。

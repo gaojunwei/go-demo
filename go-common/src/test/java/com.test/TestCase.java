@@ -15,6 +15,7 @@ import java.io.IOException;
  */
 public class TestCase {
     String imgFilePathStr = "C:\\Users\\gaojunwei\\Pictures\\gx\\timg.jpg";
+
     @Test
     public void test001() throws IOException {
         BufferedImage bufferedImage = ImageIO.read(new File(imgFilePathStr));

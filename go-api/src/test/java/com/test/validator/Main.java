@@ -17,7 +17,7 @@ public class Main {
         param.setLove(true);
         param.setBloodSugar(50.8);
         param.setCreatedDate(new Date());
-        param.setVisaDate(new Date(new Date().getTime()+1234234));
+        param.setVisaDate(new Date(new Date().getTime() + 1234234));
         param.setEmail("sfsdf");
         param.setEmailBack("gjw.5@qq.com");
         param.setMarryYears("2");
@@ -25,7 +25,8 @@ public class Main {
         param.setUserName("上1");
         test002(param);
     }
-    public static void test002(Param param){
+
+    public static void test002(Param param) {
         // 参数验证
         ValidationUtil.ValidResult validResult = ValidationUtil.validateBean(param);
         System.out.println(JSON.toJSONString(validResult));

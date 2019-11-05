@@ -11,7 +11,7 @@ public class BasicResult implements Serializable {
     private String code;
     private String msg;
 
-    public static BasicResult instance(String code,String msg){
+    public static BasicResult instance(String code, String msg) {
         BasicResult result = new BasicResult();
         result.setCode(code);
         result.setMsg(msg);

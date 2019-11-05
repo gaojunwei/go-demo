@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class SystemController {
 
     @RequestMapping("refresh")
-    public BasicResult refresh(){
+    public BasicResult refresh() {
         String logId = UuidUtils.getUUID();
-        logger.info("SystemController_refresh start 刷新系统配置 logId:{}",logId);
+        logger.info("SystemController_refresh start 刷新系统配置 logId:{}", logId);
         BasicResult result = new BasicResult();
         result.setCode(SystemCodeEnums.SUCCESS.getCode());
         result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
-        logger.info("SystemController_refresh end 刷新系统配置 logId:{},result:{}",logId,JSON.toJSONString(result));
+        logger.info("SystemController_refresh end 刷新系统配置 logId:{},result:{}", logId, JSON.toJSONString(result));
         return result;
     }
 }

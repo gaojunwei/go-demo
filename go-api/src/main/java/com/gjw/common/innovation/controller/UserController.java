@@ -24,7 +24,7 @@ public class UserController {
     private TUserService tUserService;
 
     @RequestMapping("add")
-    public SingleResult<TUser> addUser(){
+    public SingleResult<TUser> addUser() {
         SingleResult<TUser> result = new SingleResult<>();
         TUser user = new TUser();
         user.setUserName("张三");
@@ -37,8 +37,14 @@ public class UserController {
         return result;
     }
 
+    /**
+     * 获取用户信息
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping("get")
-    public SingleResult<TUser> getuser(@RequestParam Long id){
+    public SingleResult<TUser> getuser(@RequestParam Long id) {
         SingleResult<TUser> result = new SingleResult<>();
         TUser user = tUserService.getById(id);
         SystemCodeEnums.SUCCESS.applyValue(result);

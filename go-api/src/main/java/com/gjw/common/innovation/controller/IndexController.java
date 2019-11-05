@@ -18,8 +18,8 @@ public class IndexController {
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
     @RequestMapping("")
-    public BasicResult index(){
-        BasicResult result = BasicResult.instance(SystemCodeEnums.SUCCESS.getCode(),SystemCodeEnums.SUCCESS.getMsg());
+    public BasicResult index() {
+        BasicResult result = BasicResult.instance(SystemCodeEnums.SUCCESS.getCode(), SystemCodeEnums.SUCCESS.getMsg());
         return result;
     }
 }

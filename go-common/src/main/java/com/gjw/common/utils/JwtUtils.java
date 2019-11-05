@@ -17,13 +17,13 @@ import java.util.Date;
 public class JwtUtils {
     /**
      * 签发JWT
-     * @param id
-     * @param subject 可以是JSON数据 尽可能少
-     * @param ttlMillis
-     * @return  String
      *
+     * @param id
+     * @param subject   可以是JSON数据 尽可能少
+     * @param ttlMillis
+     * @return String
      */
-    public static String createJWT(String id, String subject, Long ttlMillis,String secretKey) {
+    public static String createJWT(String id, String subject, Long ttlMillis, String secretKey) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
@@ -41,8 +41,10 @@ public class JwtUtils {
         }
         return builder.compact();
     }
+
     /**
      * 验证JWT
+     *
      * @param jwtStr
      * @return
      */
@@ -51,7 +53,7 @@ public class JwtUtils {
         try {
             result.setCode(SystemCodeEnums.SUCCESS.getCode());
             result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
-            result.setData(parseJWT(jwtStr,secretKey));
+            result.setData(parseJWT(jwtStr, secretKey));
         } catch (ExpiredJwtException e) {
             result.setCode(SystemCodeEnums.JWT_EXPIRED.getCode());
             result.setMsg(SystemCodeEnums.JWT_EXPIRED.getMsg());
@@ -72,13 +74,13 @@ public class JwtUtils {
     }
 
     /**
-     *
      * 解析JWT字符串
+     *
      * @param jwt
      * @return
      * @throws Exception
      */
-    public static Claims parseJWT(String jwt,String secretKey) {
+    public static Claims parseJWT(String jwt, String secretKey) {
         SecretKey scrtKey = generalKey(secretKey);
         return Jwts.parser().setSigningKey(scrtKey).parseClaimsJws(jwt).getBody();
     }

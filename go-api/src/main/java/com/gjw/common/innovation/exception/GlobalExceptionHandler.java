@@ -25,8 +25,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseBody
     public BasicResult httpRequestMethodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException e) {
-        logger.error(e.getMessage(),e);
-        return BasicResult.instance(SystemCodeEnums.HttpRequestMethodNotSupportedException.getCode(),SystemCodeEnums.HttpRequestMethodNotSupportedException.getMsg());
+        logger.error(e.getMessage(), e);
+        return BasicResult.instance(SystemCodeEnums.HttpRequestMethodNotSupportedException.getCode(), SystemCodeEnums.HttpRequestMethodNotSupportedException.getMsg());
     }
 
     /**
@@ -35,8 +35,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseBody
     public BasicResult missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException e) {
-        logger.error(e.getMessage(),e);
-        return BasicResult.instance(SystemCodeEnums.MissingServletRequestParameterException.getCode(),SystemCodeEnums.MissingServletRequestParameterException.getMsg());
+        logger.error(e.getMessage(), e);
+        return BasicResult.instance(SystemCodeEnums.MissingServletRequestParameterException.getCode(), SystemCodeEnums.MissingServletRequestParameterException.getMsg());
     }
 
     /**
@@ -45,8 +45,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TypeMismatchException.class)
     @ResponseBody
     public BasicResult typeMismatchExceptionHandler(TypeMismatchException e) {
-        logger.error(e.getMessage(),e);
-        return BasicResult.instance(SystemCodeEnums.TypeMismatchException.getCode(),SystemCodeEnums.TypeMismatchException.getMsg());
+        logger.error(e.getMessage(), e);
+        return BasicResult.instance(SystemCodeEnums.TypeMismatchException.getCode(), SystemCodeEnums.TypeMismatchException.getMsg());
     }
 
     /**
@@ -54,9 +54,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(AppException.class)
     @ResponseBody
-    public BasicResult allExceptionHandler(AppException e){
-        logger.error(e.getMessage(),e);
-        return BasicResult.instance(e.getCode(),e.getMsg());
+    public BasicResult allExceptionHandler(AppException e) {
+        logger.error(e.getMessage(), e);
+        return BasicResult.instance(e.getCode(), e.getMsg());
     }
 
     /**
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseBody
     public BasicResult allExceptionHandler(Exception e) {
-        logger.error(e.getMessage(),e);
-        return BasicResult.instance(SystemCodeEnums.ERROR.getCode(),SystemCodeEnums.ERROR.getMsg());
+        logger.error(e.getMessage(), e);
+        return BasicResult.instance(SystemCodeEnums.ERROR.getCode(), SystemCodeEnums.ERROR.getMsg());
     }
 }

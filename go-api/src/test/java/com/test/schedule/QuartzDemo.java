@@ -25,11 +25,11 @@ public class QuartzDemo {
         System.out.println(JSON.toJSONString(seeExcuteTime(cronStr)));
     }
 
-    private static boolean check(String cronStr){
-        if(CronExpression.isValidExpression(cronStr)){
+    private static boolean check(String cronStr) {
+        if (CronExpression.isValidExpression(cronStr)) {
             System.out.println("校验通过");
             return true;
-        }else {
+        } else {
             System.out.println("校验未通过");
             return false;
         }
@@ -53,12 +53,11 @@ public class QuartzDemo {
     }
 
     /**
-     *
+     * @param cron
+     * @return
      * @desc 计算表达式近20次时间
      * @auth josnow
      * @date 2017年5月31日 下午12:16:25
-     * @param cron
-     * @return
      */
     public static List<String> seeExcuteTime(String cron) throws ParseException, IllegalArgumentException {
         if (StringUtils.isEmpty(cron)) {

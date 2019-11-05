@@ -20,11 +20,12 @@ import java.util.Set;
 public class SystemConfig {
     /**
      * 跨域白名单配置
+     *
      * @return
      */
     @Bean("allowedOrigins")
     public Set<String> initOriginsSet() {
-        Set<String> allowedOrigins= new HashSet<>();
+        Set<String> allowedOrigins = new HashSet<>();
         allowedOrigins.add("http://plc.jd.com");
         allowedOrigins.add("https://plc.jd.com");
 

@@ -25,30 +25,34 @@ public class ValidationUtil {
 
     /**
      * 校验对象
+     *
      * @param t bean
      * @return ValidResult
      */
     public static <T> ValidResult validateBean(T t) {
-        return validateBean(t,null);
+        return validateBean(t, null);
     }
+
     /**
      * 分组-校验对象
-     * @param t bean
+     *
+     * @param t      bean
      * @param groups 校验组
      * @return ValidResult
      */
-    public static <T> ValidResult validateBean(T t,Class<?>...groups) {
+    public static <T> ValidResult validateBean(T t, Class<?>... groups) {
         Set<ConstraintViolation<T>> violationSet;
-        if(groups == null){
+        if (groups == null) {
             violationSet = validator.validate(t);
-        }else{
-            violationSet = validator.validate(t,groups);
+        } else {
+            violationSet = validator.validate(t, groups);
         }
         return bindResult(violationSet);
     }
 
     /**
      * 校验bean的某一个属性
+     *
      * @param obj          bean
      * @param propertyName 属性名称
      * @return ValidResult
@@ -61,7 +65,7 @@ public class ValidationUtil {
     /**
      * 结果封装
      */
-    private static <T> ValidResult bindResult(Set<ConstraintViolation<T>> violationSet){
+    private static <T> ValidResult bindResult(Set<ConstraintViolation<T>> violationSet) {
         ValidResult result = new ValidationUtil().new ValidResult();
         boolean hasError = violationSet != null && violationSet.size() > 0;
         result.setHasErrors(hasError);

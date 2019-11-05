@@ -27,13 +27,13 @@ public class MvcTest {
     private MockMvc mockMvc;
 
     @Before
-    public void test001(){
+    public void test001() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
     public void test002() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/sys/refresh"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(SystemCodeEnums.SUCCESS.getCode()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(SystemCodeEnums.SUCCESS.getCode()));
     }
 }

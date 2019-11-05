@@ -27,33 +27,35 @@ public class MacUtils {
 
     /**
      * 格式化MAC地址，默认格式（80EACA00000F）
+     *
      * @param mac
      * @return
      */
-    public static String formateMac(String mac){
-        return formateMac(mac,null);
+    public static String formateMac(String mac) {
+        return formateMac(mac, null);
     }
 
     /**
      * 格式MAC地址
+     *
      * @param mac
      * @param splitStr 格式化的分隔符
      * @return
      */
-    public static String formateMac(String mac,String splitStr){
-        if(mac==null || mac.trim().equals(""))
+    public static String formateMac(String mac, String splitStr) {
+        if (mac == null || mac.trim().equals(""))
             return null;
-        String macStr = mac.toUpperCase().replaceAll("-","").replaceAll(":","");
-        if(splitStr==null)
+        String macStr = mac.toUpperCase().replaceAll("-", "").replaceAll(":", "");
+        if (splitStr == null)
             return null;
         String formateMac = null;
-        if(isMac(macStr)){
-            formateMac = macStr.substring(0,2).concat(splitStr)
-                    .concat(macStr.substring(2,4)).concat(splitStr)
-                    .concat(macStr.substring(4,6)).concat(splitStr)
-                    .concat(macStr.substring(6,8)).concat(splitStr)
-                    .concat(macStr.substring(8,10)).concat(splitStr)
-                    .concat(macStr.substring(10,12));
+        if (isMac(macStr)) {
+            formateMac = macStr.substring(0, 2).concat(splitStr)
+                    .concat(macStr.substring(2, 4)).concat(splitStr)
+                    .concat(macStr.substring(4, 6)).concat(splitStr)
+                    .concat(macStr.substring(6, 8)).concat(splitStr)
+                    .concat(macStr.substring(8, 10)).concat(splitStr)
+                    .concat(macStr.substring(10, 12));
         }
         return formateMac;
     }

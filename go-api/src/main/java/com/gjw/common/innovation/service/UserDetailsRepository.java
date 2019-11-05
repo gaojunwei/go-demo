@@ -59,7 +59,7 @@ public class UserDetailsRepository {
 
 
     public boolean userExists(String username) {
-        logger.info("*****************{}",username);
+        logger.info("*****************{}", username);
         return users.containsKey(username);
     }
 

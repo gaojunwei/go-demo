@@ -18,6 +18,7 @@ public class EncryptionUtils {
     /********************************获取字节数组********************************/
     /**
      * 得到文件的字节数组
+     *
      * @param path 文件路径
      * @return
      * @throws Exception
@@ -25,8 +26,10 @@ public class EncryptionUtils {
     public static byte[] getFileByte(String path) throws Exception {
         return getFileBytes(new File(path));
     }
+
     /**
      * 获取文件的字节数组
+     *
      * @param file
      * @return
      * @throws Exception
@@ -35,8 +38,10 @@ public class EncryptionUtils {
         FileInputStream fileInputStream = new FileInputStream(file);
         return getFileBytes(fileInputStream);
     }
+
     /**
      * 获取输入流的字节数组
+     *
      * @param inputStream
      * @return
      * @throws Exception
@@ -48,6 +53,7 @@ public class EncryptionUtils {
     /********************************Base64编码********************************/
     /**
      * 获取文件的base64字符串
+     *
      * @param file
      * @return
      * @throws Exception
@@ -56,24 +62,30 @@ public class EncryptionUtils {
         byte[] buffer = EncryptionUtils.getFileBytes(file);
         return base64Encode(buffer);
     }
+
     /**
      * 获取字符串的base64编码
+     *
      * @param str
      * @return
      */
     public static String base64Encode(String str) {
         return base64Encode(str.getBytes());
     }
+
     /**
      * （核心base64编码）获取字节数组的base64编码
+     *
      * @param inputStream
      * @return
      */
     public static String base64Encode(InputStream inputStream) throws Exception {
         return base64Encode(getFileBytes(inputStream));
     }
+
     /**
      * （核心base64编码）获取字节数组的base64编码
+     *
      * @param bytes
      * @return
      */
@@ -84,14 +96,17 @@ public class EncryptionUtils {
     /********************************Base64解码********************************/
     /**
      * base64解码
+     *
      * @param base64Str
      * @return
      */
     public static byte[] base64Decode(String base64Str) {
         return base64Decode(base64Str.getBytes());
     }
+
     /**
      * base64解码
+     *
      * @param base64File base64编码文件
      * @return
      */
@@ -99,16 +114,20 @@ public class EncryptionUtils {
         FileInputStream fileInputStream = new FileInputStream(base64File);
         return base64Decode(fileInputStream);
     }
+
     /**
      * base64解码
+     *
      * @param inputStream base64输入流
      * @return
      */
     public static byte[] base64Decode(InputStream inputStream) throws Exception {
         return base64Decode(getFileBytes(inputStream));
     }
+
     /**
      * （核心base64解码）base64解码
+     *
      * @param bytes
      * @return
      */
@@ -119,14 +138,17 @@ public class EncryptionUtils {
     /********************************加密算法********************************/
     /**
      * 获取字符串的MD5值
+     *
      * @param str
      * @return
      */
     public static String md5(String str) {
         return DigestUtils.md5Hex(str);
     }
+
     /**
      * 获取字符串的MD5值
+     *
      * @param file
      * @return
      */
@@ -136,6 +158,7 @@ public class EncryptionUtils {
 
     /**
      * 获取字符串的SHA1Hex值
+     *
      * @param str
      * @return
      */
@@ -145,6 +168,7 @@ public class EncryptionUtils {
 
     /**
      * 获取字符串的sha256Hex值
+     *
      * @param str
      * @return
      */
