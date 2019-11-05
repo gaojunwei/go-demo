@@ -9,10 +9,15 @@ import javax.persistence.*;
  */
 @Data
 @Entity
+@Table(name = "t_user", uniqueConstraints = {@UniqueConstraint(columnNames="user_account")})
 public class TUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "user_name",nullable = false)
     private String userName;
+    @Column(name = "user_account",nullable = false)
+    private String userAccount;
+    @Column(name = "user_pwd",nullable = false)
+    private String userPwd;
 }

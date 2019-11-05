@@ -26,9 +26,11 @@ public class UserController {
     @RequestMapping("add")
     public SingleResult<TUser> addUser(){
         SingleResult<TUser> result = new SingleResult<>();
-
         TUser user = new TUser();
         user.setUserName("张三");
+        user.setUserAccount("admin");
+        user.setUserPwd("123456");
+
         user = tUserService.insert(user);
         SystemCodeEnums.SUCCESS.applyValue(result);
         result.setData(user);
