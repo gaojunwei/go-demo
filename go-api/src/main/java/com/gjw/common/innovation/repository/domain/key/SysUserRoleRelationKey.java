@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @Description: 指令执行任务表 联合主键
  */
 @Data
-public class UserRoleKey implements Serializable {
-    private Long userId;
+public class SysUserRoleRelationKey implements Serializable {
     private Long roleId;
+    private Long userId;
 }

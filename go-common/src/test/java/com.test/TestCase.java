@@ -14,12 +14,12 @@ import java.io.IOException;
  * @date 2019/9/17 17:35
  */
 public class TestCase {
-    String imgFilePathStr = "C:\\Users\\gaojunwei\\Pictures\\gx\\timg.jpg";
+    String imgFilePathStr = "C:\\Users\\gaojunwei\\Pictures\\gx\\a.jpg";
 
     @Test
     public void test001() throws IOException {
         BufferedImage bufferedImage = ImageIO.read(new File(imgFilePathStr));
         BufferedImage bufferedImage1 = BMPConverter.floyd(bufferedImage, DeviceTypeEnums.DEVICE_BW);
-        ImageIO.write(bufferedImage1, "png", new File("C:\\Users\\gaojunwei\\Pictures\\gx\\hehe2.png"));
+        ImageIO.write(bufferedImage1, "png", new File("C:\\Users\\gaojunwei\\Pictures\\gx\\hb.jpg"));
     }
 }

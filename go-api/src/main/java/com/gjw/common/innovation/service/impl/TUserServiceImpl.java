@@ -1,7 +1,6 @@
 package com.gjw.common.innovation.service.impl;
 
-import com.gjw.common.innovation.repository.TUserRepository;
-import com.gjw.common.innovation.repository.domain.TUser;
+import com.gjw.common.innovation.repository.SysUserRepository;
 import com.gjw.common.innovation.service.TUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
@@ -18,7 +17,7 @@ import java.util.Optional;
 @Slf4j
 public class TUserServiceImpl implements TUserService {
     @Resource
-    private TUserRepository tUserRepository;
+    private SysUserRepository tUserRepository;
 
     @Override
     public TUser insert(TUser user) {

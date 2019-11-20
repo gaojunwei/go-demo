@@ -1,8 +1,8 @@
 package com.gjw.common.innovation.repository;
 
-import com.gjw.common.innovation.repository.domain.TUser;
+import com.gjw.common.innovation.repository.domain.SysRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface TUserRepository extends JpaRepository<TUser, Long>, JpaSpecificationExecutor<TUser> {
+public interface SysRoleRepository extends JpaRepository<SysRole, Long>, JpaSpecificationExecutor<SysRole> {
 }

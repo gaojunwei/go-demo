@@ -1,7 +1,5 @@
 package com.gjw.common.innovation.service;
 
-import com.gjw.common.innovation.repository.domain.TUser;
-
 /**
  * @author gaojunwei
  * @date 2019/10/14 20:00
