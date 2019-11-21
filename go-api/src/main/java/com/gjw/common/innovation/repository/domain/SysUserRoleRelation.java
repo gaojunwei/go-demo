@@ -3,10 +3,7 @@ package com.gjw.common.innovation.repository.domain;
 import com.gjw.common.innovation.repository.domain.key.SysUserRoleRelationKey;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,9 +16,11 @@ import java.util.Date;
 @IdClass(SysUserRoleRelationKey.class)
 public class SysUserRoleRelation implements Serializable {
 
+    @Id
     @Column(name = "role_id")
     private Long roleId;
 
+    @Id
     @Column(name = "user_id")
     private Long userId;
 

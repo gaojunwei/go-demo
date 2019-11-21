@@ -3,10 +3,7 @@ package com.gjw.common.innovation.repository.domain;
 import com.gjw.common.innovation.repository.domain.key.SysRolePermissionRelationKey;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,12 +18,14 @@ public class SysRolePermissionRelation implements Serializable {
     /**
      * 角色ID
      */
+    @Id
     @Column(name = "role_id")
     private Long roleId;
 
     /**
      * 资源ID
      */
+    @Id
     @Column(name = "permission_id")
     private Long permissionId;
 

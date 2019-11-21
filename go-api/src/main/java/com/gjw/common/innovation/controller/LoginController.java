@@ -1,14 +1,12 @@
 package com.gjw.common.innovation.controller;
 
-import com.jd.jr.uniconfig.client.utils.GsonUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author gaojunwei
  * @date 2019/11/5 18:20
  */
+@Slf4j
 public class LoginController {
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 }
