@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>项目首页</title>
+</head>
+<body>
+    <h1 th:text="${msg}"></h1>
+    遍历集合：
+    <p th:each="item:${list}">[[${item.age} + ${item.name}]]</p>
+</body>
+</html>
