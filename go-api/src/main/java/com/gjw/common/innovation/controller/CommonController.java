@@ -1,8 +1,6 @@
 package com.gjw.common.innovation.controller;
 
-import com.wf.captcha.ArithmeticCaptcha;
 import com.wf.captcha.ChineseGifCaptcha;
-import com.wf.captcha.GifCaptcha;
 import com.wf.captcha.utils.CaptchaUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +23,7 @@ public class CommonController {
         //ArithmeticCaptcha captcha = new ArithmeticCaptcha();
         ChineseGifCaptcha captcha = new ChineseGifCaptcha();
         System.out.println("生产系统验证码："+captcha.text());
+        System.out.println("生产系统验证码Base64："+captcha.toBase64());
         CaptchaUtil.out(captcha,request,response);
     }
 }
