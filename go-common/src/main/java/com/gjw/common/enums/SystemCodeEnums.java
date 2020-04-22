@@ -26,12 +26,20 @@ public enum SystemCodeEnums {
 
     /**
      * 设置错误码及描述
-     *
-     * @param result
      */
     public void applyValue(BasicResult result) {
         result.setCode(this.getCode());
         result.setMsg(this.getMsg());
+    }
+
+    /**
+     * 设置错误码及描述
+     */
+    public BasicResult applyValue() {
+        BasicResult result = new BasicResult();
+        result.setCode(this.getCode());
+        result.setMsg(this.getMsg());
+        return result;
     }
 
     public String getCode() {
