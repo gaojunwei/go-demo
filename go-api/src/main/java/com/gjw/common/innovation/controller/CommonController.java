@@ -25,6 +25,15 @@ public class CommonController {
         return result;
     }
 
+    @RequestMapping("exception")
+    public BasicResult two() {
+        logger.info("MDC 链路方法测试Demo-异常测试");
+        BasicResult result = SystemCodeEnums.SUCCESS.applyValue();
+        logger.info(JSON.toJSONString(result));
+        int c = 10/0;
+        return result;
+    }
+
     /**
      * 图形验证码
      *

@@ -56,7 +56,7 @@ public class SystemConfig {
                 securityConstraint.setUserConstraint("CONFIDENTIAL");
                 SecurityCollection collection = new SecurityCollection();
                 collection.addPattern("/*");
-                securityConstraint.addCollection(collection);
+                //securityConstraint.addCollection(collection);
                 context.addConstraint(securityConstraint);
             }
         };

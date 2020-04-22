@@ -4,6 +4,7 @@ import com.gjw.common.enums.SystemCodeEnums;
 import com.gjw.common.exception.AppException;
 import com.gjw.common.result.BasicResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -69,7 +70,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseBody
     public BasicResult allExceptionHandler(Exception e) {
-        logger.error(e.getMessage(), e);
+        logger.info("所有异常");
+        logger.error(ExceptionUtils.getStackTrace(e));
         return SystemCodeEnums.ERROR.applyValue();
     }
 }
