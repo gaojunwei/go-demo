@@ -1,7 +1,6 @@
 package com.gjw.common.utils;
 
 import org.apache.commons.codec.binary.Base64;
-import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
@@ -52,8 +51,8 @@ public class RsaUtil {
      */
     private static RSAPublicKey loadPublicKeyByStr(String publicKeyStr) throws Exception {
         try {
-            BASE64Decoder base64 = new BASE64Decoder();
-            byte[] buffer = base64.decodeBuffer(publicKeyStr);
+            Base64 base64 = new Base64();
+            byte[] buffer = base64.decode(publicKeyStr);
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
 
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
@@ -72,8 +71,8 @@ public class RsaUtil {
      */
     private static RSAPrivateKey loadPrivateKeyByStr(String privateKeyStr) {
         try {
-            BASE64Decoder base64 = new BASE64Decoder();
-            byte[] buffer = base64.decodeBuffer(privateKeyStr);
+            Base64 base64 = new Base64();
+            byte[] buffer = base64.decode(privateKeyStr);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(buffer);
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
             return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
