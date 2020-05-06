@@ -166,6 +166,7 @@
     </dependencyManagement>
 
     <build>
+        <defaultGoal>compile</defaultGoal>
         <plugins>
             <!--Compiler 插件, 设定JDK版本-->
             <plugin>
