@@ -107,5 +107,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <!-- 指定包名 -->
+        <finalName>go-demo</finalName>
     </build>
 </project>
