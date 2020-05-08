@@ -26,7 +26,6 @@ public class DefaultApplicationRunner implements ApplicationRunner, Ordered {
     @Override
     public void run(ApplicationArguments args) {
         args.getOptionNames().forEach(System.out::println);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>");
         String[] sourceArgs = args.getSourceArgs();
 
         if (sourceArgs != null) {
