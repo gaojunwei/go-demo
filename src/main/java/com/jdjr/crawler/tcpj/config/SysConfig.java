@@ -1,10 +1,14 @@
 package com.jdjr.crawler.tcpj.config;
 
+import com.jdjr.crawler.tcpj.config.data.UserInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @Slf4j
@@ -99,14 +103,6 @@ public class SysConfig {
     private String tcpjLoginPageUrl;
 
     /**
-     * 账号密码信息
-     */
-    @Value("${tcpj.account:'13910099494'}")
-    private String tcpjCccount;
-    @Value("${tcpj.account.pwd:'123QWEasd'}")
-    private String tcpjAccountPwd;
-
-    /**
      * 超级鹰的HTTP超时配置(单位毫秒)
      */
     @Value("${cjy.connectTimeout:40000}")
@@ -115,8 +111,42 @@ public class SysConfig {
     private Integer cjySocketTimeout;
 
     /**
-     * 打开登录页面最大检测次数（每次/10s）
+     * 打开登录页面最大检测次数（每次/1s）
      */
-    @Value("${tcpj.open.loginUrl.times:100}")
+    @Value("${tcpj.open.loginUrl.times:1000}")
     private Integer tcpjOpenLoginUrlTimes;
+
+    /**
+     * 每个账号登录重试最大次数
+     */
+    @Value("${tcpj.account.login.retryTime:3}")
+    private Integer tcpjAccountLoginRetryTime;
+
+    /**
+     * 账号密码信息
+     */
+    @Value("${tcpj.account.info}")
+    private String tcpjCccountInfo;
+
+    /**
+     * 获取同城票据的账户信息列表
+     *
+     * @return
+     */
+    public List<UserInfo> getTcpjAccounts() {
+        List<UserInfo> list = new ArrayList<>();
+
+        String[] items = tcpjCccountInfo.split("\\|");
+        for (String item : items) {
+            String[] itemArr = item.split(",");
+
+            UserInfo userInfo = new UserInfo();
+            userInfo.setAccount(itemArr[0].trim());
+            userInfo.setPassword(itemArr[1].trim());
+            userInfo.setType(Integer.parseInt(itemArr[2]));
+
+            list.add(userInfo);
+        }
+        return list;
+    }
 }

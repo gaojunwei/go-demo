@@ -18,5 +18,6 @@ public class MyDisposableBean implements DisposableBean {
     @Override
     public void destroy() {
         logger.info("程序定时任务执行日志记录：{}", JSON.toJSONString(TCPJCatch.getLog()));
+        logger.info("缓存数据：{}", JSON.toJSONString(TCPJCatch.getCatch()));
     }
 }

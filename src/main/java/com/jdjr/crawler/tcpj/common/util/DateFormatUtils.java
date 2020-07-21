@@ -33,6 +33,25 @@ public class DateFormatUtils {
     }
 
     /**
+     * 获取当前日期的格式化数据
+     *
+     * @return
+     */
+    public static String getNowDate() {
+        return dateFormat(new Date(), FormatEnums.yyyy_MM_dd_HH_mm_ss.getValue());
+    }
+
+    /**
+     * 获取当前日期的格式化数据
+     *
+     * @param formatEnums
+     * @return
+     */
+    public static String getNowDate(FormatEnums formatEnums) {
+        return dateFormat(new Date(), formatEnums.getValue());
+    }
+
+    /**
      * 日期格式枚举类
      */
     public enum FormatEnums {

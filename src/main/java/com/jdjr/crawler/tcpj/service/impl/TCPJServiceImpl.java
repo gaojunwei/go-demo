@@ -56,6 +56,7 @@ import java.util.Set;
 public class TCPJServiceImpl implements TCPJService {
 
     private SysConfig sysConfig = (SysConfig) SpringUtils.getBean("sysConfig");
+    private final String accessToken = "access_token";
 
     @Override
     public String getLoginToken(String url, String account, String password) {
@@ -67,6 +68,14 @@ public class TCPJServiceImpl implements TCPJService {
             //通过driver控制浏览器打开链接（url）
             openUrl(driver, url);
             logger.info("driver_open step");
+            removeCookie(driver, accessToken);
+
+            System.out.println("测试cookie A获取acw_tc:" + getCookie(driver, "acw_tc"));
+            System.out.println("测试cookie 删除acw_tc");
+            removeCookie(driver, "acw_tc");
+            System.out.println("测试cookie B获取acw_tc:" + getCookie(driver, "acw_tc"));
+
+
             //输入手机号
             WebElement phoneInput = driver.findElement(By.cssSelector("input[class='ant-input login-input']"));
             phoneInput.sendKeys(account);
@@ -83,7 +92,6 @@ public class TCPJServiceImpl implements TCPJService {
             //滑动滑块
             doSlider(driver, slider);
             logger.info("driver_find doSlider step");
-            sleep(8);
             //点击登录按钮
             WebElement logInBtn = driver.findElement(By.cssSelector("button[class='ant-btn login-button ant-btn-primary']"));
             logger.info("driver_find logInBtn step");
@@ -94,10 +102,19 @@ public class TCPJServiceImpl implements TCPJService {
             int count = 1;
             boolean isSuccess = false;
             //切换到iframe窗口
-            if (!witchToFrame(driver)) {
-                logger.info("driver_switchTo frame step fail!!!");
-                throw new AppException(SystemCodeEnums.ERROR.getCode(), "witchToFrame fail");
+            try {
+                if (!witchToFrame(driver)) {
+                    logger.info("driver_switchTo frame step fail!!!");
+                    throw new AppException(SystemCodeEnums.ERROR.getCode(), "witchToFrame fail");
+                }
+            } catch (AppException e) {
+                if (e.getCode() == SystemCodeEnums.SUCCESS.getCode()) {
+                    logger.info("after_login_success,no imgCode check end：access_token-{}", e.getMsg());
+                    return e.getMsg();
+                }
+                throw e;
             }
+
             logger.info("driver_switchTo frame success step");
             while (count <= sysConfig.getTcpjTcaptchaReTryTimes()) {
                 try {
@@ -123,11 +140,10 @@ public class TCPJServiceImpl implements TCPJService {
                 throw new AppException(SystemCodeEnums.ERROR.getCode(), msg);
             }
             logger.info("driver_imgCode click SUCCESS!!!!!!!");
-            sleep(10);
             //获取登录后的cookie信息
-            Set<Cookie> cookies = driver.manage().getCookies();
-            String access_token = getToken(cookies);
-            logger.info("after_login_success,get Cookie info step：access_token-{},all-{}", access_token, JSON.toJSONString(cookies));
+            String access_token = getToken(driver);
+            ;
+            logger.info("after_login_success,get Cookie info step：access_token-{}", access_token);
             return access_token;
         } finally {
             //关闭浏览器
@@ -155,6 +171,12 @@ public class TCPJServiceImpl implements TCPJService {
                 logger.info("driver_frame witchTo checking... {} times", i);
                 sleep(1);
             }
+            //检测是否已经登录验证
+            String token = getCookie(driver, accessToken);
+            if (!StringUtils.isEmpty(token)) {
+                logger.info("after_login_success,no imgCode check end：access_token-{}", token);
+                throw new AppException(SystemCodeEnums.SUCCESS.getCode(), token);
+            }
         }
         return result;
     }
@@ -162,12 +184,11 @@ public class TCPJServiceImpl implements TCPJService {
     /**
      * 打开URL地址
      */
-    private Boolean openUrl(WebDriver driver, String url) {
-        Boolean result = false;
+    private void openUrl(WebDriver driver, String url) {
         driver.get(url);
         int count = 0;
         while (true) {
-            sleep(10);
+            sleep(1);
             try {
                 //找到登录按钮元素
                 WebElement logInBtn = driver.findElement(By.cssSelector("button[class='ant-btn login-button ant-btn-primary']"));
@@ -179,43 +200,64 @@ public class TCPJServiceImpl implements TCPJService {
                 WebElement slider = driver.findElement(By.cssSelector("span#nc_1_n1z"));
 
                 if (logInBtn != null && phoneInput != null && passwordInput != null && slider != null) {
-                    result = true;
-                    logger.info("driver_open url success step");
+                    logger.info("open url complete success...GO GO GO");
                     break;
                 }
             } catch (Exception e) {
                 logger.info("driver_open url checking...");
             }
             count++;
-            //每达到4次刷新该tab
-            if ((count % 10) == 0) {
+            //每达到100s刷新该tab
+            if ((count % 100) == 0) {
                 driver.navigate().refresh();
             }
             //达到最大检测次数，
             if (count > sysConfig.getTcpjOpenLoginUrlTimes()) {
-                break;
+                throw new AppException(SystemCodeEnums.ERROR.getCode(), "open url fail, reason reach_max_retry_times:" + sysConfig.getTcpjOpenLoginUrlTimes().toString());
             }
         }
-        logger.info("open url complete...GO GO GO");
-        return result;
+    }
+
+    /**
+     * 获取Token值
+     *
+     * @param driver
+     * @return
+     */
+    private String getToken(WebDriver driver) {
+        int checkTimes = 10;
+        for (int i = 1; i <= checkTimes; i++) {
+            sleep(1);
+            String token = getCookie(driver, accessToken);
+            logger.info("attempt get token {}/{} token:{}", i, checkTimes, token);
+            if (!StringUtils.isEmpty(token)) {
+                return token;
+            }
+        }
+        return null;
     }
 
     /**
      * 从cookies中获取指定key的值
-     *
-     * @param cookies
-     * @return
      */
-    private String getToken(Set<Cookie> cookies) {
+    private String getCookie(WebDriver driver, String cookieKey) {
+        Set<Cookie> cookies = driver.manage().getCookies();
         if (cookies == null || cookies.isEmpty()) {
             return null;
         }
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("access_token")) {
+            if (cookie.getName().equals(cookieKey)) {
                 return cookie.getValue();
             }
         }
         return null;
+    }
+
+    /**
+     * 删除指定的cookie
+     */
+    private void removeCookie(WebDriver driver, String cookieKey) {
+        driver.manage().deleteCookieNamed(cookieKey);
     }
 
     /**
@@ -551,14 +593,33 @@ public class TCPJServiceImpl implements TCPJService {
      * 滑动滑块
      */
     private void doSlider(WebDriver driver, WebElement element) {
-        Actions action = new Actions(driver);
-        action.moveToElement(element).clickAndHold(element);
+        int maxRetryTimes = 3;
+        for (int i = 1; i <= maxRetryTimes; i++) {
+            Actions action = new Actions(driver);
+            action.moveToElement(element).clickAndHold(element);
 
-        List<Integer> stepList = random(360);
-        for (Integer a : stepList) {
-            action.moveByOffset(a, 0).pause(400).perform();
+            List<Integer> stepList = random(360);
+            for (Integer a : stepList) {
+                action.moveByOffset(a, 0).pause(400).perform();
+            }
+            action.release(element).perform();
+            logger.info("do slide times:{}",i);
+            //检测是否滑动成功
+            for (int j = 1; j <= 8; j++) {
+                try {
+                    sleep(1);
+                    WebElement slideEle = driver.findElement(By.id("nc_1_n1z"));
+                    logger.info("do check slide result time:{}", j);
+                    if (slideEle.getAttribute("class").equals("nc_iconfont btn_ok")) {
+                        logger.info("do slide success class:nc_iconfont btn_ok");
+                        return;
+                    }
+                } catch (Exception e) {
+                    throw new AppException(SystemCodeEnums.ERROR.getCode(), "滑块验证码元素找不到，网址可能改版了，slideEle.id='nc_1_n1z'");
+                }
+            }
         }
-        action.release().perform();
+        throw new AppException(SystemCodeEnums.ERROR.getCode(), "滑动验证码，操作失败，达到最大重试次数，maxRetryTimes:" + maxRetryTimes);
     }
 
     /**
