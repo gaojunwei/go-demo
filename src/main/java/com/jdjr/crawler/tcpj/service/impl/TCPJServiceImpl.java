@@ -69,13 +69,6 @@ public class TCPJServiceImpl implements TCPJService {
             openUrl(driver, url);
             logger.info("driver_open step");
             removeCookie(driver, accessToken);
-
-            System.out.println("测试cookie A获取acw_tc:" + getCookie(driver, "acw_tc"));
-            System.out.println("测试cookie 删除acw_tc");
-            removeCookie(driver, "acw_tc");
-            System.out.println("测试cookie B获取acw_tc:" + getCookie(driver, "acw_tc"));
-
-
             //输入手机号
             WebElement phoneInput = driver.findElement(By.cssSelector("input[class='ant-input login-input']"));
             phoneInput.sendKeys(account);
@@ -204,7 +197,7 @@ public class TCPJServiceImpl implements TCPJService {
                     break;
                 }
             } catch (Exception e) {
-                logger.info("driver_open url checking...");
+                logger.info("driver_open url checking... {}",count);
             }
             count++;
             //每达到100s刷新该tab
@@ -603,7 +596,7 @@ public class TCPJServiceImpl implements TCPJService {
                 action.moveByOffset(a, 0).pause(400).perform();
             }
             action.release(element).perform();
-            logger.info("do slide times:{}",i);
+            logger.info("do slide times:{}", i);
             //检测是否滑动成功
             for (int j = 1; j <= 8; j++) {
                 try {
