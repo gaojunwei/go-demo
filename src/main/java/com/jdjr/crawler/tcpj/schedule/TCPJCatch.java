@@ -34,11 +34,21 @@ public class TCPJCatch {
      * 同城票据多账号登录态改造
      */
     public static void applyValue(String logId, String phone, Integer phoneType, String token) {
+        applyValue(logId, phone, phoneType, token, null);
+    }
+
+    /**
+     * 同城票据多账号登录态改造
+     */
+    public static void applyValue(String logId, String phone, Integer phoneType, String token, Date creatTime) {
         TcpjData tcpjData = new TcpjData();
         tcpjData.setPhone(phone);
         tcpjData.setPhoneType(phoneType);
         tcpjData.setToken(token);
-        tcpjData.setCreatTime(new Date());
+        if (creatTime == null)
+            tcpjData.setCreatTime(new Date());
+        else
+            tcpjData.setCreatTime(creatTime);
         logger.info("logId {} before applyValue:{}", logId, JSON.toJSONString(dataMap.get(phone)));
         dataMap.put(phone, tcpjData);
         logger.info("logId {} after applyValue:{}", logId, JSON.toJSONString(dataMap.get(phone)));

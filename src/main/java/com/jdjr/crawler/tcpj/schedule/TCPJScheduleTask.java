@@ -38,7 +38,6 @@ public class TCPJScheduleTask {
      */
     private final String logTemplete = "%s-%s-%s start:%s,end:%s,耗时：%s秒,Token值:%s,重试次数:%s";
 
-
     @Scheduled(fixedDelayString = "${tcpj.getLoginCookie.schedule:'7000000'}")
     public void getCookieTask() {
         //记录日志信息对象
