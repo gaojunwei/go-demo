@@ -41,17 +41,30 @@ public class TCPJCatch {
      * 同城票据多账号登录态改造
      */
     public static void applyValue(String logId, String phone, Integer phoneType, String token, Date creatTime) {
-        TcpjData tcpjData = new TcpjData();
-        tcpjData.setPhone(phone);
-        tcpjData.setPhoneType(phoneType);
-        tcpjData.setToken(token);
-        if (creatTime == null)
-            tcpjData.setCreatTime(new Date());
-        else
-            tcpjData.setCreatTime(creatTime);
-        logger.info("logId {} before applyValue:{}", logId, JSON.toJSONString(dataMap.get(phone)));
-        dataMap.put(phone, tcpjData);
-        logger.info("logId {} after applyValue:{}", logId, JSON.toJSONString(dataMap.get(phone)));
+        synchronized (TCPJCatch.class) {
+            TcpjData tcpjDataOld = dataMap.get(phone);
+            if (tcpjDataOld == null) {
+                TcpjData tcpjData = new TcpjData();
+                tcpjData.setPhone(phone);
+                tcpjData.setPhoneType(phoneType);
+                tcpjData.setToken(token);
+                tcpjData.setIsUsed(0);
+                if (creatTime == null)
+                    tcpjData.setCreatTime(new Date());
+                else
+                    tcpjData.setCreatTime(creatTime);
+                dataMap.put(phone, tcpjData);
+                logger.info("logId {} add applyValue:{}", logId, JSON.toJSONString(dataMap.get(phone)));
+            } else {
+                logger.info("logId {} before applyValue:{}", logId, JSON.toJSONString(dataMap.get(phone)));
+                tcpjDataOld.setToken(token);
+                if (creatTime == null)
+                    tcpjDataOld.setCreatTime(new Date());
+                else
+                    tcpjDataOld.setCreatTime(creatTime);
+                logger.info("logId {} after applyValue:{}", logId, JSON.toJSONString(dataMap.get(phone)));
+            }
+        }
     }
 
     /**
