@@ -72,7 +72,7 @@ public class TCPJCatch {
      * 获取爬取指定类型的账号Token
      */
     private static TcpjData getToken(Integer phoneType) {
-        synchronized (dataMap) {
+        synchronized (TCPJCatch.class) {
             if (dataMap.isEmpty()) {
                 return null;
             }
@@ -104,7 +104,7 @@ public class TCPJCatch {
         if (dataMap.size() == 0) {
             return;
         }
-        synchronized (dataMap) {
+        synchronized (TCPJCatch.class) {
             for (String phone : dataMap.keySet()) {
                 TcpjData tcpjData = dataMap.get(phone);
                 if ((System.currentTimeMillis() - tcpjData.getCreatTime().getTime()) > YXQ) {
