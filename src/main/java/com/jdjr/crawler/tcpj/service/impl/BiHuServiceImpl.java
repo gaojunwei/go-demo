@@ -91,7 +91,7 @@ public class BiHuServiceImpl implements BiHuService {
             sleep(1);
             try {
                 List<WebElement> items = driver.findElements(By.cssSelector("div[class='row']"));
-                if(items!=null && items.size()>1){
+                if(items!=null && items.size()>5){
                     logger.info("BIHU checkIsSuccess:{}",items.size());
                     flag = true;
                     break;

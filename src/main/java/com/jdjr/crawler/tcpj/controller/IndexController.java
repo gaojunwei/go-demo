@@ -9,6 +9,7 @@ import com.jdjr.crawler.tcpj.schedule.BIHUCatch;
 import com.jdjr.crawler.tcpj.schedule.TCPJCatch;
 import com.jdjr.crawler.tcpj.schedule.data.BaseData;
 import com.jdjr.crawler.tcpj.schedule.data.TcpjData;
+import com.jdjr.crawler.tcpj.service.BiHuService;
 import com.jdjr.crawler.tcpj.service.TCPJService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
@@ -48,6 +49,8 @@ public class IndexController {
 
     @Resource
     private TCPJService tcpjService;
+    @Resource
+    private BiHuService biHuService;
 
     @Value("${tcpj.tcaptcha.loginPageUrl:'https://www.tcpjw.com/passport/login'}")
     private String url;
@@ -238,6 +241,21 @@ public class IndexController {
         result.setMsg(String.format("手机号：%s-类型：%s-创建日期：%s-是否已经使用：%s", tcpjData.getPhone(), tcpjData.getPhoneType(), DateFormatUtils.dateFormat(tcpjData.getCreatTime(), DateFormatUtils.FormatEnums.yyyy_MM_dd_HH_mm_ss), tcpjData.getIsUsed()));
         result.setData(tcpjData.getToken());
         logger.info("request_token type:{},result:{}", phoneType, JSON.toJSONString(result));
+        return result;
+    }
+
+    /**
+     * 获取缓存中记录的登录态信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "flushBtoken", method = RequestMethod.GET)
+    public SingleResult<String> flushBtoken() {
+        SingleResult<String> result = new SingleResult<>();
+        String token = biHuService.getLoginToken(sysConfig.getBihuLoginPageUrl(),sysConfig.getBiHuAccounts().get(0).getAccount(),sysConfig.getBiHuAccounts().get(0).getPassword());
+        result.setCode(SystemCodeEnums.SUCCESS.getCode());
+        result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
+        result.setData(token);
         return result;
     }
 }
