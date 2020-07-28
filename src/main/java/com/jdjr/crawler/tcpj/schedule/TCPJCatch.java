@@ -24,7 +24,7 @@ public class TCPJCatch {
      * 登录态的有效时长（单位:毫秒）5小时
      */
     private static int YXQ = 5 * 3600 * 1000;
-    private static int logCount = 200;
+    private static int logCount = 20;
     /**
      * 记录最近100个定时任务的执行情况
      */
@@ -34,13 +34,13 @@ public class TCPJCatch {
      * 同城票据多账号登录态改造
      */
     public static void applyValue(String logId, String phone, Integer phoneType, String token) {
-        applyValue(logId, phone, phoneType, token, null);
+        applyValue(logId, phone, phoneType, token, null,null);
     }
 
     /**
      * 同城票据多账号登录态改造
      */
-    public static void applyValue(String logId, String phone, Integer phoneType, String token, Date creatTime) {
+    public static void applyValue(String logId, String phone, Integer phoneType, String token,Integer isUsed, Date creatTime) {
         synchronized (TCPJCatch.class) {
             TcpjData tcpjDataOld = dataMap.get(phone);
             if (tcpjDataOld == null) {
@@ -49,6 +49,11 @@ public class TCPJCatch {
                 tcpjData.setPhoneType(phoneType);
                 tcpjData.setToken(token);
                 tcpjData.setIsUsed(0);
+                if (isUsed == null)
+                    tcpjData.setIsUsed(0);
+                else
+                    tcpjData.setIsUsed(isUsed);
+
                 if (creatTime == null)
                     tcpjData.setCreatTime(new Date());
                 else

@@ -135,7 +135,6 @@ public class TCPJServiceImpl implements TCPJService {
             logger.info("driver_imgCode click SUCCESS!!!!!!!");
             //获取登录后的cookie信息
             String access_token = getToken(driver);
-            ;
             logger.info("after_login_success,get Cookie info step：access_token-{}", access_token);
             return access_token;
         } finally {

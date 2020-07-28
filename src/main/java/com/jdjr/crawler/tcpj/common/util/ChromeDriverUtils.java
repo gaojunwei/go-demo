@@ -2,7 +2,6 @@ package com.jdjr.crawler.tcpj.common.util;
 
 import com.jdjr.crawler.tcpj.config.SysConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
@@ -11,7 +10,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 类描述
@@ -45,7 +43,7 @@ public class ChromeDriverUtils {
         options.setExperimentalOption("prefs", prefs);
         /** 代理设置 */
         if (sysConfig.getIfUseProxy().booleanValue()) {
-            logger.info("selenium use proxy ********** IP:{},Port:{},ExtFile:{}",sysConfig.getProxyIp(),sysConfig.getProxyPort(),sysConfig.getSeleniumProxyFilePath());
+            logger.info("selenium use proxy ********** IP:{},Port:{},ExtFile:{}", sysConfig.getProxyIp(), sysConfig.getProxyPort(), sysConfig.getSeleniumProxyFilePath());
             //Proxy proxy = new Proxy().setHttpProxy(String.format("%s:%s", sysConfig.getProxyIp(), sysConfig.getProxyPort())).setProxyType(Proxy.ProxyType.MANUAL);
             //options.setProxy(proxy);
             options.addExtensions(new File(sysConfig.getSeleniumProxyFilePath()));

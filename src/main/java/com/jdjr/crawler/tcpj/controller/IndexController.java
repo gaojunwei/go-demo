@@ -5,7 +5,9 @@ import com.jdjr.crawler.tcpj.common.enums.SystemCodeEnums;
 import com.jdjr.crawler.tcpj.common.result.SingleResult;
 import com.jdjr.crawler.tcpj.common.util.DateFormatUtils;
 import com.jdjr.crawler.tcpj.config.SysConfig;
+import com.jdjr.crawler.tcpj.schedule.BIHUCatch;
 import com.jdjr.crawler.tcpj.schedule.TCPJCatch;
+import com.jdjr.crawler.tcpj.schedule.data.BaseData;
 import com.jdjr.crawler.tcpj.schedule.data.TcpjData;
 import com.jdjr.crawler.tcpj.service.TCPJService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 类描述
@@ -145,8 +148,9 @@ public class IndexController {
      */
     @RequestMapping(value = "getToken", method = RequestMethod.GET)
     public SingleResult<String> getTokenType0() {
-       return getLogInToken(0);
+        return getLogInToken(0);
     }
+
     /**
      * 获取普通账户登录TOKEN
      */
@@ -156,17 +160,24 @@ public class IndexController {
     }
 
     /**
-     * 获取最近登录任务执行日志
-     *
-     * @return
+     * 获取普通账户登录TOKEN
      */
-    @RequestMapping(value = "log", method = RequestMethod.GET)
-    public SingleResult<Object[]> getLog() {
-        SingleResult<Object[]> result = new SingleResult<>();
+    @RequestMapping(value = "getBiHuToken", method = RequestMethod.GET)
+    public SingleResult<String> getBiHuToken() {
+        BaseData baseData = BIHUCatch.getToken();
+        SingleResult<String> result = new SingleResult<>();
         result.setCode(SystemCodeEnums.SUCCESS.getCode());
-        result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
-        result.setData(TCPJCatch.getLog());
+        if (baseData == null) {
+            result.setMsg("无可用Token");
+            logger.info("BIHU request_token result:{}", JSON.toJSONString(result));
+            return result;
+        }
+        result.setMsg(String.format("手机号：%s-创建日期：%s-是否已经使用：%s", baseData.getPhone(), DateFormatUtils.dateFormat(baseData.getCreatTime(), DateFormatUtils.FormatEnums.yyyy_MM_dd_HH_mm_ss), baseData.getIsUsed()));
+        result.setData(baseData.getToken());
+        logger.info("BIHU request_token result:{}", JSON.toJSONString(result));
         return result;
+
+
     }
 
     /**
@@ -174,12 +185,36 @@ public class IndexController {
      *
      * @return
      */
-    @RequestMapping(value = "catch", method = RequestMethod.GET)
-    public SingleResult<List<TcpjData>> getCatch() {
-        SingleResult<List<TcpjData>> result = new SingleResult<>();
+    @RequestMapping(value = "log", method = RequestMethod.GET)
+    public SingleResult<Map<String, Object[]>> getLog() {
+        SingleResult<Map<String, Object[]>> result = new SingleResult<>();
         result.setCode(SystemCodeEnums.SUCCESS.getCode());
         result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
-        result.setData(TCPJCatch.getCatch());
+
+        Map<String, Object[]> dataMap = new HashMap<>();
+        dataMap.put("tcpj", TCPJCatch.getLog());
+        dataMap.put("bihu", BIHUCatch.getLog());
+
+        result.setData(dataMap);
+        return result;
+    }
+
+    /**
+     * 获取缓存中记录的登录态信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "catch", method = RequestMethod.GET)
+    public SingleResult<Map<String, List>> getCatch() {
+        SingleResult<Map<String, List>> result = new SingleResult<>();
+        result.setCode(SystemCodeEnums.SUCCESS.getCode());
+        result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
+
+        Map<String, List> dataMap = new HashMap<>();
+        dataMap.put("tcpj", TCPJCatch.getCatch());
+        dataMap.put("bihu", BIHUCatch.getCatch());
+
+        result.setData(dataMap);
         return result;
     }
 
@@ -196,13 +231,13 @@ public class IndexController {
         SingleResult<String> result = new SingleResult<>();
         result.setCode(SystemCodeEnums.SUCCESS.getCode());
         if (tcpjData == null) {
-            result.setMsg("无卡用Token,类型:"+phoneType);
-            logger.info("request_token type:{},result:{}",phoneType,JSON.toJSONString(result));
+            result.setMsg("无卡用Token,类型:" + phoneType);
+            logger.info("request_token type:{},result:{}", phoneType, JSON.toJSONString(result));
             return result;
         }
-        result.setMsg(String.format("手机号：%s-类型：%s-创建日期：%s-是否已经使用：%s",tcpjData.getPhone(),tcpjData.getPhoneType(),DateFormatUtils.dateFormat(tcpjData.getCreatTime(), DateFormatUtils.FormatEnums.yyyy_MM_dd_HH_mm_ss),tcpjData.getIsUsed()));
+        result.setMsg(String.format("手机号：%s-类型：%s-创建日期：%s-是否已经使用：%s", tcpjData.getPhone(), tcpjData.getPhoneType(), DateFormatUtils.dateFormat(tcpjData.getCreatTime(), DateFormatUtils.FormatEnums.yyyy_MM_dd_HH_mm_ss), tcpjData.getIsUsed()));
         result.setData(tcpjData.getToken());
-        logger.info("request_token type:{},result:{}",phoneType,JSON.toJSONString(result));
+        logger.info("request_token type:{},result:{}", phoneType, JSON.toJSONString(result));
         return result;
     }
 }

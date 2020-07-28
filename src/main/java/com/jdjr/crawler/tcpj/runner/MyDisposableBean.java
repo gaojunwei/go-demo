@@ -1,6 +1,8 @@
 package com.jdjr.crawler.tcpj.runner;
 
 import com.alibaba.fastjson.JSON;
+import com.jdjr.crawler.tcpj.common.enums.BusinessEnums;
+import com.jdjr.crawler.tcpj.schedule.BIHUCatch;
 import com.jdjr.crawler.tcpj.schedule.TCPJCatch;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 类描述 结束的时候执行
@@ -29,7 +34,7 @@ public class MyDisposableBean implements DisposableBean {
      * 将缓存数据刷新到文件中
      */
     private void brushToFile() {
-        if (TCPJCatch.getCatch().isEmpty())
+        if (TCPJCatch.getCatch().isEmpty() && BIHUCatch.getCatch().isEmpty())
             return;
         FileOutputStream fileOutputStream = null;
         try {
@@ -38,10 +43,13 @@ public class MyDisposableBean implements DisposableBean {
                 file.mkdirs();
 
             File catchFile = new File("catch" + File.separator + System.currentTimeMillis() + ".json");
-            String jsonStr = JSON.toJSONString(TCPJCatch.getCatch());
+            Map<String, List> dataMap = new HashMap<>();
+            dataMap.put(BusinessEnums.TCPJ.getValue(), TCPJCatch.getCatch());
+            dataMap.put(BusinessEnums.BIHU.getValue(), BIHUCatch.getCatch());
+            String jsonStr = JSON.toJSONString(dataMap);
             fileOutputStream = new FileOutputStream(catchFile);
             fileOutputStream.write(jsonStr.getBytes());
-            logger.warn("catch data flush to file SUCCESS {}",catchFile.getAbsolutePath());
+            logger.warn("catch data flush to file SUCCESS {}", catchFile.getAbsolutePath());
         } catch (IOException e) {
             logger.warn("catch data flush to file exception {}", e.getMessage(), e);
         } finally {
