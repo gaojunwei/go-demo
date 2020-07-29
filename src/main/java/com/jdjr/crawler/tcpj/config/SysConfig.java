@@ -1,14 +1,10 @@
 package com.jdjr.crawler.tcpj.config;
 
-import com.jdjr.crawler.tcpj.config.data.UserInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 @Slf4j
@@ -129,18 +125,6 @@ public class SysConfig {
     private Integer bihuAccountLoginRetryTime;
 
     /**
-     * TCPJ账号密码信息
-     */
-    @Value("${tcpj.account.info}")
-    private String tcpjCccountInfo;
-
-    /**
-     * BIHU账号密码信息
-     */
-    @Value("${bihu.account.info}")
-    private String bihuAccountInfo;
-
-    /**
      * BIHU账号密码信息
      */
     @Value("${bihu.loginPageUrl:'https://app.piaodian.cn/l/market'}")
@@ -151,47 +135,4 @@ public class SysConfig {
      */
     @Value("${bihu.getLoginCookie.schedule:14400000}")
     private String bihuGetLoginCookieSchedule;
-
-    /**
-     * 获取同城票据的账户信息列表
-     *
-     * @return
-     */
-    public List<UserInfo> getTcpjAccounts() {
-        List<UserInfo> list = new ArrayList<>();
-
-        String[] items = tcpjCccountInfo.split("\\|");
-        for (String item : items) {
-            String[] itemArr = item.split(",");
-
-            UserInfo userInfo = new UserInfo();
-            userInfo.setAccount(itemArr[0].trim());
-            userInfo.setPassword(itemArr[1].trim());
-            userInfo.setType(Integer.parseInt(itemArr[2]));
-
-            list.add(userInfo);
-        }
-        return list;
-    }
-
-    /**
-     * 获取BIHU的账户信息列表
-     *
-     * @return
-     */
-    public List<UserInfo> getBiHuAccounts() {
-        List<UserInfo> list = new ArrayList<>();
-
-        String[] items = bihuAccountInfo.split("\\|");
-        for (String item : items) {
-            String[] itemArr = item.split(",");
-
-            UserInfo userInfo = new UserInfo();
-            userInfo.setAccount(itemArr[0].trim());
-            userInfo.setPassword(itemArr[1].trim());
-
-            list.add(userInfo);
-        }
-        return list;
-    }
 }
