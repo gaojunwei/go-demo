@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.jdjr.crawler.tcpj.common.enums.SystemCodeEnums;
 import com.jdjr.crawler.tcpj.common.exception.AppException;
 import com.jdjr.crawler.tcpj.common.util.ChromeDriverUtils;
+import com.jdjr.crawler.tcpj.common.util.ThreadSleepUtils;
 import com.jdjr.crawler.tcpj.service.BiHuService;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -42,17 +43,17 @@ public class BiHuServiceImpl implements BiHuService {
             //获取手机号输入框
             WebElement phoneInput = driver.findElement(By.cssSelector("input[placeholder='请填写手机号码']"));
             phoneInput.sendKeys(account);
-            sleepMS(500);
+            ThreadSleepUtils.sleepMS(500);
             //获取手机号输入框
             WebElement pwdInput = driver.findElement(By.cssSelector("input[placeholder='至少 8 位 (包含字母和数字)']"));
             pwdInput.sendKeys(password);
-            sleep(1);
+            ThreadSleepUtils.sleep(1);
             WebElement logInBtnBig = driver.findElement(By.cssSelector("button[class='el-button bh-button bh-button__huge operation-btn login-btn bh-button__primary el-button--default']"));
             logInBtnBig.click();
-            sleep(1);
+            ThreadSleepUtils.sleep(1);
             logger.info("loginBtn click SUCCESS !!!!!!!");
             //判断是否登录成功
-            if(!checkIsSuccess(driver)){
+            if (!checkIsSuccess(driver)) {
                 return null;
             }
             //获取登录后的cookie信息
@@ -79,32 +80,33 @@ public class BiHuServiceImpl implements BiHuService {
 
     /**
      * 检测是否登录成功
+     *
      * @param driver
      * @return
      */
-    private Boolean checkIsSuccess(WebDriver driver){
-        sleep(5);
+    private Boolean checkIsSuccess(WebDriver driver) {
+        ThreadSleepUtils.sleep(5);
         int count = 20;
         int retryTimes = 1;
         boolean flag = false;
-        while (true){
-            sleep(1);
+        while (true) {
+            ThreadSleepUtils.sleep(1);
             try {
                 List<WebElement> items = driver.findElements(By.cssSelector("div[class='row']"));
-                if(items!=null && items.size()>5){
-                    logger.info("BIHU checkIsSuccess:{}",items.size());
+                if (items != null && items.size() > 5) {
+                    logger.info("BIHU checkIsSuccess:{}", items.size());
                     flag = true;
                     break;
                 }
-            }catch (Exception e){
-                logger.info("BIHU checkIsSuccess {} times",retryTimes);
+            } catch (Exception e) {
+                logger.info("BIHU checkIsSuccess {} times", retryTimes);
             }
             retryTimes++;
-            if(retryTimes >= count){
+            if (retryTimes >= count) {
                 break;
             }
         }
-        logger.info("BIHU checkIsSuccess checkResult:{}",flag);
+        logger.info("BIHU checkIsSuccess checkResult:{}", flag);
         return flag;
     }
 
@@ -115,7 +117,7 @@ public class BiHuServiceImpl implements BiHuService {
         driver.get(url);
         int count = 0;
         while (true) {
-            sleep(1);
+            ThreadSleepUtils.sleep(1);
             try {
                 //找到登录按钮元素
                 WebElement logInBtn = driver.findElement(By.cssSelector("button[class='el-button bh-button bh-button__primary upload-draft-btn el-button--default']"));
@@ -123,7 +125,7 @@ public class BiHuServiceImpl implements BiHuService {
                     logger.info("open url complete success...GO GO GO");
                     logInBtn.click();
                     logger.info("logInBtn success click");
-                    sleep(1);
+                    ThreadSleepUtils.sleep(1);
                     List<WebElement> logInBtns = driver.findElements(By.cssSelector("span[class='bh-link']"));
                     boolean flag = false;
                     for (WebElement e : logInBtns) {
@@ -136,10 +138,10 @@ public class BiHuServiceImpl implements BiHuService {
                     if (!flag) {
                         throw new AppException(SystemCodeEnums.ERROR.getCode(), "not find WebElement");
                     }
-                    sleep(1);
+                    ThreadSleepUtils.sleep(1);
                     WebElement logInBtnSmall = driver.findElement(By.cssSelector("button[class='el-button bh-button bh-button__huge operation-btn captcha-login-btn bh-button__green el-button--default']"));
                     logInBtnSmall.click();
-                    sleep(1);
+                    ThreadSleepUtils.sleep(1);
                     WebElement logInBtnBig = driver.findElement(By.cssSelector("button[class='el-button bh-button bh-button__huge operation-btn login-btn bh-button__primary el-button--default']"));
                     logger.info("logInBtnBig was find ... success !!!");
                     break;
@@ -159,24 +161,6 @@ public class BiHuServiceImpl implements BiHuService {
         }
     }
 
-    private void sleep(Integer second) {
-        try {
-            logger.info("do sleep {}s", second);
-            Thread.sleep(second * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sleepMS(Integer millisecond) {
-        try {
-            logger.info("do sleep {}ms", millisecond);
-            Thread.sleep(millisecond);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 获取Token值
      *
@@ -186,7 +170,7 @@ public class BiHuServiceImpl implements BiHuService {
     private String getToken(WebDriver driver) {
         int checkTimes = 20;
         for (int i = 1; i <= checkTimes; i++) {
-            sleep(1);
+            ThreadSleepUtils.sleep(1);
             String token = getCookie(driver, accessToken);
             logger.info("bihu attempt get token {}/{} token:{}", i, checkTimes, token);
             if (!StringUtils.isEmpty(token)) {

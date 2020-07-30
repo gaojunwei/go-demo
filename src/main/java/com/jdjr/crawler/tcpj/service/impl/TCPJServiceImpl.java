@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jdjr.crawler.tcpj.common.enums.SystemCodeEnums;
 import com.jdjr.crawler.tcpj.common.exception.AppException;
-import com.jdjr.crawler.tcpj.common.util.Arith;
-import com.jdjr.crawler.tcpj.common.util.ChromeDriverUtils;
-import com.jdjr.crawler.tcpj.common.util.SpringUtils;
-import com.jdjr.crawler.tcpj.common.util.UuidUtils;
+import com.jdjr.crawler.tcpj.common.util.*;
 import com.jdjr.crawler.tcpj.config.SysConfig;
 import com.jdjr.crawler.tcpj.service.TCPJService;
 import lombok.extern.slf4j.Slf4j;
@@ -59,13 +56,14 @@ public class TCPJServiceImpl implements TCPJService {
     private final String accessToken = "access_token";
 
     @Override
-    public String getLoginToken(String url, String account, String password) {
+    public String getLoginToken(String url, String account, String password, String code) {
         long startTime = System.currentTimeMillis();
         logger.info("start request param url:{},account:{},password:{}", url, account, password);
         //获取浏览器对象
         WebDriver driver = ChromeDriverUtils.getInstance();
         try {
             //通过driver控制浏览器打开链接（url）
+            logger.info("driver_open url start...");
             openUrl(driver, url);
             logger.info("driver_open step");
             removeCookie(driver, accessToken);
@@ -73,12 +71,12 @@ public class TCPJServiceImpl implements TCPJService {
             WebElement phoneInput = driver.findElement(By.cssSelector("input[class='ant-input login-input']"));
             phoneInput.sendKeys(account);
             logger.info("driver_key_phone step");
-            sleep(1);
+            ThreadSleepUtils.sleep(1);
             //输入密码
             WebElement passwordInput = driver.findElement(By.cssSelector("input[type='password']"));
             passwordInput.sendKeys(password);
             logger.info("driver_key_password step");
-            sleep(1);
+            ThreadSleepUtils.sleep(1);
             //找到滑块元素
             WebElement slider = driver.findElement(By.cssSelector("span#nc_1_n1z"));
             logger.info("driver_find slider step");
@@ -90,7 +88,7 @@ public class TCPJServiceImpl implements TCPJService {
             logger.info("driver_find logInBtn step");
             logInBtn.click();
             logger.info("driver_click logInBtn step");
-            sleep(5);
+            ThreadSleepUtils.sleep(5);
             /** 点击图形验证码处理 */
             int count = 1;
             boolean isSuccess = false;
@@ -121,7 +119,7 @@ public class TCPJServiceImpl implements TCPJService {
                     logger.info("driver_imgCode operate fail - do retry, {} times.", count);
                     WebElement reloadEle = driver.findElement(By.id("reload"));
                     reloadEle.click();
-                    sleep(2);
+                    ThreadSleepUtils.sleep(2);
                 } else {
                     break;
                 }
@@ -136,6 +134,10 @@ public class TCPJServiceImpl implements TCPJService {
             //获取登录后的cookie信息
             String access_token = getToken(driver);
             logger.info("after_login_success,get Cookie info step：access_token-{}", access_token);
+            //处理账号风控命中问题
+            if (!StringUtils.isEmpty(code) && code.equals("-3")) {
+                resolveHitCheck(driver, account);
+            }
             return access_token;
         } finally {
             //关闭浏览器
@@ -161,7 +163,7 @@ public class TCPJServiceImpl implements TCPJService {
                 break;
             } catch (Exception e) {
                 logger.info("driver_frame witchTo checking... {} times", i);
-                sleep(1);
+                ThreadSleepUtils.sleep(1);
             }
             //检测是否已经登录验证
             String token = getCookie(driver, accessToken);
@@ -180,7 +182,7 @@ public class TCPJServiceImpl implements TCPJService {
         driver.get(url);
         int count = 0;
         while (true) {
-            sleep(1);
+            ThreadSleepUtils.sleep(1);
             try {
                 //找到登录按钮元素
                 WebElement logInBtn = driver.findElement(By.cssSelector("button[class='ant-btn login-button ant-btn-primary']"));
@@ -196,7 +198,7 @@ public class TCPJServiceImpl implements TCPJService {
                     break;
                 }
             } catch (Exception e) {
-                logger.info("driver_open url checking... {}",count);
+                logger.info("driver_open url checking... {}", count);
             }
             count++;
             //每达到100s刷新该tab
@@ -219,7 +221,7 @@ public class TCPJServiceImpl implements TCPJService {
     private String getToken(WebDriver driver) {
         int checkTimes = 10;
         for (int i = 1; i <= checkTimes; i++) {
-            sleep(1);
+            ThreadSleepUtils.sleep(1);
             String token = getCookie(driver, accessToken);
             logger.info("attempt get token {}/{} token:{}", i, checkTimes, token);
             if (!StringUtils.isEmpty(token)) {
@@ -282,7 +284,7 @@ public class TCPJServiceImpl implements TCPJService {
         action.moveToElement(imgEle, x, y).click();
         action.release().perform();
         logger.info("imgCode click step");
-        sleepMS(800);
+        ThreadSleepUtils.sleepMS(800);
         //判断是否点击图形验证码成功过
         try {
             WebElement tcaptchaNoteEle = driver.findElement(By.id("tcaptcha_note"));
@@ -306,7 +308,7 @@ public class TCPJServiceImpl implements TCPJService {
                     return true;
                 }
                 logger.info("imgCode after click checking {} times", i);
-                sleep(1);
+                ThreadSleepUtils.sleep(1);
             }
             logger.info("imgCode after click,after maxChecking {} times click fail", maxtimes);
             return false;
@@ -337,7 +339,7 @@ public class TCPJServiceImpl implements TCPJService {
                 }
             } catch (Exception e) {
                 logger.info("imgCode loading checking {} times", i);
-                sleep(1);
+                ThreadSleepUtils.sleep(1);
             }
         }
         if (!result)
@@ -599,7 +601,7 @@ public class TCPJServiceImpl implements TCPJService {
             //检测是否滑动成功
             for (int j = 1; j <= 8; j++) {
                 try {
-                    sleep(1);
+                    ThreadSleepUtils.sleep(1);
                     WebElement slideEle = driver.findElement(By.id("nc_1_n1z"));
                     logger.info("do check slide result time:{}", j);
                     if (slideEle.getAttribute("class").equals("nc_iconfont btn_ok")) {
@@ -629,21 +631,14 @@ public class TCPJServiceImpl implements TCPJService {
         return resultList;
     }
 
-    private void sleep(Integer second) {
+    /**
+     * 解决命中风控反爬措施
+     */
+    private void resolveHitCheck(WebDriver driver, String account) {
         try {
-            logger.info("do sleep {}s", second);
-            Thread.sleep(second * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sleepMS(Integer millisecond) {
-        try {
-            logger.info("do sleep {}ms", millisecond);
-            Thread.sleep(millisecond);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.info("TCPJ {} 触发命中风控 ...", account);
+        } catch (Exception e) {
+            logger.info("{}", e.getMessage(), e);
         }
     }
 }

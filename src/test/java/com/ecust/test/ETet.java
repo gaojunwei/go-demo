@@ -50,7 +50,7 @@ public class ETet {
         @Override
         public void run() {
             try {
-                String result = tcpjService.getLoginToken(url, account, password);
+                String result = tcpjService.getLoginToken(url, account, password,"0");
                 System.out.println(Thread.currentThread().getName() + " result=" + result);
             }catch (Exception e){
                 System.out.println("发生异常");

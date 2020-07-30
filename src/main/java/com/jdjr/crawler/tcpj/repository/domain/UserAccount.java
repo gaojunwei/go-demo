@@ -38,4 +38,10 @@ public class UserAccount {
     private Date modifiedDate;
     //创建时间
     private Date createdDate;
+    //异常状态码
+    private String code;
+    //异常状态码描述
+    private String msg;
+    //异常状态码修改时间
+    private Date code_time;
 }

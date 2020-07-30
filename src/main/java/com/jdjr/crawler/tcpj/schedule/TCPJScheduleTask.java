@@ -60,7 +60,7 @@ public class TCPJScheduleTask {
         List<UserAccount> userInfos = userAccountService.getAll(BusinessEnums.TCPJ);
         if (userInfos == null || userInfos.isEmpty()) {
             logger.error("{} tcpj not config user accounts info...", taskId);
-            userAccountService.saveTaskLog(BusinessEnums.TCPJ.getValue(),String.format("taskId:%s tcpj not config user accounts info,%s", taskId, DateFormatUtils.getNowDate()));
+            userAccountService.saveTaskLog(BusinessEnums.TCPJ.getValue(), String.format("taskId:%s tcpj not config user accounts info,%s", taskId, DateFormatUtils.getNowDate()));
             return;
         }
         List<AccountLogInfo> accountLogInfos = new ArrayList<>();
@@ -117,9 +117,9 @@ public class TCPJScheduleTask {
      */
     private String getTcpjCookieTask(String taskId, UserAccount userInfo) {
         String token = null;
-        String phone = userInfo.getAccount(), password = userInfo.getPassword();
+        String phone = userInfo.getAccount(), password = userInfo.getPassword(), code = userInfo.getCode();
         try {
-            token = tcpjService.getLoginToken(sysConfig.getTcpjLoginPageUrl(), phone, password);
+            token = tcpjService.getLoginToken(sysConfig.getTcpjLoginPageUrl(), phone, password, code);
             if (!StringUtils.isEmpty(token)) {
                 //刷登录Token信息
                 LoginData loginData = new LoginData();
@@ -133,7 +133,7 @@ public class TCPJScheduleTask {
                 logger.info("{} phone:{},get token is null", taskId, phone);
             }
         } catch (Exception e) {
-            logger.info("{} TCPJScheduleTask_exception phone:{}", taskId, phone);
+            logger.info("{} TCPJScheduleTask_exception phone:{} errorMsg:{}", taskId, phone, e.getMessage(), e);
         }
         return token;
     }

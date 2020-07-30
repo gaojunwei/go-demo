@@ -30,13 +30,27 @@ public interface UserAccountService {
     LoginData getToken(BusinessEnums siteEnum, Integer phoneType);
 
     /**
+     * 获取Token信息
+     */
+    List<LoginData> getAllToken(BusinessEnums siteEnum);
+
+    /**
      * 保存日志记录
      */
-    void saveTaskLog(String site,String logStr);
+    void saveTaskLog(String site, String logStr);
 
     /**
      * 清除过期的Token数据
      */
     void clearExpiredData(BusinessEnums businessEnums, Date timePoint);
 
+    /**
+     * 维护账号code信息（用于监测命中风控）
+     */
+    int updateAccountCodeInfo(String site, String account, String code, String msg);
+
+    /**
+     * 根据条件查询账户信息
+     */
+    List<UserAccount> listUserByCon(UserAccount userAccount);
 }

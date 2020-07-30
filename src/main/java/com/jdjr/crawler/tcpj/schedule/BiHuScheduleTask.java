@@ -137,7 +137,7 @@ public class BiHuScheduleTask {
                 logger.info("{} BIHU phone:{},get token is null", taskId, phone);
             }
         } catch (Exception e) {
-            logger.info("{} BiHuScheduleTask_exception phone:{},{}", taskId, phone,e.getMessage(),e);
+            logger.info("{} BiHuScheduleTask_exception phone:{},errorMsg:{}", taskId, phone, e.getMessage(), e);
         }
         return token;
     }

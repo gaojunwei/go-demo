@@ -32,7 +32,7 @@ public class SysConfig {
     /**
      * 是否使用代理
      */
-    @Value("${tcpj.tcaptcha.ifUseProxy:false}")
+    @Value("${ifUseProxy:false}")
     private Boolean ifUseProxy;
 
     /**
@@ -135,4 +135,10 @@ public class SysConfig {
      */
     @Value("${bihu.getLoginCookie.schedule:14400000}")
     private String bihuGetLoginCookieSchedule;
+
+    /**
+     * 检测是否命中风控接口地址
+     */
+    @Value("${tcpj.check.hitRisk.url:'https://www.tcpjw.com/order-web/orderInfo/getTradingOrderInfo'}")
+    private String tcpjCheckHitRiskUrl;
 }
