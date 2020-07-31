@@ -120,7 +120,7 @@ public class TCPJScheduleTask {
                 logger.info("{} phone:{},get token is null", taskId, phone);
             }
         } catch (Exception e) {
-            logger.info("{} TCPJScheduleTask_exception phone:{}", taskId, phone);
+            logger.info("{} TCPJScheduleTask_exception phone:{} {}", taskId, phone,e.getMessage(),e);
         }
         return token;
     }

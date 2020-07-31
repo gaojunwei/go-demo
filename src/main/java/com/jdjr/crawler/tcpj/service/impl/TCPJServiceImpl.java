@@ -63,8 +63,9 @@ public class TCPJServiceImpl implements TCPJService {
         long startTime = System.currentTimeMillis();
         logger.info("start request param url:{},account:{},password:{}", url, account, password);
         //获取浏览器对象
-        WebDriver driver = ChromeDriverUtils.getInstance();
+        WebDriver driver = null;
         try {
+            driver = ChromeDriverUtils.getInstance();
             //通过driver控制浏览器打开链接（url）
             openUrl(driver, url);
             logger.info("driver_open step");
@@ -83,7 +84,7 @@ public class TCPJServiceImpl implements TCPJService {
             WebElement slider = driver.findElement(By.cssSelector("span#nc_1_n1z"));
             logger.info("driver_find slider step");
             //滑动滑块
-            doSlider(driver, slider);
+            doSlider(driver);
             logger.info("driver_find doSlider step");
             //点击登录按钮
             WebElement logInBtn = driver.findElement(By.cssSelector("button[class='ant-btn login-button ant-btn-primary']"));
@@ -140,7 +141,14 @@ public class TCPJServiceImpl implements TCPJService {
         } finally {
             //关闭浏览器
             if (driver != null) {
-                driver.quit();
+                try {
+                    driver.close();
+                } catch (Exception e) {
+                }
+                try {
+                    driver.quit();
+                } catch (Exception e) {
+                }
                 long endTime = System.currentTimeMillis();
                 logger.info("driver_close step... cost:{}m", ((endTime - startTime) / 1000));
             }
@@ -196,7 +204,7 @@ public class TCPJServiceImpl implements TCPJService {
                     break;
                 }
             } catch (Exception e) {
-                logger.info("driver_open url checking... {}",count);
+                logger.info("driver_open url checking... {}", count);
             }
             count++;
             //每达到100s刷新该tab
@@ -584,9 +592,11 @@ public class TCPJServiceImpl implements TCPJService {
     /**
      * 滑动滑块
      */
-    private void doSlider(WebDriver driver, WebElement element) {
+    private void doSlider(WebDriver driver) {
         int maxRetryTimes = 3;
         for (int i = 1; i <= maxRetryTimes; i++) {
+            //找到滑块元素
+            WebElement element = driver.findElement(By.cssSelector("span#nc_1_n1z"));
             Actions action = new Actions(driver);
             action.moveToElement(element).clickAndHold(element);
 
@@ -598,21 +608,53 @@ public class TCPJServiceImpl implements TCPJService {
             logger.info("do slide times:{}", i);
             //检测是否滑动成功
             for (int j = 1; j <= 8; j++) {
+                sleep(1);
+                WebElement slideEle = null;
                 try {
-                    sleep(1);
-                    WebElement slideEle = driver.findElement(By.id("nc_1_n1z"));
-                    logger.info("do check slide result time:{}", j);
-                    if (slideEle.getAttribute("class").equals("nc_iconfont btn_ok")) {
-                        logger.info("do slide success class:nc_iconfont btn_ok");
-                        return;
-                    }
+                    slideEle = driver.findElement(By.id("nc_1_n1z"));
                 } catch (Exception e) {
-                    throw new AppException(SystemCodeEnums.ERROR.getCode(), "滑块验证码元素找不到，网址可能改版了，slideEle.id='nc_1_n1z'");
+                    sleep(2);
+                    //检测因网络失败需要点击刷新按钮
+                    boolean result = reClickSlide(driver);
+                    if (!result) {
+                        throw new AppException(SystemCodeEnums.ERROR.getCode(), "刷新滑动验证码失败");
+                    }
+                    break;
+                }
+                //滑动完成检测是否滑动成功
+                logger.info("do check slide result time:{}", j);
+                if (slideEle.getAttribute("class").equals("nc_iconfont btn_ok")) {
+                    logger.info("do slide success class:nc_iconfont btn_ok");
+                    return;
                 }
             }
         }
         throw new AppException(SystemCodeEnums.ERROR.getCode(), "滑动验证码，操作失败，达到最大重试次数，maxRetryTimes:" + maxRetryTimes);
     }
+
+    /**
+     * 检测因网络失败需要点击刷新按钮
+     */
+    private boolean reClickSlide(WebDriver driver) {
+        int count = 10;
+        for (int k = 1; k <= count; k++) {
+            sleep(1);
+            try {
+                WebElement resetEle = driver.findElement(By.cssSelector("a[href='javascript:__nc.reset()']"));
+                resetEle.click();
+                sleep(3);
+                //找到滑块元素
+                WebElement slider = driver.findElement(By.cssSelector("span#nc_1_n1z"));
+                if (slider != null) {
+                    return true;
+                }
+            } catch (Exception e2) {
+                logger.warn("not find slide reclick button element");
+            }
+        }
+        return false;
+    }
+
 
     /**
      * 随机返回1到10之间的数字
