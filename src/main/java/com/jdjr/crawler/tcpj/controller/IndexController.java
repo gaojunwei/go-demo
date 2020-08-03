@@ -8,6 +8,7 @@ import com.jdjr.crawler.tcpj.common.util.DateFormatUtils;
 import com.jdjr.crawler.tcpj.config.SysConfig;
 import com.jdjr.crawler.tcpj.repository.domain.LoginData;
 import com.jdjr.crawler.tcpj.service.BiHuService;
+import com.jdjr.crawler.tcpj.service.TCPJService;
 import com.jdjr.crawler.tcpj.service.UserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
@@ -21,8 +22,10 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -43,6 +46,8 @@ public class IndexController {
     private UserAccountService userAccountService;
     @Resource
     private BiHuService biHuService;
+    @Resource
+    private TCPJService tcpjService;
 
     @Resource
     private SysConfig sysConfig;
@@ -144,13 +149,31 @@ public class IndexController {
      *
      * @return
      */
-    @RequestMapping(value = "flushBtoken", method = RequestMethod.GET)
-    public SingleResult<String> flushBtoken() {
+    @RequestMapping(value = "flushToken", method = RequestMethod.GET)
+    public SingleResult<String> flushBtoken(@RequestParam String type, @RequestParam String account, @RequestParam String pwd, @RequestParam String code) {
         SingleResult<String> result = new SingleResult<>();
-        String token = biHuService.getLoginToken(sysConfig.getBihuLoginPageUrl(), "13521652933", "123QWEasd");
-        result.setCode(SystemCodeEnums.SUCCESS.getCode());
-        result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
-        result.setData(token);
+        if (StringUtils.isEmpty(type) || StringUtils.isEmpty(account) || StringUtils.isEmpty(pwd)) {
+            result.setCode(SystemCodeEnums.ERROR.getCode());
+            result.setMsg(SystemCodeEnums.ERROR.getMsg());
+            return result;
+        }
+        if (type.trim().toLowerCase().equals("bihu")) {
+            String token = biHuService.getLoginToken(sysConfig.getBihuLoginPageUrl(), account, pwd);
+            result.setCode(SystemCodeEnums.SUCCESS.getCode());
+            result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
+            result.setData(token);
+            return result;
+        }
+        if (type.trim().toLowerCase().equals("tcpj")) {
+            code = StringUtils.isEmpty(code) ? "0" : code;
+            String token = tcpjService.getLoginToken(sysConfig.getTcpjLoginPageUrl(), account, pwd, code);
+            result.setCode(SystemCodeEnums.SUCCESS.getCode());
+            result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
+            result.setData(token);
+            return result;
+        }
+        result.setCode(SystemCodeEnums.ERROR.getCode());
+        result.setMsg("type only is bihu or tcpj");
         return result;
     }
 }
