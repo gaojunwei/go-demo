@@ -28,7 +28,7 @@ public class UserAccount {
     private String site;
     //账号密码
     private String password;
-    //账号类型（0：普通账号，1高级账号）
+    //账号类型（0：普通账号，1票面账号,2高频爬列表账号）
     @Column(columnDefinition = "int default 0")
     private Integer type;
     //是否删除（0：未删除；1：已删除）

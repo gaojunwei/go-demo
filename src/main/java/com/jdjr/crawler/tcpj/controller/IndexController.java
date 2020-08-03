@@ -111,11 +111,27 @@ public class IndexController {
     }
 
     /**
-     * 获取普通账户登录TOKEN
+     * 获取票面类型账户登录TOKEN
      */
     @RequestMapping(value = "getPmToken", method = RequestMethod.GET)
     public SingleResult<String> getTokenType1() {
         return getLogInToken(BusinessEnums.TCPJ, 1);
+    }
+
+    /**
+     * 获取高频爬取账户登录TOKEN
+     */
+    @RequestMapping(value = "getGpToken", method = RequestMethod.GET)
+    public SingleResult<String> getTokenType2() {
+        return getLogInToken(BusinessEnums.TCPJ, 2);
+    }
+
+    /**
+     * 获取指定类型的账户登录TOKEN
+     */
+    @RequestMapping(value = "getTcToken", method = RequestMethod.GET)
+    public SingleResult<String> getExtToken(@RequestParam Integer type) {
+        return getLogInToken(BusinessEnums.TCPJ, type);
     }
 
     /**

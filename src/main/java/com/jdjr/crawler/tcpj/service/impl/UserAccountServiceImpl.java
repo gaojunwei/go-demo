@@ -87,8 +87,8 @@ public class UserAccountServiceImpl implements UserAccountService {
             List<LoginData> loginDataList = selectByCon(siteEnum.getValue(), phoneType, null, 0);
             if (loginDataList == null || loginDataList.isEmpty()) {
                 //若果已全部使用过，则全部置为未使用状态0,并取第一个Token进行返回
-                int count = loginDataRepository.unUsedSet(siteEnum.getValue());
-                logger.info("按站点设置全部账号为未使用状态 {},影响行数：{}", siteEnum.getValue(), count);
+                int count = loginDataRepository.unUsedSet(siteEnum.getValue(),phoneType);
+                logger.info("按站点+账号类型设置全部账号为未使用状态 {},影响行数：{}", siteEnum.getValue(), count);
 
                 //再次过滤出指定类型账户
                 List<LoginData> list = selectByCon(siteEnum.getValue(), phoneType, null, 0);

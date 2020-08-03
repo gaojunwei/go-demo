@@ -19,8 +19,8 @@ public interface LoginDataRepository extends JpaRepository<LoginData, String>, J
      */
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE LOGIN_DATA  SET IS_USED =0 WHERE SITE=?1", nativeQuery = true)
-    int unUsedSet(String site);
+    @Query(value = "UPDATE LOGIN_DATA  SET IS_USED =0 WHERE SITE=?1 AND TYPE=?2", nativeQuery = true)
+    int unUsedSet(String site, Integer type);
 
     /**
      * 删除过期数据
