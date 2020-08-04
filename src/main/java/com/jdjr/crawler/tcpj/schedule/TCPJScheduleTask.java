@@ -3,6 +3,7 @@ package com.jdjr.crawler.tcpj.schedule;
 import com.alibaba.fastjson.JSON;
 import com.jdjr.crawler.tcpj.common.enums.BusinessEnums;
 import com.jdjr.crawler.tcpj.common.util.DateFormatUtils;
+import com.jdjr.crawler.tcpj.common.util.DateUtils;
 import com.jdjr.crawler.tcpj.common.util.UuidUtils;
 import com.jdjr.crawler.tcpj.config.SysConfig;
 import com.jdjr.crawler.tcpj.repository.domain.LoginData;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +39,8 @@ public class TCPJScheduleTask {
     private SysConfig sysConfig;
     @Resource
     private UserAccountService userAccountService;
+    /**指定时间点不跑任务*/
+    List<Integer> hours = Arrays.asList(23, 0, 1, 2, 3, 4, 5);
 
     /**
      * 账号登录日志模板
@@ -46,6 +50,12 @@ public class TCPJScheduleTask {
 
     @Scheduled(fixedDelayString = "${tcpj.getLoginCookie.schedule:'7000000'}")
     public void getCookieTask() {
+        boolean flag = DateUtils.isNowInHour(hours);
+        if (flag) {
+            logger.info("tcpj 该时间点不跑任务 {}", JSON.toJSONString(hours));
+            return;
+        }
+
         //记录日志信息对象
         TaskLogInfo taskLogInfo = new TaskLogInfo();
 
@@ -109,13 +119,14 @@ public class TCPJScheduleTask {
             } catch (Exception e) {
                 logger.warn("警告：任务执行日志记录异常");
             }
+            logger.info("{} task_end", taskId);
         }
     }
 
     /**
      * 获取指定账户号的登录Token
      */
-    private String getTcpjCookieTask(String taskId, UserAccount userInfo) {
+    public String getTcpjCookieTask(String taskId, UserAccount userInfo) {
         String token = null;
         String phone = userInfo.getAccount(), password = userInfo.getPassword(), code = userInfo.getCode();
         try {
@@ -127,6 +138,8 @@ public class TCPJScheduleTask {
                 loginData.setSite(BusinessEnums.TCPJ.getValue());
                 loginData.setAccount(userInfo.getAccount());
                 loginData.setType(userInfo.getType());
+                loginData.setUseful(0);
+                loginData.setRemark("longin:" + DateFormatUtils.getNowDate());
                 userAccountService.saveToken(loginData);
                 logger.info("{} Refresh catch token phone:{},token:{}", taskId, phone, token);
             } else {

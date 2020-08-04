@@ -19,5 +19,5 @@ public interface TCPJHitService {
      * 检测是否命中反爬措施
      * 返回接口响应的code和msg
      */
-    BasicResult checkFP(String url, String token);
+    BasicResult checkFP(String taskId, String account, String site, String token);
 }

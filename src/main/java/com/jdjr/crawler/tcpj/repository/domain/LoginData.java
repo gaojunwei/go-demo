@@ -37,4 +37,10 @@ public class LoginData {
     //使用标识(0未使用，1已使用)
     @Column(columnDefinition = "int default 0")
     private Integer isUsed;
+    //是否可用(0可用，9不可用)
+    @Column(columnDefinition = "int default 0")
+    private Integer useful;
+    //备注
+    @Column(columnDefinition = "longvarchar")
+    private String remark;
 }

@@ -636,7 +636,7 @@ public class TCPJServiceImpl implements TCPJService {
      */
     private void resolveHitCheck(WebDriver driver, String account) {
         try {
-            logger.info("TCPJ {} 触发命中风控 ...", account);
+            logger.info("TCPJ {} 触发命中风控 TODO ...", account);
         } catch (Exception e) {
             logger.info("{}", e.getMessage(), e);
         }

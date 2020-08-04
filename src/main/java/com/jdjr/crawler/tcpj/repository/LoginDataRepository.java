@@ -19,7 +19,7 @@ public interface LoginDataRepository extends JpaRepository<LoginData, String>, J
      */
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE LOGIN_DATA  SET IS_USED =0 WHERE SITE=?1 AND TYPE=?2", nativeQuery = true)
+    @Query(value = "UPDATE LOGIN_DATA  SET IS_USED =0 WHERE SITE=?1 AND TYPE=?2 AND useful=0", nativeQuery = true)
     int unUsedSet(String site, Integer type);
 
     /**
@@ -29,4 +29,12 @@ public interface LoginDataRepository extends JpaRepository<LoginData, String>, J
     @Modifying(clearAutomatically = true)
     @Query(value = "DELETE FROM LOGIN_DATA WHERE SITE =?1 and TIME_STAMP<?2", nativeQuery = true)
     void deleteExpiredData(String site, Date timePoint);
+
+    /**
+     * 设置Token的有效状态
+     */
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE LOGIN_DATA  SET useful=?1,remark=?2 WHERE account=?3 AND SITE=?4", nativeQuery = true)
+    int updateUseful(Integer useful, String remark, String account, String site);
 }

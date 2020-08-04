@@ -1,15 +1,20 @@
 package com.jdjr.crawler.tcpj.schedule;
 
+import com.alibaba.fastjson.JSON;
 import com.jdjr.crawler.tcpj.common.enums.BusinessEnums;
+import com.jdjr.crawler.tcpj.common.result.BasicResult;
 import com.jdjr.crawler.tcpj.common.util.UuidUtils;
+import com.jdjr.crawler.tcpj.repository.domain.UserAccount;
 import com.jdjr.crawler.tcpj.service.TCPJHitService;
 import com.jdjr.crawler.tcpj.service.UserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 类描述
@@ -25,6 +30,8 @@ public class CheckExpireTask {
     private UserAccountService userAccountService;
     @Resource
     private TCPJHitService tcpjHitService;
+    @Resource
+    private TCPJScheduleTask tcpjScheduleTask;
 
     /**
      * 清理过期Token任务
@@ -48,17 +55,53 @@ public class CheckExpireTask {
     }
 
     /**
-     * 定期检测同城账号 是否命中风控信息
+     * 定期检测同城账号 是否命中风控信息，或Token过期
      */
-    @Scheduled(fixedDelayString = "3600000")
+    @Scheduled(fixedDelayString = "1800000")
     public void checkHitRisk() {
         String taskId = UuidUtils.getUUID();
-        logger.info("{} checkHitRisk task start...",taskId);
+        logger.info("{} checkHitRisk task start...", taskId);
         try {
             tcpjHitService.checkHit(taskId);
         } catch (Exception e) {
             logger.error("checkHitRiskTask 执行异常 {}", e.getMessage(), e);
         }
-        logger.info("{}checkHitRisk task end",taskId);
+        logger.info("{} checkHitRisk task end", taskId);
+    }
+
+    /**
+     * 恢复失效的Token(每分钟执行一次)
+     */
+    @Scheduled(fixedDelayString = "60000")
+    public void recoveryExpiredToken() {
+        String taskId = UuidUtils.getUUID();
+        logger.info("{} 恢复失效的Token task start...", taskId);
+        try {
+            //获取过期的同城账号信息
+            UserAccount userAccount = new UserAccount();
+            userAccount.setSite(BusinessEnums.TCPJ.getValue());
+            userAccount.setCode("401");
+            List<UserAccount> userAccounts = userAccountService.listUserByCon(userAccount);
+            if (userAccounts == null || userAccounts.isEmpty()) {
+                logger.info("无Token过期账号");
+                return;
+            }
+            //将过期账号重新模拟登陆获取最新的Token
+            for (UserAccount account : userAccounts) {
+                int retryTimes = 3;
+                for (int i = 1; i <= retryTimes; i++) {
+                    String token = tcpjScheduleTask.getTcpjCookieTask(taskId, account);
+                    if (!StringUtils.isEmpty(token)) {
+                        BasicResult result = tcpjHitService.checkFP(taskId, account.getAccount(), account.getSite(), token);
+                        logger.info("{} 重新登录完，检测命中或过期 {},{} {}", taskId,account.getSite(),account.getAccount(), JSON.toJSONString(result));
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("{} 恢复失效的Token 执行异常 {}", taskId, e.getMessage(), e);
+        } finally {
+            logger.info("{} 恢复失效的Token task end", taskId);
+        }
     }
 }

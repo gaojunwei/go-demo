@@ -38,7 +38,7 @@ public class UserAccount {
     private Date modifiedDate;
     //创建时间
     private Date createdDate;
-    //异常状态码
+    //异常状态码(tcpj 下 0表示正常，-3表示命中风控，401表示token过期；除0外其他状态码会导致token不可使用)
     private String code;
     //异常状态码描述
     private String msg;

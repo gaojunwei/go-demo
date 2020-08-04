@@ -57,7 +57,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                 logger.info("saveToken param:{}", JSON.toJSONString(param));
                 throw new AppException(SystemCodeEnums.ERROR.getCode(), "必要参数不能为空");
             }
-            List<LoginData> loginDataList = selectByCon(param.getSite(), null, param.getAccount(), null);
+            List<LoginData> loginDataList = selectByCon(param.getSite(), null, param.getAccount(), null,null);
             //该账户token信息不存在则新增
             if (loginDataList == null || loginDataList.isEmpty()) {
                 if (param.getTimeStamp() == null)
@@ -84,14 +84,14 @@ public class UserAccountServiceImpl implements UserAccountService {
             if (phoneType == null)
                 throw new AppException(SystemCodeEnums.ERROR.getCode(), "phoneType 参数不能为空");
             //获取指定站点下的所有未使用账号Token信息
-            List<LoginData> loginDataList = selectByCon(siteEnum.getValue(), phoneType, null, 0);
+            List<LoginData> loginDataList = selectByCon(siteEnum.getValue(), phoneType, null, 0,0);
             if (loginDataList == null || loginDataList.isEmpty()) {
                 //若果已全部使用过，则全部置为未使用状态0,并取第一个Token进行返回
                 int count = loginDataRepository.unUsedSet(siteEnum.getValue(),phoneType);
                 logger.info("按站点+账号类型设置全部账号为未使用状态 {},影响行数：{}", siteEnum.getValue(), count);
 
                 //再次过滤出指定类型账户
-                List<LoginData> list = selectByCon(siteEnum.getValue(), phoneType, null, 0);
+                List<LoginData> list = selectByCon(siteEnum.getValue(), phoneType, null, 0,0);
                 if (list == null || list.isEmpty())
                     return null;
                 LoginData loginData = list.get(0);
@@ -109,7 +109,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public List<LoginData> getAllToken(BusinessEnums siteEnum) {
-        return selectByCon(siteEnum.getValue(), null, null, null);
+        return selectByCon(siteEnum.getValue(), null, null, null,0);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     /**
      * 条件查询数据
      */
-    private List<LoginData> selectByCon(String site, Integer type, String account, Integer isUsed) {
+    private List<LoginData> selectByCon(String site, Integer type, String account, Integer isUsed,Integer useful) {
         //获取指定站点下的所有账号Token信息
         List<LoginData> loginDataList = loginDataRepository.findAll((Specification<LoginData>) (root, criteriaQuery, cb) -> {
             List<Predicate> list1 = new ArrayList<>();
@@ -151,6 +151,8 @@ public class UserAccountServiceImpl implements UserAccountService {
                 list1.add(cb.equal(root.get("account").as(String.class), account));
             if (isUsed != null)
                 list1.add(cb.equal(root.get("isUsed").as(Integer.class), isUsed));
+            if (useful != null)
+                list1.add(cb.equal(root.get("useful").as(Integer.class), useful));
             Predicate[] predicates = new Predicate[list1.size()];
             return cb.and(list1.toArray(predicates));
         });

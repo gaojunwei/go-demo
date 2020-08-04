@@ -131,6 +131,7 @@ public class BiHuScheduleTask {
                 loginData.setSite(BusinessEnums.BIHU.getValue());
                 loginData.setAccount(userInfo.getAccount());
                 loginData.setType(userInfo.getType());
+                loginData.setUseful(0);
                 userAccountService.saveToken(loginData);
                 logger.info("{} Refresh BIHU catch token phone:{},token:{}", taskId, phone, token);
             } else {
