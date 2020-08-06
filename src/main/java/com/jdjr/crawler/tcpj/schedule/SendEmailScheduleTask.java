@@ -9,6 +9,7 @@ import com.jdjr.crawler.tcpj.repository.domain.LoginData;
 import com.jdjr.crawler.tcpj.repository.domain.TaskLog;
 import com.jdjr.crawler.tcpj.repository.domain.UserAccount;
 import com.jdjr.crawler.tcpj.repository.domain.UserEmail;
+import com.jdjr.crawler.tcpj.service.LoginDataService;
 import com.jdjr.crawler.tcpj.service.UserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,8 @@ public class SendEmailScheduleTask {
     private UserEmailRepository userEmailRepository;
     @Resource
     private TaskLogRepository taskLogRepository;
+    @Resource
+    private LoginDataService loginDataService;
     @Resource
     private UserAccountService userAccountService;
     @Resource
@@ -98,8 +101,12 @@ public class SendEmailScheduleTask {
      */
     private String getContent() {
         //获取所有Token
-        List<LoginData> tcToken = userAccountService.getAllToken(BusinessEnums.TCPJ);
-        List<LoginData> bhToken = userAccountService.getAllToken(BusinessEnums.BIHU);
+        LoginData condition = new LoginData();
+        condition.setSite(BusinessEnums.TCPJ.getValue());
+        List<LoginData> tcToken = loginDataService.selectByCon(condition);
+        condition.setSite(BusinessEnums.BIHU.getValue());
+        List<LoginData> bhToken = loginDataService.selectByCon(condition);
+
         //获取所有账号
         List<UserAccount> tcUsers = userAccountService.getAll(BusinessEnums.TCPJ);
         List<UserAccount> bhUsers = userAccountService.getAll(BusinessEnums.BIHU);

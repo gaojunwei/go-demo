@@ -1,5 +1,9 @@
 package com.jdjr.crawler.tcpj.service;
 
+import com.jdjr.crawler.tcpj.repository.domain.LoginData;
+
+import java.util.List;
+
 /**
  * 类描述
  *
@@ -25,4 +29,11 @@ public interface LoginDataService {
      * @param remark
      */
     void validToken(String account,String site,String remark);
+
+    /**
+     * 多条件获取Token
+     * @param loginData
+     * @return
+     */
+    List<LoginData> selectByCon(LoginData loginData);
 }
