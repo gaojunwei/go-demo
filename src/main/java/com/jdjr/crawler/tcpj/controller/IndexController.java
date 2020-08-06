@@ -1,12 +1,14 @@
 package com.jdjr.crawler.tcpj.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.jd.jr.service.notice.IMailService;
 import com.jdjr.crawler.tcpj.common.enums.BusinessEnums;
 import com.jdjr.crawler.tcpj.common.enums.SystemCodeEnums;
 import com.jdjr.crawler.tcpj.common.result.SingleResult;
 import com.jdjr.crawler.tcpj.common.util.DateFormatUtils;
 import com.jdjr.crawler.tcpj.config.SysConfig;
 import com.jdjr.crawler.tcpj.repository.domain.LoginData;
+import com.jdjr.crawler.tcpj.schedule.SendEmailScheduleTask;
 import com.jdjr.crawler.tcpj.service.BiHuService;
 import com.jdjr.crawler.tcpj.service.TCPJService;
 import com.jdjr.crawler.tcpj.service.UserAccountService;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * 类描述
@@ -190,6 +193,38 @@ public class IndexController {
         }
         result.setCode(SystemCodeEnums.ERROR.getCode());
         result.setMsg("type only is bihu or tcpj");
+        return result;
+    }
+
+    @Resource
+    private IMailService mailService;
+    @Resource
+    private SendEmailScheduleTask sendEmailScheduleTask;
+
+    /**
+     * 获取缓存中记录的登录态信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "email", method = RequestMethod.GET)
+    public SingleResult<String> sendEmail(@RequestParam(required = false) Integer test) {
+        SingleResult<String> result = new SingleResult<>();
+        if (test != null) {
+            //发送正式的邮件
+            logger.info("send_real_email start");
+            Boolean flag = sendEmailScheduleTask.sendEmail();
+            logger.info("send_real_email end {}", flag);
+            result.setCode(SystemCodeEnums.SUCCESS.getCode());
+            result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
+            result.setData(flag.toString());
+        } else {
+            logger.info("send_test_email start");
+            Boolean data = mailService.sendText("tcpj-group", "title", "测试内容", Arrays.asList("gaojunwei@jd.com"), null, "token");
+            result.setCode(SystemCodeEnums.SUCCESS.getCode());
+            result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
+            result.setData(data.toString());
+            logger.info("send_test_email end {}", JSON.toJSONString(result));
+        }
         return result;
     }
 }

@@ -3,6 +3,7 @@ package com.jdjr.crawler.tcpj.schedule;
 import com.alibaba.fastjson.JSON;
 import com.jdjr.crawler.tcpj.common.enums.BusinessEnums;
 import com.jdjr.crawler.tcpj.common.result.BasicResult;
+import com.jdjr.crawler.tcpj.common.util.DateUtils;
 import com.jdjr.crawler.tcpj.common.util.UuidUtils;
 import com.jdjr.crawler.tcpj.repository.domain.UserAccount;
 import com.jdjr.crawler.tcpj.service.TCPJHitService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -54,11 +56,19 @@ public class CheckExpireTask {
         }
     }
 
+    /**指定时间点不跑任务*/
+    List<Integer> hours = Arrays.asList(23, 0, 1, 2, 3, 4, 5);
+
     /**
      * 定期检测同城账号 是否命中风控信息，或Token过期
      */
-    @Scheduled(fixedDelayString = "1800000")
+    @Scheduled(fixedDelayString = "600000")
     public void checkHitRisk() {
+        boolean flag = DateUtils.isNowInHour(hours);
+        if (flag) {
+            logger.info("tcpj checkHitRisk 该时间点不跑任务 {}", JSON.toJSONString(hours));
+            return;
+        }
         String taskId = UuidUtils.getUUID();
         logger.info("{} checkHitRisk task start...", taskId);
         try {

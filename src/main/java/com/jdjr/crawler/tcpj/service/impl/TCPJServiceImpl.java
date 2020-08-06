@@ -157,13 +157,13 @@ public class TCPJServiceImpl implements TCPJService {
     private Boolean witchToFrame(WebDriver driver) {
         Boolean result = false;
         for (int i = 1; i <= 20; i++) {
+            ThreadSleepUtils.sleep(1);
             try {
                 driver.switchTo().frame("tcaptcha_iframe");
                 result = true;
                 break;
             } catch (Exception e) {
                 logger.info("driver_frame witchTo checking... {} times", i);
-                ThreadSleepUtils.sleep(1);
             }
             //检测是否已经登录验证
             String token = getCookie(driver, accessToken);

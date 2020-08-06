@@ -101,22 +101,26 @@ public class TCPJHitServiceImpl implements TCPJHitService {
 
             CloseableHttpResponse resp = httpClient.execute(httpPost);
             String jsonStr = EntityUtils.toString(resp.getEntity());
+            logger.info("{} 检测是否命中风控 or Token过期 响应数据:{},{}",account,resp.getStatusLine().getStatusCode(),jsonStr);
             if (resp.getStatusLine().getStatusCode() == 200) {
                 JSONObject jsonObject = JSON.parseObject(jsonStr);
                 code = jsonObject.getString("code");
                 msg = jsonObject.getString("msg");
             } else if (resp.getStatusLine().getStatusCode() == 401 && jsonStr.indexOf("invalid_token") != -1) {
                 code = "401";
-                msg = "httpCode:401," + jsonStr;
+                msg = "httpCode:401,命中风控";
             } else {
-                String msgStr = String.format("检测是否命中风控 or Token过期 未知响应数据:%s,%s", resp.getStatusLine().getStatusCode(), jsonStr);
+                String msgStr = String.format("%s 检测是否命中风控 or Token过期 未知响应数据:%s,%s", account,resp.getStatusLine().getStatusCode(), jsonStr);
                 logger.error(msgStr);
                 result.setCode(SystemCodeEnums.ERROR.getCode());
                 result.setMsg(msgStr);
                 return result;
             }
         } catch (IOException e) {
-            logger.error("checkHit exception {}", e.getMessage(), e);
+            logger.error("{} checkHit exception {}", account,e.getMessage(), e);
+            result.setCode(SystemCodeEnums.ERROR.getCode());
+            result.setMsg("异常错误描述"+e.getMessage());
+            return result;
         } finally {
             if (httpClient != null) {
                 try {
@@ -129,7 +133,7 @@ public class TCPJHitServiceImpl implements TCPJHitService {
         try {
             userAccountService.updateAccountCodeInfo(site, account, code, msg);
         } catch (Exception e) {
-            logger.error("{} {}", taskId, e.getMessage(), e);
+            logger.error("{} {} {}",account, taskId, e.getMessage(), e);
         }
         //维护Token的有效性
         try {
@@ -139,7 +143,7 @@ public class TCPJHitServiceImpl implements TCPJHitService {
                 loginDataService.validToken(account, site, String.format("%s:%s", code, msg));
             }
         } catch (Exception e) {
-            logger.error("{} {}", taskId, e.getMessage(), e);
+            logger.error("{} {} {}", taskId, account, e.getMessage(), e);
         }
 
         result.setCode(code);

@@ -138,7 +138,6 @@ public class TCPJScheduleTask {
                 loginData.setSite(BusinessEnums.TCPJ.getValue());
                 loginData.setAccount(userInfo.getAccount());
                 loginData.setType(userInfo.getType());
-                loginData.setUseful(0);
                 loginData.setRemark("longin:" + DateFormatUtils.getNowDate());
                 userAccountService.saveToken(loginData);
                 logger.info("{} Refresh catch token phone:{},token:{}", taskId, phone, token);
