@@ -27,6 +27,11 @@ public class DateFormatUtils {
         return format.format(date);
     }
 
+    public static String dateFormat(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat(FormatEnums.yyyy_MM_dd_HH_mm_ss.getValue());
+        return format.format(date);
+    }
+
     public static Date parseDate(String dateStr) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat(FormatEnums.yyyy_MM_dd_HH_mm_ss.getValue());
         return format.parse(dateStr);
@@ -55,7 +60,8 @@ public class DateFormatUtils {
      * 日期格式枚举类
      */
     public enum FormatEnums {
-        yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss");
+        yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss"),
+        yyyy_MM_dd_HH("yyyy-MM-dd HH");
         private String value;
 
         FormatEnums(String value) {

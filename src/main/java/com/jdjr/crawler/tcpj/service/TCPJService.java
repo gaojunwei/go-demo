@@ -15,5 +15,5 @@ public interface TCPJService {
      * @param password
      * @return
      */
-    String getLoginToken(String url, String account, String password);
+    String getLoginToken(String url, String account, String password, String code);
 }

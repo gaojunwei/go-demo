@@ -1,13 +1,16 @@
 package com.jdjr.crawler.tcpj.schedule;
 
 import com.alibaba.fastjson.JSON;
+import com.jdjr.crawler.tcpj.common.enums.BusinessEnums;
 import com.jdjr.crawler.tcpj.common.util.DateFormatUtils;
 import com.jdjr.crawler.tcpj.common.util.UuidUtils;
 import com.jdjr.crawler.tcpj.config.SysConfig;
-import com.jdjr.crawler.tcpj.config.data.UserInfo;
+import com.jdjr.crawler.tcpj.repository.domain.LoginData;
+import com.jdjr.crawler.tcpj.repository.domain.UserAccount;
 import com.jdjr.crawler.tcpj.schedule.data.AccountLogInfo;
 import com.jdjr.crawler.tcpj.schedule.data.TaskLogInfo;
 import com.jdjr.crawler.tcpj.service.BiHuService;
+import com.jdjr.crawler.tcpj.service.UserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -32,6 +35,8 @@ public class BiHuScheduleTask {
     private BiHuService biHuService;
     @Resource
     private SysConfig sysConfig;
+    @Resource
+    private UserAccountService userAccountService;
 
     /**
      * 账号登录日志模板
@@ -50,18 +55,22 @@ public class BiHuScheduleTask {
         taskLogInfo.setStartTime(DateFormatUtils.dateFormat(start, DateFormatUtils.FormatEnums.yyyy_MM_dd_HH_mm_ss));
 
         logger.info("{} task_start", taskId);
-
-        List<UserInfo> userInfos = sysConfig.getBiHuAccounts();
+        //获取可用账户
+        List<UserAccount> userInfos = userAccountService.getAll(BusinessEnums.BIHU);
         if (userInfos == null || userInfos.isEmpty()) {
             logger.error("{} BIHU not config user accounts info...", taskId);
-            BIHUCatch.addLog(String.format("taskId:%s BIHU not config user accounts info,%s", taskId, DateFormatUtils.getNowDate()));
+            try {
+                userAccountService.saveTaskLog(BusinessEnums.BIHU.getValue(), String.format("taskId:%s BIHU not config user accounts info,%s", taskId, DateFormatUtils.getNowDate()));
+            } catch (Exception e) {
+                logger.warn("警告：BIHU 任务执行日志记录异常");
+            }
             return;
         }
         List<AccountLogInfo> accountLogInfos = new ArrayList<>();
 
         try {
             /**获取登录态*/
-            for (UserInfo userInfo : userInfos) {
+            for (UserAccount userInfo : userInfos) {
                 //记录账号登录日志
                 AccountLogInfo accountLogInfo = new AccountLogInfo();
                 accountLogInfo.setAccount(userInfo.getAccount());
@@ -100,7 +109,7 @@ public class BiHuScheduleTask {
             taskLogInfo.setDesc(String.format("耗时:%s秒 or %s分钟", ((end.getTime() - start.getTime()) / 1000), ((end.getTime() - start.getTime()) / 60000)));
             taskLogInfo.setAccountLogInfos(accountLogInfos);
             try {
-                BIHUCatch.addLog(JSON.toJSONString(taskLogInfo));
+                userAccountService.saveTaskLog(BusinessEnums.BIHU.getValue(), JSON.toJSONString(taskLogInfo));
             } catch (Exception e) {
                 logger.warn("警告：BIHU 任务执行日志记录异常");
             }
@@ -110,19 +119,26 @@ public class BiHuScheduleTask {
     /**
      * 获取指定账户号的登录Token
      */
-    private String getBiHuCookieTask(String taskId, UserInfo userInfo) {
+    private String getBiHuCookieTask(String taskId, UserAccount userInfo) {
         String token = null;
         String phone = userInfo.getAccount(), password = userInfo.getPassword();
         try {
             token = biHuService.getLoginToken(sysConfig.getBihuLoginPageUrl(), phone, password);
             if (!StringUtils.isEmpty(token)) {
-                BIHUCatch.applyValue(taskId, userInfo.getAccount(), token);
+                //刷登录Token信息
+                LoginData loginData = new LoginData();
+                loginData.setToken(token);
+                loginData.setSite(BusinessEnums.BIHU.getValue());
+                loginData.setAccount(userInfo.getAccount());
+                loginData.setType(userInfo.getType());
+                loginData.setUseful(0);
+                userAccountService.saveToken(loginData);
                 logger.info("{} Refresh BIHU catch token phone:{},token:{}", taskId, phone, token);
             } else {
                 logger.info("{} BIHU phone:{},get token is null", taskId, phone);
             }
         } catch (Exception e) {
-            logger.info("{} BiHuScheduleTask_exception phone:{}", taskId, phone);
+            logger.info("{} BiHuScheduleTask_exception phone:{},errorMsg:{}", taskId, phone, e.getMessage(), e);
         }
         return token;
     }

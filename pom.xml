@@ -10,8 +10,8 @@
         <version>2.3.1.RELEASE</version>
     </parent>
 
-    <groupId>com.jdjr.crawler.video</groupId>
-    <artifactId>crawler-video</artifactId>
+    <groupId>com.jdjr.crawler.pj</groupId>
+    <artifactId>crawler-pj</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties></properties>
@@ -23,8 +23,18 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!--使用H2数据库-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -41,6 +51,38 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.70</version>
+        </dependency>
+        <!-- JSF配置 -->
+        <dependency>
+            <groupId>com.jd</groupId>
+            <artifactId>jsf</artifactId>
+            <version>1.6.6-HOTFIX-T1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.jd.open.sp</groupId>
+            <artifactId>open-lpc-cp-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jd.jr.rpc</groupId>
+            <artifactId>jr-rpc-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.jd.jr.rpc</groupId>
+                    <artifactId>jr-rpc-domain</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <!--单元测试-->
         <dependency>

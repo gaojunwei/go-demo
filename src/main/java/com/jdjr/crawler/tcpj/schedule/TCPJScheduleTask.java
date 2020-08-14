@@ -1,13 +1,17 @@
 package com.jdjr.crawler.tcpj.schedule;
 
 import com.alibaba.fastjson.JSON;
+import com.jdjr.crawler.tcpj.common.enums.BusinessEnums;
 import com.jdjr.crawler.tcpj.common.util.DateFormatUtils;
+import com.jdjr.crawler.tcpj.common.util.DateUtils;
 import com.jdjr.crawler.tcpj.common.util.UuidUtils;
 import com.jdjr.crawler.tcpj.config.SysConfig;
-import com.jdjr.crawler.tcpj.config.data.UserInfo;
+import com.jdjr.crawler.tcpj.repository.domain.LoginData;
+import com.jdjr.crawler.tcpj.repository.domain.UserAccount;
 import com.jdjr.crawler.tcpj.schedule.data.AccountLogInfo;
 import com.jdjr.crawler.tcpj.schedule.data.TaskLogInfo;
 import com.jdjr.crawler.tcpj.service.TCPJService;
+import com.jdjr.crawler.tcpj.service.UserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +37,11 @@ public class TCPJScheduleTask {
     private TCPJService tcpjService;
     @Resource
     private SysConfig sysConfig;
+    @Resource
+    private UserAccountService userAccountService;
+    /**指定时间点不跑任务*/
+    List<Integer> hours = Arrays.asList(23, 0, 1, 2, 3, 4, 5);
+
     /**
      * 账号登录日志模板
      * 取值依次为 账号、密码、爬取类型、执行开始时间、执行结束时间、耗时秒数、token值、重试次数
@@ -40,6 +50,12 @@ public class TCPJScheduleTask {
 
     @Scheduled(fixedDelayString = "${tcpj.getLoginCookie.schedule:'7000000'}")
     public void getCookieTask() {
+        boolean flag = DateUtils.isNowInHour(hours);
+        if (flag) {
+            logger.info("tcpj 该时间点不跑任务 {}", JSON.toJSONString(hours));
+            return;
+        }
+
         //记录日志信息对象
         TaskLogInfo taskLogInfo = new TaskLogInfo();
 
@@ -50,16 +66,17 @@ public class TCPJScheduleTask {
 
         logger.info("{} task_start", taskId);
 
-        List<UserInfo> userInfos = sysConfig.getTcpjAccounts();
+        //获取可用账户
+        List<UserAccount> userInfos = userAccountService.getAll(BusinessEnums.TCPJ);
         if (userInfos == null || userInfos.isEmpty()) {
             logger.error("{} tcpj not config user accounts info...", taskId);
-            TCPJCatch.addLog(String.format("taskId:%s tcpj not config user accounts info,%s", taskId, DateFormatUtils.getNowDate()));
+            userAccountService.saveTaskLog(BusinessEnums.TCPJ.getValue(), String.format("taskId:%s tcpj not config user accounts info,%s", taskId, DateFormatUtils.getNowDate()));
             return;
         }
         List<AccountLogInfo> accountLogInfos = new ArrayList<>();
         try {
             /**获取登录态*/
-            for (UserInfo userInfo : userInfos) {
+            for (UserAccount userInfo : userInfos) {
                 //记录账号登录日志
                 AccountLogInfo accountLogInfo = new AccountLogInfo();
                 accountLogInfo.setAccount(userInfo.getAccount());
@@ -98,29 +115,37 @@ public class TCPJScheduleTask {
             taskLogInfo.setDesc(String.format("耗时:%s秒 or %s分钟", ((end.getTime() - start.getTime()) / 1000), ((end.getTime() - start.getTime()) / 60000)));
             taskLogInfo.setAccountLogInfos(accountLogInfos);
             try {
-                TCPJCatch.addLog(JSON.toJSONString(taskLogInfo));
+                userAccountService.saveTaskLog(BusinessEnums.TCPJ.getValue(), JSON.toJSONString(taskLogInfo));
             } catch (Exception e) {
                 logger.warn("警告：任务执行日志记录异常");
             }
+            logger.info("{} task_end", taskId);
         }
     }
 
     /**
      * 获取指定账户号的登录Token
      */
-    private String getTcpjCookieTask(String taskId, UserInfo userInfo) {
+    public String getTcpjCookieTask(String taskId, UserAccount userInfo) {
         String token = null;
-        String phone = userInfo.getAccount(), password = userInfo.getPassword();
+        String phone = userInfo.getAccount(), password = userInfo.getPassword(), code = userInfo.getCode();
         try {
-            token = tcpjService.getLoginToken(sysConfig.getTcpjLoginPageUrl(), phone, password);
+            token = tcpjService.getLoginToken(sysConfig.getTcpjLoginPageUrl(), phone, password, code);
             if (!StringUtils.isEmpty(token)) {
-                TCPJCatch.applyValue(taskId, userInfo.getAccount(), userInfo.getType(), token);
+                //刷登录Token信息
+                LoginData loginData = new LoginData();
+                loginData.setToken(token);
+                loginData.setSite(BusinessEnums.TCPJ.getValue());
+                loginData.setAccount(userInfo.getAccount());
+                loginData.setType(userInfo.getType());
+                loginData.setRemark("longin:" + DateFormatUtils.getNowDate());
+                userAccountService.saveToken(loginData);
                 logger.info("{} Refresh catch token phone:{},token:{}", taskId, phone, token);
             } else {
                 logger.info("{} phone:{},get token is null", taskId, phone);
             }
         } catch (Exception e) {
-            logger.info("{} TCPJScheduleTask_exception phone:{} {}", taskId, phone,e.getMessage(),e);
+            logger.info("{} TCPJScheduleTask_exception phone:{} errorMsg:{}", taskId, phone, e.getMessage(), e);
         }
         return token;
     }
