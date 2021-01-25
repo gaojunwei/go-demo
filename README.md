@@ -1,23 +1,11 @@
-同城票据登录验证码破解
-
-超级鹰官网：http://www.chaojiying.com/price.html
-
-业务方提供超级鹰：账号：exbill369 密码：123QWEasd；邮箱：qubushen@qq.com；QQ：7088076  softid：906522
-
-我方自己测试超级鹰：账号：cjy2jy 密码：diyanfei910629 softid：903238
-
-文件夹cert下为网址ssl证书
-
-需要将证书添加信任证书才能正常请求（http请求除外）
-
-密码统一为：changeit
-
-首先将C:\Program Files\Java\jdk1.8.0_151\jre\lib\security下的cacerts拷贝到D:/proxy/目录下文件名一致
-
-keytool -import -alias tcpj -keystore D:/proxy/cacerts -file D:/proxy/tcpjw.cer
-
-keytool -import -alias captchaqq -keystore D:/proxy/cacerts -file D:/proxy/captchaqq.cer
-
-参考网址：https://blog.csdn.net/ljskr/article/details/84570573
-
+## 项目框架DEMO
+### 分支使用说明（以下分支不可随意更改或删除）
+#### dev_chrome
+>- 服务于同城票据，通过渲染爬取同城票据列表全量数据，每天晚20:00开始执行；
+#### dev-dzh-proxy-header
+>- 服务于同城票据，破解登录获取登录后的参数，为爬虫平台爬取同城票据提供服务；
+#### dev_ie_driver
+>- 服务于中征码，实现自动化查询中征码及中征码创建；
+---
+#### **无特殊说明分支，一般为临时使用分支，可随意操作**
 
