@@ -13,7 +13,6 @@ import com.jdjr.crawler.tcpj.schedule.data.TaskLogInfo;
 import com.jdjr.crawler.tcpj.service.TCPJService;
 import com.jdjr.crawler.tcpj.service.UserAccountService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -48,7 +47,7 @@ public class TCPJScheduleTask {
      */
     private final String logTemplete = "%s-%s-%s start:%s,end:%s,耗时：%s秒,Token值:%s,重试次数:%s";
 
-    @Scheduled(fixedDelayString = "${tcpj.getLoginCookie.schedule:'7000000'}")
+    //@Scheduled(fixedDelayString = "${tcpj.getLoginCookie.schedule:'7000000'}")
     public void getCookieTask() {
         boolean flag = DateUtils.isNowInHour(hours);
         if (flag) {

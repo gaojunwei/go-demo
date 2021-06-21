@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -51,7 +50,7 @@ public class SendEmailScheduleTask {
      * 定期检测同城账号 是否命中风控信息，或Token过期
      * 0 0 9,11,14,19 * * ? 每天9,11,14,19点启动任务
      */
-    @Scheduled(cron = "0 0 9,11,14,19 * * ?")
+    //@Scheduled(cron = "0 0 9,11,14,19 * * ?")
     public void sendEmailTask() {
         try {
             Boolean result = sendEmail();

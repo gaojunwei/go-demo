@@ -28,6 +28,7 @@ public class HighOrderCommandLineRunner implements CommandLineRunner, Ordered {
         /**设置系统变量指定证书位置*/
         System.setProperty("javax.net.ssl.trustStore", "D:/proxy/cacerts");
         logger.info("APP_start_success version:{}", appVersion);
+        logger.info("服务启动成功，版本：{}", appVersion);
     }
 
     @Override

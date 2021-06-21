@@ -9,7 +9,6 @@ import com.jdjr.crawler.tcpj.repository.domain.UserAccount;
 import com.jdjr.crawler.tcpj.service.TCPJHitService;
 import com.jdjr.crawler.tcpj.service.UserAccountService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -38,7 +37,7 @@ public class CheckExpireTask {
     /**
      * 清理过期Token任务
      */
-    @Scheduled(fixedDelayString = "60000")
+    //@Scheduled(fixedDelayString = "60000")
     public void checkInvalid() {
         try {
             long tcpjGQ = 6 * 3600 * 1000;
@@ -62,7 +61,7 @@ public class CheckExpireTask {
     /**
      * 定期检测同城账号 是否命中风控信息，或Token过期
      */
-    @Scheduled(fixedDelayString = "600000")
+    //@Scheduled(fixedDelayString = "600000")
     public void checkHitRisk() {
         boolean flag = DateUtils.isNowInHour(hours);
         if (flag) {
@@ -82,7 +81,7 @@ public class CheckExpireTask {
     /**
      * 恢复失效的Token(每分钟执行一次)
      */
-    @Scheduled(fixedDelayString = "60000")
+    //@Scheduled(fixedDelayString = "60000")
     public void recoveryExpiredToken() {
         String taskId = UuidUtils.getUUID();
         logger.info("{} 恢复失效的Token task start...", taskId);
