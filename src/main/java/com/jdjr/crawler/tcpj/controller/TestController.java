@@ -23,9 +23,9 @@ public class TestController {
     /**
      * 发送通知
      */
-    @GetMapping("p")
+    @GetMapping("test")
     public BasicResult publish(String msg) {
-        myApplicationEventPublisher.publish(msg);
+        System.out.println("清除");
         return SystemCodeEnums.SUCCESS.applyValue();
     }
 }
