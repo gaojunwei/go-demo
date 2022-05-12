@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://dubbo.apache.org/schema/dubbo
+       http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+    <!--<bean id="myTestBean" class="com.jdjr.crawler.tcpj.bean.MyTestBean"/>-->
+    <!--<bean id="testA" class="com.jdjr.crawler.tcpj.bean.TestA">
+        <constructor-arg index="0" ref="testB"/>
+    </bean>
+    <bean id="testB" class="com.jdjr.crawler.tcpj.bean.TestB">
+        <constructor-arg index="0" ref="testC"/>
+    </bean>
+    <bean id="testC" class="com.jdjr.crawler.tcpj.bean.TestC">
+        <constructor-arg index="0" ref="testA"/>
+    </bean>-->
+    <!--<bean id="userService" class="com.jdjr.crawler.tcpj.config.UserFactoryBean">
+        <property name="info" value="10,gjw"/>
+    </bean>-->
+    <bean id="caseTwoA" class="com.jdjr.crawler.tcpj.bean.CaseTwoA">
+        <!--<constructor-arg index="0" ref="caseTwoB"/>-->
+        <property name="caseTwoB" ref="caseTwoB"></property>
+    </bean>
+    <bean id="caseTwoB" class="com.jdjr.crawler.tcpj.bean.CaseTwoB">
+        <constructor-arg index="0" ref="caseTwoA"/>
+        <!--<property name="caseTwoA" ref="caseTwoA"></property>-->
+    </bean>
+</beans>
