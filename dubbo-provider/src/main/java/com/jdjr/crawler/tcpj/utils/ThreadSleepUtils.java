@@ -33,4 +33,12 @@ public class ThreadSleepUtils {
             logger.error("{}", e.getMessage(), e);
         }
     }
+
+    public static String ThreadName() {
+        return Thread.currentThread().getName();
+    }
+
+    public static long ThreadId() {
+        return Thread.currentThread().getId();
+    }
 }

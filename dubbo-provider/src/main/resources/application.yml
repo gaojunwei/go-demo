@@ -7,4 +7,4 @@ app:
   version: @project.version@ #项目的版本信息
 spring:
   profiles:
-    include: rocket
+    include: zk
