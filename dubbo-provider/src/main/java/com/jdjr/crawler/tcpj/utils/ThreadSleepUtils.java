@@ -14,7 +14,6 @@ public class ThreadSleepUtils {
     public static void sleep(Integer second) {
         for (int i = 1; i <= second.intValue(); i++) {
             try {
-                logger.info("do sleep {}/{}s", i, second);
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 logger.error("{}", e.getMessage(), e);
