@@ -1,9 +1,9 @@
 package com.ecust.test.spring;
 
-import com.ecust.test.ThreadSleepUtils;
 import com.google.gson.Gson;
 import com.jdjr.crawler.tcpj.bean.CaseTwoA;
 import com.jdjr.crawler.tcpj.bean.TestA;
+import com.jdjr.crawler.tcpj.utils.ThreadSleepUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -14,13 +14,13 @@ import org.springframework.core.io.ClassPathResource;
 public class MainTest {
 
     private Gson gson = new Gson();
-    
+
     @Test
     public void test002() {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-bean.xml");
         CaseTwoA caseTwoA = ctx.getBean("caseTwoA", CaseTwoA.class);
         caseTwoA.print();
-        ThreadSleepUtils.sleep(1L);
+        ThreadSleepUtils.sleep(1);
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import com.google.gson.Gson;
+import com.jdjr.crawler.tcpj.utils.ThreadSleepUtils;
 import org.junit.Test;
 
 import java.io.*;
@@ -29,7 +30,7 @@ public class MainTest {
 
         Object obj1 = new Object();
         WeakReference<Object> weakObj1 = new WeakReference<Object>(obj1);
-        WeakReference<Object> weakObj2 = new WeakReference<Object>(new Object(),referenceQueue);
+        WeakReference<Object> weakObj2 = new WeakReference<Object>(new Object(), referenceQueue);
         System.out.println(referenceQueue.poll());
 //主动回收
         System.gc();
@@ -86,25 +87,24 @@ public class MainTest {
     }
 
 
-
     @Test
     public void test001() throws IOException, ClassNotFoundException {
         //测试是对象
-        UserInfo userInfo = new UserInfo(10,"gjw","game");
+        UserInfo userInfo = new UserInfo(10, "gjw", "game");
         //序列化
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File("a.txt")));
         out.writeObject(userInfo);
-        System.out.println("对象序列化完成 "+userInfo+" "+UserInfo.count);
+        System.out.println("对象序列化完成 " + userInfo + " " + UserInfo.count);
         out.close();
         //反序列化
         ObjectInputStream in = new ObjectInputStream(new FileInputStream("a.txt"));
         UserInfo user = (UserInfo) in.readObject();
-        System.out.println("反序列化完成 "+user+" "+UserInfo.count);
+        System.out.println("反序列化完成 " + user + " " + UserInfo.count);
         in.close();
     }
 
 
-    static class User{
+    static class User {
         private int age;
         private String name;
 
@@ -129,29 +129,29 @@ public class MainTest {
             this.name = name;
         }
     }
+
     private static Gson gson = new Gson();
+
     public static void main(String[] args) {
 
 
-        User userA = new User(1,"A");
-        AtomicStampedReference<User> userAtomicStampedReference = new AtomicStampedReference<>(userA,1);
+        User userA = new User(1, "A");
+        AtomicStampedReference<User> userAtomicStampedReference = new AtomicStampedReference<>(userA, 1);
 
-        new Thread(()->{
-            User userB = new User(2,"A");
-            ThreadSleepUtils.log("A 修改:"+userAtomicStampedReference.compareAndSet(userA,userB,userAtomicStampedReference.getStamp(), userAtomicStampedReference.getStamp()+1)
-                    +gson.toJson(userA)+" "+userA+" 运行结束");
+        new Thread(() -> {
+            User userB = new User(2, "A");
+            ThreadSleepUtils.log("A 修改:" + userAtomicStampedReference.compareAndSet(userA, userB, userAtomicStampedReference.getStamp(), userAtomicStampedReference.getStamp() + 1)
+                    + gson.toJson(userA) + " " + userA + " 运行结束");
         }).start();
 
-        new Thread(()->{
-            User userB = new User(2,"A");
-            ThreadSleepUtils.log("A 修改:"+userAtomicStampedReference.compareAndSet(userA,userB,userAtomicStampedReference.getStamp(), userAtomicStampedReference.getStamp()+2)
-                    +gson.toJson(userA)+" "+userA+" 运行结束");
+        new Thread(() -> {
+            User userB = new User(2, "A");
+            ThreadSleepUtils.log("A 修改:" + userAtomicStampedReference.compareAndSet(userA, userB, userAtomicStampedReference.getStamp(), userAtomicStampedReference.getStamp() + 2)
+                    + gson.toJson(userA) + " " + userA + " 运行结束");
         }).start();
 
-        ThreadSleepUtils.sleep(500L);
+        ThreadSleepUtils.sleep(500);
     }
-
-
 
 
 }
