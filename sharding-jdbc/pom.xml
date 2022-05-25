@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>dubbo-provider</artifactId>
+    <artifactId>sharding-jdbc</artifactId>
 
     <dependencies>
         <dependency>
@@ -23,17 +23,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.go.dubbo</groupId>
-            <artifactId>dubbo-resource</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
         <!--sharding-jdbc-->
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
-            <artifactId>sharding-jdbc-core</artifactId>
-            <version>4.1.1</version>
+            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+            <version>4.0.0-RC1</version>
         </dependency>
         <!-- Druid连接池 -->
         <dependency>
@@ -49,48 +43,8 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.1</version>
+            <version>3.0.5</version>
         </dependency>
-
-        <!-- jedis -->
-       <!-- <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>-->
-        <!--kafka-->
-        <!--<dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>-->
-
-        <!-- rocketmq -->
-        <!--<dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-spring-boot-starter</artifactId>
-            <version>2.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
-            <version>4.9.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-common</artifactId>
-            <version>4.9.3</version>
-        </dependency>-->
-
-        <!-- dubbo依赖-->
-        <!--<dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>3.0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-x-discovery</artifactId>
-            <version>4.2.0</version>
-        </dependency>-->
 
         <!--单元测试-->
         <dependency>
@@ -119,7 +73,7 @@
     </dependencies>
 
     <build>
-        <finalName>crawler-tcpj</finalName>
+        <finalName>sharding-jdbc</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

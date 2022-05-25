@@ -19,6 +19,6 @@
     <modules>
         <module>dubbo-provider</module>
         <module>dubbo-consumer</module>
-        <module>dubbo-resource</module>
+        <module>sharding-jdbc</module>
     </modules>
 </project>
