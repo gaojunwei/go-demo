@@ -1,7 +1,7 @@
 package com.ecust.test;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.jdjr.crawler.tcpj.utils.ThreadSleepUtils;
+import com.gjw.deme.utils.ThreadSleepUtils;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

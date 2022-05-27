@@ -1,9 +1,9 @@
 package com.ecust.test.spring;
 
 import com.google.gson.Gson;
-import com.jdjr.crawler.tcpj.bean.CaseTwoA;
-import com.jdjr.crawler.tcpj.bean.TestA;
-import com.jdjr.crawler.tcpj.utils.ThreadSleepUtils;
+import com.gjw.deme.bean.CaseTwoA;
+import com.gjw.deme.bean.TestA;
+import com.gjw.deme.utils.ThreadSleepUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;

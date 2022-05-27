@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import com.google.gson.Gson;
-import com.jdjr.crawler.tcpj.utils.ThreadSleepUtils;
+import com.gjw.deme.utils.ThreadSleepUtils;
 import org.junit.Test;
 
 import java.io.*;

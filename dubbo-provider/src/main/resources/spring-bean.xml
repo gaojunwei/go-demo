@@ -20,11 +20,11 @@
     <!--<bean id="userService" class="com.jdjr.crawler.tcpj.config.UserFactoryBean">
         <property name="info" value="10,gjw"/>
     </bean>-->
-    <bean id="caseTwoA" class="com.jdjr.crawler.tcpj.bean.CaseTwoA">
+    <bean id="caseTwoA" class="com.gjw.deme.bean.CaseTwoA">
         <!--<constructor-arg index="0" ref="caseTwoB"/>-->
         <property name="caseTwoB" ref="caseTwoB"></property>
     </bean>
-    <bean id="caseTwoB" class="com.jdjr.crawler.tcpj.bean.CaseTwoB">
+    <bean id="caseTwoB" class="com.gjw.deme.bean.CaseTwoB">
         <constructor-arg index="0" ref="caseTwoA"/>
         <!--<property name="caseTwoA" ref="caseTwoA"></property>-->
     </bean>

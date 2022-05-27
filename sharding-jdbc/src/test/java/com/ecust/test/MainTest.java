@@ -2,9 +2,12 @@ package com.ecust.test;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
-import com.jdjr.crawler.tcpj.DbProviderApp;
-import com.jdjr.crawler.tcpj.mapper.GoodsMapper;
-import com.jdjr.crawler.tcpj.mapper.domain.Goods;
+import com.gjw.deme.DbProviderApp;
+import com.gjw.deme.mapper.GoodsMapper;
+import com.gjw.deme.mapper.TConfigMapper;
+import com.gjw.deme.mapper.domain.Goods;
+import com.gjw.deme.mapper.domain.TConfig;
+import com.gjw.deme.utils.ThreadSleepUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,13 +29,31 @@ public class MainTest {
     @Resource
     private GoodsMapper goodsMapper;
     @Resource
+    private TConfigMapper tconfigMapper;
+    @Resource
     private Gson gson;
+
+    /**
+     *
+     */
+    @Test
+    public void broadcastTables(){
+        for (int i = 0; i < 10000; i++) {
+            TConfig tconfig = new TConfig();
+            tconfig.setCid(System.currentTimeMillis());
+            tconfig.setCKey("key1"+i);
+            tconfig.setCVal("val1"+i);
+            int a = tconfigMapper.insert(tconfig);
+            System.out.println("广播表保存结结果："+a);
+            ThreadSleepUtils.sleepMS(20);
+        }
+    }
 
     /**
      * 查询数据(
      * in (切分键)：针对所属表进行查询，不会查询所有表；
      * in (切分键) and field = xx：针对所属表进行查询，不会查询所有表；
-     *in (切分键) or field = xx：查询所有分表；
+     * in (切分键) or field = xx：查询所有分表；
      */
     @Test
     public void selectIn() {
@@ -58,7 +79,8 @@ public class MainTest {
     @Test
     public void selectById() {
         QueryWrapper<Goods> query = new QueryWrapper<>();
-        query.eq("gid",1653482771609L);
+        query.eq("gid",1653489580075L);
+        query.eq("user_id",2L);
         Goods goods = goodsMapper.selectOne(query);
         System.out.println("查询结果："+gson.toJson(goods));
     }
@@ -69,7 +91,7 @@ public class MainTest {
     @Test
     public void insert() {
         Goods goods = new Goods();
-        goods.setGid(System.currentTimeMillis());
+        //goods.setGid(System.currentTimeMillis());
         goods.setGname("菜瓜");
         goods.setGstatus("未发布");
         goods.setUserId(2L);

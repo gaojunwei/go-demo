@@ -2,11 +2,10 @@ package com.ecust.test.redis;
 
 import com.ecust.test.MyPolicy;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.jdjr.crawler.tcpj.ProviderApp;
-import com.jdjr.crawler.tcpj.controller.BloomFilterHelper;
-import com.jdjr.crawler.tcpj.utils.RandomUtils;
-import com.jdjr.crawler.tcpj.utils.ThreadSleepUtils;
-import com.jdjr.crawler.tcpj.utils.UuidUtils;
+import com.gjw.deme.ProviderApp;
+import com.gjw.deme.controller.BloomFilterHelper;
+import com.gjw.deme.utils.RandomUtils;
+import com.gjw.deme.utils.ThreadSleepUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

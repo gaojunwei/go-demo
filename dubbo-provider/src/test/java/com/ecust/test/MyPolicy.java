@@ -1,6 +1,6 @@
 package com.ecust.test;
 
-import com.jdjr.crawler.tcpj.utils.ThreadSleepUtils;
+import com.gjw.deme.utils.ThreadSleepUtils;
 
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;

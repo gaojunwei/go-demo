@@ -2,8 +2,8 @@ package com.ecust.test.limit;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.jdjr.crawler.tcpj.utils.RandomUtils;
-import com.jdjr.crawler.tcpj.utils.ThreadSleepUtils;
+import com.gjw.deme.utils.RandomUtils;
+import com.gjw.deme.utils.ThreadSleepUtils;
 import org.junit.Test;
 
 import java.util.concurrent.ArrayBlockingQueue;
