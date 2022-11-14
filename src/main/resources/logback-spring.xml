@@ -22,7 +22,7 @@
     -->
     <contextName>logback</contextName>
     <!--2.contextName ，设置日志上下文名称，可以通过%contextName来打印日志上下文名称;-->
-    <property name="log.path" value="/web/app/log" />
+    <property name="log.path" value="/home/app/log" />
 
     <!--控制台-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

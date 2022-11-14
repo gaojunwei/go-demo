@@ -8,6 +8,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 public class SysConfig {
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
-        return new ServerEndpointExporter();
+        ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter();
+        return serverEndpointExporter;
     }
 }
