@@ -3,12 +3,11 @@ package com.gjw.common.innovation.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -26,7 +25,8 @@ public class WebsocketController {
      * 连接成功
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam(value = "uniqueCode") String uniqueCode) {
+    public void onOpen(Session session, @PathParam(value = "uniqueCode") String uniqueCode) throws IOException {
+        log.info("链接打开 {},链接数：{}", uniqueCode, webSocketSet.size());
         //注册链接失败
         if (webSocketSet.containsKey(uniqueCode)) {
             session.getAsyncRemote().sendText("invalid");
@@ -38,15 +38,28 @@ public class WebsocketController {
         //添加到链接管理池
         webSocketSet.put(uniqueCode, session);
         //响应注册成功标识
-        session.getAsyncRemote().sendText("valid");
+        sendMsg(session, "pong");
     }
 
     /**
      * 接收到消息
      */
     @OnMessage
-    public void onMsg(Session session, String message) {
-        log.info("收到消息 clientId:{},message{}", getClientId(session), message);
+    public void onMsg(Session session, String message) throws IOException {
+        //log.info("收到消息 clientId:{},message{}", getClientId(session), message);
+        sendMsg(session, "pong");
+    }
+
+    @OnError
+    public void OnError(Session session, Throwable t){
+        log.error("clientId:{},errorMsg:{}",getClientId(session), t.getMessage(),t);
+    }
+
+
+    private void sendMsg(Session session, String message) throws IOException {
+        synchronized (session) {
+            session.getBasicRemote().sendText(message);
+        }
     }
 
     /**
@@ -54,10 +67,19 @@ public class WebsocketController {
      */
     @OnClose
     public void onClose(Session session) {
-        log.info("连接关闭 {}", getClientId(session));
+        Optional.ofNullable(getClientId(session)).ifPresent(id -> {
+            webSocketSet.remove(id);
+            log.info("连接关闭 {}", id);
+        });
+
+
     }
 
     private String getClientId(Session session) {
         return (String) session.getUserProperties().get(uniqueCodeKey);
+    }
+
+    public int getCount() {
+        return webSocketSet.size();
     }
 }

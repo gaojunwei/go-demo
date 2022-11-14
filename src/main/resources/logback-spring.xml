@@ -22,7 +22,7 @@
     -->
     <contextName>logback</contextName>
     <!--2.contextName ，设置日志上下文名称，可以通过%contextName来打印日志上下文名称;-->
-    <property name="log.path" value="/var/go" />
+    <property name="log.path" value="/web/app/log" />
 
     <!--控制台-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -33,24 +33,6 @@
             <charset>UTF-8</charset>
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符，%M是方法名称-->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %X{METHOD-INVOKE-KEY} %-5level %logger{50}-%M[%line] - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <!--WARN日志-->
-    <appender name="SYS_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/warn/ap_warn.log</file>
-        <append>true</append><!--<append>：如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。-->
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>WARN</level>
-        </filter><!--filter:它可以提供最大的自定义输出，如果需要用到系统定义的拦截器，例如我们用ThresholdFilter来过滤掉ERROR级别以下的日志不输出到文件中-->
-        <!-- 按天来回滚，如果需要按小时来回滚，则设置为{yyyy-MM-dd_HH} -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/warn/ap_warn.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>5</maxHistory><!-- 按天来回滚，最大保存时间为5天，5天之前的都将被清理掉 -->
-        </rollingPolicy>
-
-        <encoder><!--对记录事件进行格式化-->
-            <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%L] - %msg%n</pattern><!--用来设置日志的输入格式-->
         </encoder>
     </appender>
     <!--INFO日志-->
@@ -74,27 +56,9 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%L] - %msg%n</pattern><!--用来设置日志的输入格式-->
         </encoder>
     </appender>
-    <!--异常日志-->
-    <appender name="SYS_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/error/ap_error.log</file>
-        <append>true</append>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch><!--过滤 器会根据 onMatch 和 onMismatch 属性接受或拒绝事件-->
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/error/ap_error.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>10</maxHistory><!-- 按天来回滚，最大保存时间为5天，5天之前的都将被清理掉 -->
-        </rollingPolicy>
-
-        <encoder>
-            <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} [%L] - %msg%n</pattern>
-        </encoder>
-    </appender>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="SYS_INFO" />
     </root>
 </configuration>
