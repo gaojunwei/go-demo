@@ -1,9 +1,9 @@
 package com.gjw.common.innovation.controller;
 
 import com.gjw.common.enums.SystemCodeEnums;
-import com.gjw.common.result.BasicResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.gjw.common.result.SingleResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,12 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/")
+@Slf4j
 public class IndexController {
-    private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+
+    @Value("${app.name}")
+    private String appName;
 
     @RequestMapping("")
-    public BasicResult index(){
-        BasicResult result = BasicResult.instance(SystemCodeEnums.SUCCESS.getCode(),SystemCodeEnums.SUCCESS.getMsg());
+    public SingleResult<String> index() {
+        SingleResult<String> result = new SingleResult<>();
+        result.setCode(SystemCodeEnums.SUCCESS.getCode());
+        result.setMsg(SystemCodeEnums.SUCCESS.getMsg());
+        result.setData(appName);
         return result;
     }
 }
