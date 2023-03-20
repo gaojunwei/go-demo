@@ -10,8 +10,9 @@ public class BasicResult implements Serializable {
     private static final long serialVersionUID = -5809782578272943999L;
     private String code;
     private String msg;
+    private String sn;
 
-    public static BasicResult instance(String code,String msg){
+    public static BasicResult instance(String code, String msg) {
         BasicResult result = new BasicResult();
         result.setCode(code);
         result.setMsg(msg);

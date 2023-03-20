@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="org.springframework.web" level="INFO"/>
+    <logger name="org.springboot.sample" level="TRACE"/>
+
+    <!-- 日志输出位置 -->
+    <springProperty scope="context" name="log.path" source="log.save.path"/>
+    <!-- 日志输出格式 -->
+    <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread %X{requestId}] %-5level %logger{15} [%L] - %msg%n"/>
+    <!-- 日志文件前缀 -->
+    <property name="log.prefix" value="mtg_commander"/>
+
+    <!--控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+    <!--INFO日志-->
+    <appender name="SYS_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/${log.prefix}_info.log</file>
+        <append>true</append><!--true日志被追加到文件结尾，false清空现存文件-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter><!--filter:它可以提供最大的自定义输出，如果需要用到系统定义的拦截器，例如我们用ThresholdFilter来过滤掉ERROR级别以下的日志不输出到文件中-->
+        <!-- 按天来回滚，如果需要按小时来回滚，则设置为{yyyy-MM-dd_HH} -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/${log.prefix}_info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>3</maxHistory><!-- 按天来回滚，最大保存时间为5天，5天之前的都将被清理掉 -->
+        </rollingPolicy>
+        <encoder><!--对记录事件进行格式化-->
+            <charset>UTF-8</charset>
+            <pattern>${log.pattern}</pattern><!--用来设置日志的输入格式-->
+        </encoder>
+    </appender>
+
+
+    <root level="INFO">
+        <appender-ref ref="SYS_INFO"/>
+    </root>
+
+
+    <!--&lt;!&ndash; 开发、测试环境 &ndash;&gt;
+    <springProfile name="dev">
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="org.springboot.sample" level="INFO"/>
+        <root level="INFO">
+            <appender-ref ref="SYS_INFO"/>
+            <appender-ref ref="SYS_ERROR"/>
+        </root>
+    </springProfile>
+    <springProfile name="local-test">
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="org.springboot.sample" level="INFO"/>
+        <logger name="com.mitg" level="DEBUG"/>
+        <root level="INFO">
+            <appender-ref ref="SYS_INFO"/>
+            <appender-ref ref="SYS_ERROR"/>
+        </root>
+    </springProfile>
+    <springProfile name="ali-test|pro|bj-sfy">
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="org.springboot.sample" level="INFO"/>
+        <logger name="com.mitg" level="DEBUG"/>
+        <root level="INFO">
+            <appender-ref ref="SYS_INFO"/>
+            <appender-ref ref="SYS_ERROR"/>
+        </root>
+    </springProfile>-->
+</configuration>
