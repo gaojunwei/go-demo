@@ -1,0 +1,15 @@
+#多数据源配置
+spring:
+  datasource:
+    dynamic:
+      primary: db_one #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        db_one:
+          type: com.zaxxer.hikari.HikariDataSource
+          url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1
+          driver-class-name: org.h2.Driver
+        db_two:
+          type: com.zaxxer.hikari.HikariDataSource
+          url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1
+          driver-class-name: org.h2.Driver

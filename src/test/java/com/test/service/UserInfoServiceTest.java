@@ -23,6 +23,9 @@ public class UserInfoServiceTest extends AbstractTest {
 
     @Test
     public void getById(){
+        //初始化测试数据
+        h2Flusher.exeSql("DB/test_data/user_info.sql");
+
         Long userId = 100L;
         UserInfo userInfo = userInfoService.getById(FromSourceEnums.A,userId);
         log.info("FromSourceEnums:{} 查询结果:{}", FromSourceEnums.A.getValue(),JSON.toJSONString(userInfo));
@@ -32,5 +35,4 @@ public class UserInfoServiceTest extends AbstractTest {
         log.info("FromSourceEnums:{} 查询结果:{}", FromSourceEnums.B.getValue(),JSON.toJSONString(userInfo2));
         Assertions.assertNotNull(userInfo2);
     }
-
 }

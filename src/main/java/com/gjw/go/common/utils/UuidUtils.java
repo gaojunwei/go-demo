@@ -18,11 +18,15 @@ public class UuidUtils {
      * 根据字符串生成固定UUID
      */
     public static synchronized String getUUID(String str) {
-        if (str!=null && !str.trim().equals("")) {
+        if (str != null && !str.trim().equals("")) {
             UUID uuid = UUID.nameUUIDFromBytes(str.getBytes());
             return uuid.toString().replace("-", "");
         } else {
             return "";
         }
+    }
+
+    public static String getUUID16() {
+        return getUUID().substring(8, 24);
     }
 }
