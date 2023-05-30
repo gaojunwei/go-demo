@@ -5,3 +5,9 @@ logging:
   file:
     path: D:\work\logs
 
+spring:
+  application:
+    name: go-demo
+  profiles:
+    active: local
+
