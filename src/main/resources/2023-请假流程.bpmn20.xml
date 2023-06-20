@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="holidayFlowable" name="2023-请假流程" isExecutable="true">
+    <documentation>2023年新版请假流程</documentation>
+    <!--流程事件监听器 优先级高于 任务监听器-->
+    <extensionElements>
+      <flowable:eventListener events="TASK_ASSIGNED" class="com.gjw.go.flowable.task.listener.MyFlowableEventListener"></flowable:eventListener>
+      <flowable:eventListener events="TASK_CREATED" class="com.gjw.go.flowable.task.listener.MyFlowableEventListener"></flowable:eventListener>
+    </extensionElements>
+    <!--流程开始-->
+    <startEvent id="startEvent1"></startEvent>
+    <sequenceFlow id="sid-A9B1B8F5-F233-4ED2-962A-6AD3DFB90DB7" sourceRef="startEvent1" targetRef="teacherCheck"></sequenceFlow>
+    <!--直属老师审批-->
+    <userTask id="teacherCheck" name="直属教师审批" flowable:assignee="${jiaoshi}" flowable:formFieldValidation="true">
+      <documentation>直属老师进行审批</documentation>
+      <extensionElements>
+        <!--任务监听器：在任务创建前设置流程变量，动态设置直属老师信息及候选审批用户等-->
+        <flowable:taskListener event="create" class="com.gjw.go.flowable.task.listener.FlowTaskListener"></flowable:taskListener>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-35534B9A-A1C4-4429-B91D-096B9CFD70F2" sourceRef="teacherCheck" targetRef="sid-CE7A6ED1-0F56-440F-8F19-0A815FD7D0CF"></sequenceFlow>
+
+    <!--排他网关-->
+    <exclusiveGateway id="sid-CE7A6ED1-0F56-440F-8F19-0A815FD7D0CF"></exclusiveGateway>
+    <sequenceFlow id="sid-E775E55F-3A3B-49C6-93B0-5B5E54B5941A" sourceRef="sid-CE7A6ED1-0F56-440F-8F19-0A815FD7D0CF" targetRef="refusedSendEmail">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!approved}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-74AE5A71-27E3-4691-8EBB-A34FB66FE0BF" sourceRef="sid-CE7A6ED1-0F56-440F-8F19-0A815FD7D0CF" targetRef="sid-3B97B2FD-93AE-4D23-B15D-1C7B29A03259">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved}]]></conditionExpression>
+    </sequenceFlow>
+    <!--拒绝并发邮件通知-->
+    <serviceTask id="refusedSendEmail" name="审批未通过发送邮件通知" flowable:class="com.gjw.go.flowable.SendRejectionMail">
+      <documentation>拒绝并发送邮件通知</documentation>
+    </serviceTask>
+    <sequenceFlow id="sid-861DCE16-83F6-40D2-8FF3-944495A39A24" sourceRef="refusedSendEmail" targetRef="sid-364A4056-2170-4E7E-A68C-17A630E06310"></sequenceFlow>
+    <!--流程结束-->
+    <endEvent id="sid-364A4056-2170-4E7E-A68C-17A630E06310"></endEvent>
+
+    <!--老师审核通过到校长审批-->
+    <userTask id="sid-3B97B2FD-93AE-4D23-B15D-1C7B29A03259" name="校长进行审批" flowable:assignee="${xiaozhang}">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-A4396BF2-DCA8-4633-B6DD-3D5E2073AF7C" sourceRef="sid-3B97B2FD-93AE-4D23-B15D-1C7B29A03259" targetRef="sid-206D3454-335C-4448-9043-BFE6CED5E8DE"></sequenceFlow>
+    <!--流程结束-->
+    <endEvent id="sid-206D3454-335C-4448-9043-BFE6CED5E8DE"></endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_holidayFlowable">
+    <bpmndi:BPMNPlane bpmnElement="holidayFlowable" id="BPMNPlane_holidayFlowable">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.0" y="145.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="teacherCheck" id="BPMNShape_teacherCheck">
+        <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CE7A6ED1-0F56-440F-8F19-0A815FD7D0CF" id="BPMNShape_sid-CE7A6ED1-0F56-440F-8F19-0A815FD7D0CF">
+        <omgdc:Bounds height="40.0" width="40.0" x="310.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="refusedSendEmail" id="BPMNShape_refusedSendEmail">
+        <omgdc:Bounds height="80.0" width="100.0" x="450.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-3B97B2FD-93AE-4D23-B15D-1C7B29A03259" id="BPMNShape_sid-3B97B2FD-93AE-4D23-B15D-1C7B29A03259">
+        <omgdc:Bounds height="80.0" width="100.0" x="600.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-206D3454-335C-4448-9043-BFE6CED5E8DE" id="BPMNShape_sid-206D3454-335C-4448-9043-BFE6CED5E8DE">
+        <omgdc:Bounds height="28.0" width="28.0" x="755.0" y="146.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-364A4056-2170-4E7E-A68C-17A630E06310" id="BPMNShape_sid-364A4056-2170-4E7E-A68C-17A630E06310">
+        <omgdc:Bounds height="28.0" width="28.0" x="595.0" y="281.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-A9B1B8F5-F233-4ED2-962A-6AD3DFB90DB7" id="BPMNEdge_sid-A9B1B8F5-F233-4ED2-962A-6AD3DFB90DB7" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="119.94999848995758" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="164.9999999999917" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-74AE5A71-27E3-4691-8EBB-A34FB66FE0BF" id="BPMNEdge_sid-74AE5A71-27E3-4691-8EBB-A34FB66FE0BF" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="36.5" flowable:targetDockerY="40.5">
+        <omgdi:waypoint x="349.4469046063378" y="160.5"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="160.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-35534B9A-A1C4-4429-B91D-096B9CFD70F2" id="BPMNEdge_sid-35534B9A-A1C4-4429-B91D-096B9CFD70F2" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.5" flowable:targetDockerY="20.5">
+        <omgdi:waypoint x="264.9499999999977" y="160.21623376623376"></omgdi:waypoint>
+        <omgdi:waypoint x="310.4130434782609" y="160.41304347826087"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-E775E55F-3A3B-49C6-93B0-5B5E54B5941A" id="BPMNEdge_sid-E775E55F-3A3B-49C6-93B0-5B5E54B5941A" flowable:sourceDockerX="20.5" flowable:sourceDockerY="20.5" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="341.0655129891483" y="168.8841282894737"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="255.32448377581122"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-A4396BF2-DCA8-4633-B6DD-3D5E2073AF7C" id="BPMNEdge_sid-A4396BF2-DCA8-4633-B6DD-3D5E2073AF7C" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="699.9499999999878" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="755.0" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-861DCE16-83F6-40D2-8FF3-944495A39A24" id="BPMNEdge_sid-861DCE16-83F6-40D2-8FF3-944495A39A24" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="549.95" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="595.0" y="295.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

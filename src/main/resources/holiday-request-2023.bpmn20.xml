@@ -10,11 +10,7 @@
              expressionLanguage="http://www.w3.org/1999/XPath"
              targetNamespace="http://www.flowable.org/processdef">
 
-    <process id="holidayRequest2023" name="请假流程" isExecutable="true">
-        <!--执行监听器-->
-        <extensionElements>
-            <flowable:executionListener class="com.gjw.go.flowable.task.listener.FlowExecutionListener" event="start"/>
-        </extensionElements>
+    <process id="holidayRequest" name="请假流程" isExecutable="true">
 
         <startEvent id="startEvent"/>
         <sequenceFlow sourceRef="startEvent" targetRef="approveTask"/>
@@ -53,4 +49,5 @@
 
         <endEvent id="rejectEnd"/>
     </process>
+
 </definitions>
