@@ -83,7 +83,7 @@ public class FlowableTest {
         //删除流程，指定流程ID,如果部署的流程启动了就不允许删除了
         //repositoryService.deleteDeployment("2501");
         //第二个参数是级联删除，如果流程启动了 相关的任务一并被删除
-        repositoryService.deleteDeployment("140001",true);
+        repositoryService.deleteDeployment("155001",true);
     }
 
     @Test
@@ -137,7 +137,6 @@ public class FlowableTest {
         List<Task> tasks = taskService.createTaskQuery()
                 .processDefinitionKey("holidayFlowable")
                 .taskAssignee("xiangcunlaoshi")
-                .taskId("150010")
                 .list();
         // 添加流程变量
         Map<String,Object> variables = new HashMap<>();
@@ -145,7 +144,7 @@ public class FlowableTest {
         // 完成任务
         for (Task task:tasks){
             taskService.complete(task.getId(),variables);
-            System.out.println("拒绝 "+task.getId()+" "+task.getName());
+            System.out.println("拒绝 "+task.getId()+" "+task.getName()+" 流程实例ID："+task.getProcessInstanceId());
         }
     }
 

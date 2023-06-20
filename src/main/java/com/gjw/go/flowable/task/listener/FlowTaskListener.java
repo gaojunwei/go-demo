@@ -7,7 +7,7 @@ import org.flowable.task.service.delegate.TaskListener;
 import java.util.*;
 
 /**
- * 任务监听器，通过任务监听器自定义指派
+ * 任务监听器，主要用来监听节点，通过任务监听器自定义指派
  */
 @Slf4j
 public class FlowTaskListener implements TaskListener {

@@ -7,6 +7,9 @@ import org.flowable.common.engine.api.delegate.Expression;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.ExecutionListener;
 
+/**
+ * 执行监听器，可监听每一个组件，整个流程也可以配置
+ */
 @Slf4j
 @Setter
 @Getter

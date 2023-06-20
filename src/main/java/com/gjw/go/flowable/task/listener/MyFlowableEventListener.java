@@ -7,6 +7,9 @@ import org.flowable.common.engine.api.delegate.event.FlowableEventType;
 
 import java.util.Optional;
 
+/**
+ * 流程监听器，可全局监听整个流程
+ */
 @Slf4j
 public class MyFlowableEventListener implements FlowableEventListener {
     @Override

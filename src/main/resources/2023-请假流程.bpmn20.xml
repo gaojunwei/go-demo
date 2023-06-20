@@ -9,11 +9,29 @@
     </extensionElements>
     <!--流程开始-->
     <startEvent id="startEvent1"></startEvent>
-    <sequenceFlow id="sid-A9B1B8F5-F233-4ED2-962A-6AD3DFB90DB7" sourceRef="startEvent1" targetRef="teacherCheck"></sequenceFlow>
+    <sequenceFlow id="sid-A9B1B8F5-F233-4ED2-962A-6AD3DFB90DB7" sourceRef="startEvent1" targetRef="javaService"></sequenceFlow>
+
+    <!--Java服务任务-->
+    <serviceTask id="javaService" name="调用java服务" flowable:class="com.gjw.go.flowable.task.listener.ToUpperCaseFieldInjected">
+      <extensionElements>
+        <flowable:field name="text" expression="${jiaoshi}" />
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow sourceRef="javaService" targetRef="teacherCheck"></sequenceFlow>
+
     <!--直属老师审批-->
     <userTask id="teacherCheck" name="直属教师审批" flowable:assignee="${jiaoshi}" flowable:formFieldValidation="true">
       <documentation>直属老师进行审批</documentation>
       <extensionElements>
+        <!--执行监听器-->
+        <flowable:executionListener event="start" class="com.gjw.go.flowable.task.listener.FlowExecutionListener">
+          <flowable:field name="fieldName">
+            <!--执行监听器上的字段注入-->
+            <flowable:string><![CDATA[dept]]></flowable:string>
+            <flowable:string></flowable:string>
+            <flowable:expression></flowable:expression>
+          </flowable:field>
+        </flowable:executionListener>
         <!--任务监听器：在任务创建前设置流程变量，动态设置直属老师信息及候选审批用户等-->
         <flowable:taskListener event="create" class="com.gjw.go.flowable.task.listener.FlowTaskListener"></flowable:taskListener>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
