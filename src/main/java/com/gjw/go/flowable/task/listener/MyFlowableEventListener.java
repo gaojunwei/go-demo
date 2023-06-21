@@ -1,6 +1,5 @@
 package com.gjw.go.flowable.task.listener;
 
-import liquibase.pro.packaged.S;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEventType;
 import org.flowable.common.engine.api.delegate.event.FlowableEvent;
@@ -21,16 +20,17 @@ import java.util.Optional;
  */
 @Slf4j
 public class MyFlowableEventListener implements FlowableEventListener {
-    private static Map<String,String> statusMap = new HashMap<>();
+    private static Map<String, String> statusMap = new HashMap<>();
+
     static {
-        statusMap.put("unPass","fail");
-        statusMap.put("pass","success");
+        statusMap.put("unPass", "fail");
+        statusMap.put("pass", "success");
     }
 
     @Override
     public void onEvent(FlowableEvent event) {
-        FlowableProcessEventImpl processEvent = event instanceof FlowableProcessEventImpl?(FlowableProcessEventImpl) event:null;
-        log.info("流程监听器  type:{},getProcessInstanceId:{}", event.getType(), Optional.ofNullable(processEvent).map(item->item.getProcessInstanceId()).orElse(""));
+        FlowableProcessEventImpl processEvent = event instanceof FlowableProcessEventImpl ? (FlowableProcessEventImpl) event : null;
+        log.info("流程监听器  type:{},getProcessInstanceId:{}", event.getType(), Optional.ofNullable(processEvent).map(item -> item.getProcessInstanceId()).orElse(""));
         if (FlowableEngineEventType.PROCESS_CREATED == event.getType()) {
             log.info("枚举值  PROCESS_CREATED");
         }
@@ -45,16 +45,16 @@ public class MyFlowableEventListener implements FlowableEventListener {
         }
         if (FlowableEngineEventType.PROCESS_COMPLETED == event.getType()) {
             log.info("枚举值  PROCESS_COMPLETED");
-            String status = Optional.ofNullable(processEvent).map(item->(String)item.getExecution().getVariable("businessStatus")).orElse("unPass");
-            Assert.notNull(status,"流程参数有误，操作失败");
+            String status = Optional.ofNullable(processEvent).map(item -> (String) item.getExecution().getVariable("businessStatus")).orElse("unPass");
+            Assert.notNull(status, "流程参数有误，操作失败");
             RuntimeService runtimeService = getProcessEngine().getRuntimeService();
-            runtimeService.updateBusinessStatus(processEvent.getProcessInstanceId(),statusMap.get(status));
+            runtimeService.updateBusinessStatus(processEvent.getProcessInstanceId(), statusMap.get(status));
         }
 
         log.info("Flowable事件监听 onEvent name:{}", Optional.ofNullable(event.getType()).map(item -> item.name()).orElse("name 为空"));
     }
 
-    public ProcessEngine getProcessEngine(){
+    public ProcessEngine getProcessEngine() {
         ProcessEngineConfiguration cfg = new StandaloneProcessEngineConfiguration()
                 .setJdbcUrl("jdbc:mysql://127.0.0.1:3306/flowable-learn2?serverTimezone=UTC&nullCatalogMeansCurrent=true")
                 .setJdbcUsername("root")
