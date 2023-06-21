@@ -24,6 +24,8 @@ public class FlowExecutionListener implements ExecutionListener {
         log.info("getProcessInstanceId = {}",execution.getProcessInstanceId());
         log.info("getProcessDefinitionId = {}",execution.getProcessDefinitionId());
         log.info("getVariables = {}",execution.getVariables());
+        log.info("isEnded = {}",execution.isEnded());
         log.info("********** 执行 监听器 end");
+
     }
 }
