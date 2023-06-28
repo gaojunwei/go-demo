@@ -1,13 +1,8 @@
-/*
+
 package com.gjw.go;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-*
- * @author ext.gaojunwei1
- * @date 2023/5/29
-
 
 @SpringBootApplication
 public class GoApp {
@@ -16,4 +11,3 @@ public class GoApp {
         app.run(args);
     }
 }
-*/

@@ -2,6 +2,7 @@
 
 <configuration>
     <springProperty scope="context" name="log.path" source="logging.file.path"/>
+    <springProperty scope="context" name="appName" source="spring.application.name"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%5p: %d{yyyy-MM-dd HH:mm:ss} [traceId=%X{traceId}] [uri=%X{uri}] [method=%X{method}] [%t] [%c]
@@ -11,7 +12,7 @@
         </encoder>
     </appender>
     <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/spring-error.log</file>
+        <file>${log.path}/${appName}/spring-error.log</file>
         <append>true</append>
         <encoder>
             <pattern>%5p: %d{yyyy-MM-dd HH:mm:ss.SSS} [pfinderId=%X{PFTID}] [traceId=%X{traceId}] [uri=%X{uri}]
@@ -24,7 +25,7 @@
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--日志的切分方式:把每一天的日志归档到一个文件中-->
-            <fileNamePattern>${log.path}/spring-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.path}/${appName}/spring-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!--单个文件最大容量-->
             <maxFileSize>100MB</maxFileSize>
             <!--只保留最近多少天的日志-->
@@ -34,7 +35,7 @@
         </rollingPolicy>
     </appender>
     <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/spring-info.log</file>
+        <file>${log.path}/${appName}/spring-info.log</file>
         <append>true</append>
         <encoder>
             <pattern>%5p: %d{yyyy-MM-dd HH:mm:ss.SSS} [pfinderId=%X{PFTID}] [traceId=%X{traceId}] [uri=%X{uri}]
@@ -44,7 +45,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--日志的切分方式:把每个小时的日志归档到一个文件中-->
-            <fileNamePattern>${log.path}/spring-info.%d{yyyy-MM-dd-HH}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.path}/${appName}/spring-info.%d{yyyy-MM-dd-HH}.%i.log</fileNamePattern>
             <!--单个文件最大容量-->
             <maxFileSize>1GB</maxFileSize>
             <!--只保留最近多少小时的日志-->

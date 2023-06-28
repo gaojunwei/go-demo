@@ -7,7 +7,7 @@ logging:
 
 spring:
   application:
-    name: go-demo
+    name: go-job
   profiles:
-    active: local
+    active: xxlJob
 
