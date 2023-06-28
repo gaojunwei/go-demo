@@ -5,6 +5,7 @@ import com.gjw.go.common.enums.SysCodeEnums
 open class BasicRespDto {
     var code: String? = null
     var msg: String? = null
+    var sn:String? = null
 
     companion object {
         fun success(): BasicRespDto {
