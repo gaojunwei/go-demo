@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class DemoBeanJob {
 
+    /**
+     * 1、简单任务示例（Bean模式）
+     */
     @XxlJob("job01")
     public void job01() {
         String param = XxlJobHelper.getJobParam();
