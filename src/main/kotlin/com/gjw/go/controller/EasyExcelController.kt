@@ -84,7 +84,7 @@ class EasyExcelController {
         return ListRespDto<StudentImpDto>().apply {
             code = SysCodeEnums.SUCCESS.code
             msg = SysCodeEnums.SUCCESS.msg
-            data = EasyExcel.read(file.inputStream, StudentImpDto::class.java, StudentListener<StudentImpDto>()).sheet().doReadSync()
+            data = EasyExcel.read(file.inputStream, StudentImpDto::class.java, StudentListener<StudentImpDto>()).sheet().headRowNumber(1).doReadSync()
         }
     }
 }
