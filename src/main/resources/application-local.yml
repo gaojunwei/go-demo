@@ -25,12 +25,23 @@ mybatis-plus:
   # 以下配置均有默认值,可以不设置
   global-config:
     db-config:
-      #主键类型 AUTO:"数据库ID自增" INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
-      id-type: auto
-      #字段策略 IGNORED:"忽略判断"  NOT_NULL:"非 NULL 判断")  NOT_EMPTY:"非空判断"
-      field-strategy: NOT_EMPTY
-      #数据库类型
-      db-type: MYSQL
+      # 主键类型
+      # AUTO 自增 NONE 空 INPUT 用户输入 ASSIGN_ID 雪花(默认值) ASSIGN_UUID 唯一 UUID
+      # 如需改为自增 需要将数据库表全部设置为自增
+      idType: ASSIGN_ID
+      # 字段验证策略之 insert,在 insert 的时候的字段验证策略
+      # IGNORED 忽略 NOT_NULL 非NULL NOT_EMPTY 非空 DEFAULT 默认 NEVER 不加入 SQL
+      insertStrategy: NOT_NULL
+      # 字段验证策略之 update,在 update 的时候的字段验证策略
+      updateStrategy: NOT_NULL
+      # 字段验证策略之 select,在 select 的时候的字段验证策略既 wrapper 根据内部 entity 生成的 where 条件
+      whereStrategy: NOT_NULL
+      #指定逻辑删除字段，及删除状态值
+      logicDeleteField: del_flag
+      #逻辑删除全局值（默认 1、表示已删除）
+      logicDeleteValue: 1
+      #逻辑未删除全局值（默认 0、表示未删除）
+      logicNotDeleteValue: 0
   configuration:
     # 是否开启自动驼峰命名规则映射:从数据库列名到Java属性驼峰命名的类似映射
     map-underscore-to-camel-case: true
