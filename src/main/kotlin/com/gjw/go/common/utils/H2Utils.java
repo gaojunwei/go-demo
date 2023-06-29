@@ -1,5 +1,6 @@
 package com.gjw.go.common.utils;
 
+import cn.hutool.core.util.IdUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +39,7 @@ public class H2Utils {
             tempFolder += File.separator + todayStr;
         }
         if (withUUID) {
-            tempFolder += File.separator + UuidUtils.getUUID16();
+            tempFolder += File.separator + IdUtil.getSnowflakeNextIdStr();
         }
         return tempFolder;
     }

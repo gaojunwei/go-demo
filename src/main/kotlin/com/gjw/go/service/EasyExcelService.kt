@@ -1,6 +1,6 @@
 package com.gjw.go.service
 
-import com.gjw.go.domain.StudentPo
+import com.gjw.go.domain.entity.StudentPo
 
 interface EasyExcelService {
     fun listAll(): List<StudentPo>

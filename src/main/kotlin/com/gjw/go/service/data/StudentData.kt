@@ -1,7 +1,7 @@
 package com.gjw.go.service.data
 
 import cn.hutool.core.util.IdUtil
-import com.gjw.go.domain.StudentPo
+import com.gjw.go.domain.entity.StudentPo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

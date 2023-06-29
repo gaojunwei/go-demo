@@ -15,7 +15,7 @@ class MdcUtils {
          */
         fun initRequestId() {
             if ((MDC.get(MdcEnums.RequestId.value)?:"").isEmpty()) {
-                MDC.put(MdcEnums.RequestId.value, IdUtil.fastUUID())
+                MDC.put(MdcEnums.RequestId.value, IdUtil.getSnowflakeNextIdStr())
             }
         }
 

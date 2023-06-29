@@ -4,6 +4,7 @@ import com.gjw.go.common.exception.AppException
 import com.gjw.go.common.log.log
 import com.gjw.go.common.result.BasicRespDto
 import com.gjw.go.common.utils.MdcUtils
+import org.springframework.validation.BindException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import javax.servlet.http.HttpServletRequest
@@ -19,6 +20,18 @@ class GlobalExceptionHandler {
         val requestURI = request.requestURI
         log.error("业务异常拦截 请求地址：{},异常描述：{}", requestURI, e.toString())
         return BasicRespDto.error(code = e.code, msg = e.msg).apply {
+            sn = MdcUtils.getRequestId()
+        }
+    }
+
+    /**
+     * 参数校验异常
+     */
+    @ExceptionHandler(BindException::class)
+    fun handleBindException(e: BindException, request: HttpServletRequest): BasicRespDto {
+        val requestURI = request.requestURI
+        log.error("参数校验未通过 请求地址：{},异常描述：{}", requestURI, e.toString())
+        return BasicRespDto.error(code = null, msg = e.bindingResult.allErrors[0].defaultMessage).apply {
             sn = MdcUtils.getRequestId()
         }
     }

@@ -8,10 +8,13 @@ import com.gjw.go.common.log.log
 import com.gjw.go.common.result.BasicRespDto
 import com.gjw.go.common.result.ListRespDto
 import com.gjw.go.common.result.SingleRespDto
-import com.gjw.go.domain.StudentPo
-import com.gjw.go.excel.listener.student.StudentImpDto
+import com.gjw.go.common.validation.AddGroup
+import com.gjw.go.domain.dto.StudentAddDTO
+import com.gjw.go.domain.entity.StudentPo
 import com.gjw.go.excel.listener.StudentListener
+import com.gjw.go.excel.listener.student.StudentImpDto
 import com.gjw.go.service.EasyExcelService
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import javax.annotation.Resource
@@ -44,7 +47,7 @@ class EasyExcelController {
      * 添加学生
      */
     @PostMapping
-    fun addStudent(@RequestBody studentPo: StudentPo): BasicRespDto {
+    fun addStudent(@RequestBody @Validated(value = [AddGroup::class]) studentPo: StudentAddDTO): BasicRespDto {
         log.info("添加学生 请求参数:{}", JSON.toJSONString(studentPo))
         return BasicRespDto.success()
     }
@@ -80,11 +83,12 @@ class EasyExcelController {
      */
     @PostMapping("/import")
     fun batchImport(@RequestParam("file") file: MultipartFile): ListRespDto<StudentImpDto> {
-        log.info("学生信息excel批量导入 fileName:{}",file.originalFilename)
+        log.info("学生信息excel批量导入 fileName:{}", file.originalFilename)
         return ListRespDto<StudentImpDto>().apply {
             code = SysCodeEnums.SUCCESS.code
             msg = SysCodeEnums.SUCCESS.msg
-            data = EasyExcel.read(file.inputStream, StudentImpDto::class.java, StudentListener<StudentImpDto>()).sheet().headRowNumber(1).doReadSync()
+            data = EasyExcel.read(file.inputStream, StudentImpDto::class.java, StudentListener<StudentImpDto>()).sheet()
+                .headRowNumber(1).doReadSync()
         }
     }
 }
