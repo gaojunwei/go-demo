@@ -1,10 +1,8 @@
 package com.test.service
 
-import cn.hutool.core.util.IdUtil
 import com.alibaba.fastjson2.JSON
 import com.gjw.go.excel.listener.student.StudentImpDto
 import com.gjw.go.mapstruct.StudentMapper
-import org.junit.jupiter.api.DisplayName
 import java.time.LocalDateTime
 import kotlin.test.Test
 
