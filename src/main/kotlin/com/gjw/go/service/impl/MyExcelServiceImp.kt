@@ -4,19 +4,17 @@ import com.gjw.go.common.log.log
 import com.gjw.go.domain.entity.StudentPo
 import com.gjw.go.service.EasyExcelService
 import com.gjw.go.service.data.StudentData
-import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 @Component
-@Primary
-class EasyExcelServiceImpl : EasyExcelService {
+class MyExcelServiceImp : EasyExcelService {
     override fun listAll(): List<StudentPo> {
-        log.info("EasyExcelServiceImpl  listAll")
+        log.info("MyExcelServiceImp  listAll")
         return StudentData.getAll()
     }
 
     override fun getById(id: Int): StudentPo? {
-        log.info("EasyExcelServiceImpl  getById")
+        log.info("MyExcelServiceImp  getById")
         return StudentData.getById(id)
     }
 }
