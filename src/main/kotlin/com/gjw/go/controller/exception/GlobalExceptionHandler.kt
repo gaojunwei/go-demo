@@ -17,8 +17,7 @@ class GlobalExceptionHandler {
      */
     @ExceptionHandler(AppException::class)
     fun handleAppException(e: AppException, request: HttpServletRequest): BasicRespDto {
-        val requestURI = request.requestURI
-        log.error("业务异常拦截 请求地址：{},异常描述：{}", requestURI, e.toString())
+        log.error("业务异常拦截 请求地址：[{}] {},异常描述：{}", request.method, request.requestURI, e.toString())
         return BasicRespDto.error(code = e.code, msg = e.msg).apply {
             sn = MdcUtils.getRequestId()
         }
@@ -29,8 +28,7 @@ class GlobalExceptionHandler {
      */
     @ExceptionHandler(BindException::class)
     fun handleBindException(e: BindException, request: HttpServletRequest): BasicRespDto {
-        val requestURI = request.requestURI
-        log.error("参数校验未通过 请求地址：{},异常描述：{}", requestURI, e.toString())
+        log.error("参数校验未通过 请求地址：[{}] {},异常描述：{}", request.method, request.requestURI, e.toString())
         return BasicRespDto.error(code = null, msg = e.bindingResult.allErrors[0].defaultMessage).apply {
             sn = MdcUtils.getRequestId()
         }
@@ -41,8 +39,7 @@ class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception, request: HttpServletRequest): BasicRespDto {
-        val requestURI = request.requestURI
-        log.error("系统异常 请求地址：{}", requestURI, e)
+        log.error("系统异常 请求地址：[{}] {}", request.method, request.requestURI, e)
         return BasicRespDto.error(null, null).apply {
             sn = MdcUtils.getRequestId()
         }
