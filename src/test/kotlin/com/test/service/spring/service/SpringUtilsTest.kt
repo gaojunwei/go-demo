@@ -1,7 +1,8 @@
-package com.test.service
+package com.test.service.spring.service
 
 import com.gjw.go.common.utils.SpringUtils
 import com.gjw.go.service.EasyExcelService
+import com.test.service.spring.AbstractSpringTest
 import kotlin.test.Test
 
 class SpringUtilsTest : AbstractSpringTest() {

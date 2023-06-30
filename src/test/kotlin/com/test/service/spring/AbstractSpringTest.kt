@@ -1,4 +1,4 @@
-package com.test.service
+package com.test.service.spring
 
 import com.gjw.go.GoApp
 import com.gjw.go.common.log.log
@@ -12,13 +12,4 @@ import kotlin.test.BeforeTest
 @SpringBootTest(classes = [GoApp::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class AbstractSpringTest {
 
-    @BeforeTest
-    fun beforeTest(){
-        log.info("BeforeTest 进行资源初始化操作")
-    }
-
-    @AfterTest
-    fun afterTest(){
-        log.info("AfterTest 进行资源释放操作")
-    }
 }
