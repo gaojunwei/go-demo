@@ -4,11 +4,9 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component
-@Lazy
 class SpringUtils : BeanFactoryPostProcessor, ApplicationContextAware {
 
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {

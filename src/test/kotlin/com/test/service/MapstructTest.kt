@@ -6,11 +6,9 @@ import com.gjw.go.mapstruct.StudentMapper
 import java.time.LocalDateTime
 import kotlin.test.Test
 
-class MainTestKt {
+class MapstructTest {
     @Test
     fun mainssss() {
-
-
         var studentImpDto = StudentImpDto().apply {
             name = "小明"
             age = 18
@@ -20,8 +18,8 @@ class MainTestKt {
             createTime = LocalDateTime.now()
         }
 
-        println("studentImpDto = " + JSON.toJSONString(studentImpDto))
+        println("before studentImpDto = " + JSON.toJSONString(studentImpDto))
         var studentPo = StudentMapper.INSTANCE.studentImpDtoToStudentPo(studentImpDto)
-        println("    studentPo = " + JSON.toJSONString(studentPo))
+        println("after studentPo = " + JSON.toJSONString(studentPo))
     }
 }

@@ -7,6 +7,11 @@ import org.mapstruct.Mapping
 import org.mapstruct.factory.Mappers
 
 
+/**
+ * 参考地址：
+ * https://github.com/mapstruct/mapstruct/issues/1672
+ * https://github.com/mapstruct/mapstruct-examples
+ */
 @Mapper
 interface StudentMapper {
     companion object {
