@@ -3,7 +3,7 @@ server:
 
 logging:
   file:
-    path: D:\work\logs
+    path: ./logs
 
 spring:
   application:

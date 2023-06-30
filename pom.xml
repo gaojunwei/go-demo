@@ -44,11 +44,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-engine</artifactId>
-            <version>6.8.0</version>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.21</version>
