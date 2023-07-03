@@ -1,7 +1,7 @@
 package com.gjw.go.controller.exception
 
 import com.gjw.go.common.exception.AppException
-import com.gjw.go.common.log.log
+import com.gjw.go.common.inline.log
 import com.gjw.go.common.result.BasicRespDto
 import com.gjw.go.common.utils.MdcUtils
 import org.springframework.validation.BindException

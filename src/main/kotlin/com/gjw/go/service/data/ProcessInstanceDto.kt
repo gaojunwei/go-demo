@@ -5,7 +5,7 @@ import java.util.*
 /**
  * 流程实例信息
  */
-class ProcessInstanceDTO {
+class ProcessInstanceDto {
     var processInstanceId: String? = null
     var processDefinitionId: String? = null
     var processDefinitionKey: String? = null

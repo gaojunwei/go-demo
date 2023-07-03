@@ -5,7 +5,7 @@ import com.alibaba.excel.exception.ExcelDataConvertException
 import com.alibaba.excel.read.listener.ReadListener
 import com.alibaba.fastjson2.JSON
 import com.gjw.go.common.exception.AppException
-import com.gjw.go.common.log.log
+import com.gjw.go.common.inline.log
 
 
 class StudentListener<T> : ReadListener<T> {

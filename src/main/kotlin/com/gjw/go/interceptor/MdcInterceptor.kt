@@ -1,6 +1,5 @@
 package com.gjw.go.interceptor
 
-import com.gjw.go.common.log.log
 import com.gjw.go.common.utils.MdcUtils
 import org.springframework.web.servlet.HandlerInterceptor
 import java.lang.Exception
@@ -25,7 +24,7 @@ class MdcInterceptor : HandlerInterceptor {
         ex: Exception?
     ) {
         //清除请求ID引用，释放内存，避免内存溢出
-        MdcUtils.removeRequestId();
+        MdcUtils.removeRequestId()
         super.afterCompletion(request, response, handler, ex)
     }
 }
