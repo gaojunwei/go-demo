@@ -3,3 +3,5 @@
 /workspace.xml
 target/*
 .idea/*
+logs/*
+go-server.iml
