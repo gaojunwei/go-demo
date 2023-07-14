@@ -1,0 +1,32 @@
+package rules
+import com.gjw.go.domain.dto.*;
+//测试contains规则
+rule "rule1"
+    when
+        $order:Order();
+        $customer:Customer(orderList contains $order);
+    then
+        System.out.println("测试contains规则触发："+$customer.getName());
+    end
+//测试not contains规则
+rule "rule2"
+    when
+        $order:Order();
+        $customer:Customer(orderList not contains $order);
+    then
+        System.out.println("测试not contains规则触发："+$customer.getName());
+    end
+//测试⽐较操作符matches
+rule "rule3"
+    when
+        Customer(name matches "张.*")
+    then
+        System.out.println("测试⽐较操作符matches触发...");
+    end
+//测试⽐较操作符not matches
+rule "rule4"
+    when
+        Customer(name not matches "张.*")
+    then
+        System.out.println("测试⽐较操作符not matches触发...");
+    end
