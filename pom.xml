@@ -46,7 +46,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.21</version>
+            <version>8.0.28</version>
         </dependency>
 
         <dependency>
@@ -175,4 +175,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <!-- release版本的发布地址 -->
+        <repository>
+            <id>maven-releases</id>
+            <url>http://127.0.0.1:8081/repository/maven-releases/</url>
+        </repository>
+        <!-- snapshot版本的发布地址 -->
+        <snapshotRepository>
+            <id>maven-snapshots</id>
+            <url>http://127.0.0.1:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
