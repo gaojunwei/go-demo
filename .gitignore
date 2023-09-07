@@ -3,3 +3,5 @@
 /workspace.xml
 target/*
 .idea/*
+server-consumer/target/*
+server-provider/target/*
