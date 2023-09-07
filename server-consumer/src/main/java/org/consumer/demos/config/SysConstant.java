@@ -8,6 +8,5 @@ public class SysConstant {
     public static class ServerName{
         //服务提供者
         public static final String SERVICE_PROVIDER = "service-provider";
-
     }
 }

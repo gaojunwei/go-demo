@@ -36,4 +36,11 @@ public class OpenFeignController {
                 (()-> echoService.echo(message));
         return completableFuture.get();
     }
+
+    @GetMapping("/feign/exception")
+    public String exception() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync
+                (()-> echoService.exception());
+        return completableFuture.get();
+    }
 }

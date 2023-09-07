@@ -20,12 +20,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.TimeUnit;
+
 @RestController
 public class EchoServiceController {
 
     @GetMapping("/echo/{message}")
     public String echo(@PathVariable String message) {
-        System.out.println("有人调用我："+message);
+        System.out.println("有人调用我 echo：" + message);
         return "[ECHO] : " + message;
+    }
+
+    @GetMapping("/exception")
+    public String exception() throws InterruptedException {
+        System.out.println("有人调用我 exception");
+        TimeUnit.SECONDS.sleep(10);
+        int a = 1 / 0;
+        return "[ECHO] : exception" + a;
     }
 }

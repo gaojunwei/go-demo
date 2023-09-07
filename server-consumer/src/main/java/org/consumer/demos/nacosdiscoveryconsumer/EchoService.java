@@ -21,9 +21,14 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(SysConstant.ServerName.SERVICE_PROVIDER)
+@FeignClient(contextId = SysConstant.ServerName.SERVICE_PROVIDER,
+        value = SysConstant.ServerName.SERVICE_PROVIDER,
+        fallbackFactory = RemoteServerProviderFallbackFactory.class)
 public interface EchoService {
 
     @GetMapping("/echo/{message}")
     String echo(@PathVariable("message") String message);
+
+    @GetMapping("/exception")
+    String exception();
 }
