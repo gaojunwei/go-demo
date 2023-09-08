@@ -1,6 +1,7 @@
 # nacos配置
 [Nacos-discovery配置](https://github.com/alibaba/spring-cloud-alibaba/wiki/Nacos-discovery)  
 [Nacos-config配置](https://github.com/alibaba/spring-cloud-alibaba/wiki/Nacos-config)  
+[nacos2.2.3数据库脚本mysql](source%2Fdb%2Fnacos2.2.3%2Fmysql-schema.sql)
 
 ## docker安装
 1. 创建docker network
