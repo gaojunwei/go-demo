@@ -1,9 +1,11 @@
 package com.gjw.go.drools
 
+import com.alibaba.fastjson2.JSON
 import com.gjw.go.common.inline.insertAll
-import com.gjw.go.domain.dto.Customer
-import com.gjw.go.domain.dto.Order
+import com.gjw.go.domain.dto.Intval
 import org.kie.api.KieServices
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.test.Test
 
 
@@ -15,35 +17,42 @@ class TestDrools {
     @Test
     fun test1() {
         //构造订单对象，设置订单⾦额，由规则引擎计算获得的积分
-        var list = mutableListOf(
-            Order(100, 0),
-            Order(200, 0),
-            Order(300, 0),
-            Order(400, 0),
-            Order(500, 0),
-            Order(600, 0)
-        )
+        var intval = Intval(1, 5, 1)
 
+        var count = 0
+        while (count<=50){
+
+            intval = convert(intval)
+            count++
+        }
+
+
+    }
+
+    private fun convert(intval: Intval): Intval {
+        val eqpMaintReminders = mutableListOf<Intval>()
 
         val kieServices = KieServices.Factory.get()
         val kieContainer = kieServices.kieClasspathContainer
         //会话对象,⽤于和规则引擎交互
-        val kieSession = kieContainer.newKieSession()
+        val session = kieContainer.newKieSession()
+
+        session.setGlobal("intvalList", eqpMaintReminders)
 
         //将数据交给规则引擎，规则引擎会根据提供的数据进⾏规则匹配
-        kieSession.insertAll(list)
+        session.insert(intval)
         //激活规则引擎，如果匹配成功则执⾏规则
-        kieSession.fireAllRules()
+        //session.fireAllRules{it.rule.name.startsWith("score")};
+        session.fireAllRules()
         //关闭会话
-        kieSession.dispose()
+        session.dispose()
         //打印结果;
-        list.forEach {
-            println("计算结果  amout = ${it.amout} 获得积分:${it.score}")
-        }
+        println("计算结果   $intval   "+ JSON.toJSONString(eqpMaintReminders))
+        return intval
     }
 
     @Test
-    fun test2() {
+    fun test2() {/*
         var orderList = mutableListOf(
             Order(100, 0),
             Order(200, 0),
@@ -71,6 +80,6 @@ class TestDrools {
         //激活规则引擎，如果匹配成功则执⾏规则
         kieSession.fireAllRules()
         //关闭会话
-        kieSession.dispose()
+        kieSession.dispose()*/
     }
 }
