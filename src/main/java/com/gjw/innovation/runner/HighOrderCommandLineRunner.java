@@ -1,4 +1,4 @@
-package com.gjw.common.innovation.runner;
+package com.gjw.innovation.runner;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

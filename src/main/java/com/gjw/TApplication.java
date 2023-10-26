@@ -1,4 +1,4 @@
-package com.gjw.common.innovation;
+package com.gjw;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
