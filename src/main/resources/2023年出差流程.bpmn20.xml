@@ -8,24 +8,24 @@
     </extensionElements>
 
     <startEvent id="startEvent1" flowable:formFieldValidation="true"></startEvent>
-    <userTask id="sid-C9093C97-1EBC-4CA0-B6E1-791230846996" name="组长审批" flowable:assignee="${zuzhang}" flowable:formFieldValidation="true">
+    <userTask id="sid-C9093C97-1EBC-4CA0-B6E1-791230846996" name="组长审批" flowable:candidateUsers="${zuzhang}" flowable:formFieldValidation="true">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-C560F5F8-27A2-4644-9263-2FD56C63BCB6" sourceRef="startEvent1" targetRef="sid-C9093C97-1EBC-4CA0-B6E1-791230846996"></sequenceFlow>
-    <userTask id="sid-5AE4B702-3503-46AE-B81F-5D96F00EDD7A" name="车间主任审批" flowable:assignee="${chejian}" flowable:formFieldValidation="true">
+    <userTask id="sid-5AE4B702-3503-46AE-B81F-5D96F00EDD7A" name="车间主任审批" flowable:candidateUsers="${chejian}" flowable:formFieldValidation="true">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-CEDD487F-0DC2-4E88-93E6-15E608F3B81A" sourceRef="sid-C9093C97-1EBC-4CA0-B6E1-791230846996" targetRef="sid-5AE4B702-3503-46AE-B81F-5D96F00EDD7A"></sequenceFlow>
-    <userTask id="sid-602CE508-641C-43C7-8001-065A32DA56A5" name="总经理审批" flowable:assignee="${zongjingli}" flowable:formFieldValidation="true">
+    <userTask id="sid-602CE508-641C-43C7-8001-065A32DA56A5" name="总经理审批" flowable:candidateUsers="${zongjingli}" flowable:formFieldValidation="true">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <userTask id="sid-CC04EA90-362D-431B-ACF0-556B2E85254E" name="财务审批" flowable:assignee="${caiwu}" flowable:formFieldValidation="true">
+    <userTask id="sid-CC04EA90-362D-431B-ACF0-556B2E85254E" name="财务审批" flowable:candidateUsers="${caiwu}" flowable:formFieldValidation="true">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>

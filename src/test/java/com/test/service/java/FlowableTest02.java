@@ -1,5 +1,7 @@
 package com.test.service.java;
 
+import com.alibaba.fastjson2.JSON;
+import liquibase.pro.packaged.S;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
@@ -8,13 +10,16 @@ import org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.identitylink.api.IdentityLink;
 import org.flowable.task.api.Task;
+import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +31,9 @@ import java.util.Map;
 public class FlowableTest02 {
 
     ProcessEngine processEngine = null;
+    RuntimeService runtimeService = null;
+    TaskService taskService = null;
+    HistoryService historyService = null;
 
     @BeforeEach
     public void test(){
@@ -36,6 +44,9 @@ public class FlowableTest02 {
                 .setJdbcDriver("com.mysql.cj.jdbc.Driver")
                 .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
         processEngine = cfg.buildProcessEngine();
+        runtimeService = processEngine.getRuntimeService();
+        taskService = processEngine.getTaskService();
+        historyService = processEngine.getHistoryService();
     }
 
     @Test
@@ -54,64 +65,125 @@ public class FlowableTest02 {
     }
 
     @Test
-    @DisplayName("查看流程定义")
-    public void testDeployQuery(){
-        // 部署流程 获取RepositoryService对象
-        RepositoryService repositoryService = processEngine.getRepositoryService();
-        // 获取流程定义对象
-        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-        /**
-         * Preparing: SELECT RES.* from ACT_RE_PROCDEF RES WHERE RES.NAME_ = ? and RES.RESOURCE_NAME_ like ? and RES.DEPLOYMENT_ID_ = ? order by RES.ID_ asc
-         * Parameters: Holiday Request(String), holiday-request.bpmn20.xml(String), 1(String)
-         */
-        for (ProcessDefinition processDefinition : processDefinitions){
-            System.out.println("processDefinition.getId() = " + processDefinition.getId());
-            System.out.println("processDefinition.getName() = " + processDefinition.getName());
-            System.out.println("processDefinition.getDeploymentId() = " + processDefinition.getDeploymentId());
-            System.out.println("processDefinition.getDescription() = " + processDefinition.getDescription());
-            System.out.println("processDefinition.getResourceName() = " + processDefinition.getResourceName());
-            System.out.println("processDefinition.isSuspended() = " + processDefinition.isSuspended());
-            System.out.println();
-        }
-    }
-
-    @Test
-    @DisplayName("流程定义删除")
-    public void testDeployDelete(){
-        RepositoryService repositoryService = processEngine.getRepositoryService();
-        //删除流程，指定流程ID,如果部署的流程启动了就不允许删除了
-        //repositoryService.deleteDeployment("2501");
-        //第二个参数是级联删除，如果流程启动了 相关的任务一并被删除
-        repositoryService.deleteDeployment("2501",true);
-    }
-
-    @Test
-    @DisplayName("挂起/激活流程")
-    public void test05(){
-        RepositoryService repositoryService = processEngine.getRepositoryService();
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionId("a2023chuchai:1:20004")
-                .singleResult();
-        // 获取流程定义的状态
-        boolean suspended = processDefinition.isSuspended();
-        System.out.println("suspended = " + suspended);
-        if(suspended){
-            // 表示被挂起
-            repositoryService.activateProcessDefinitionById(processDefinition.getId(),true,null);
-            System.out.println("激活流程定义");
-        }else{
-            // 表示激活状态
-            repositoryService.suspendProcessDefinitionById(processDefinition.getId(),true,null);
-            System.out.println("挂起流程");
-        }
-    }
-
-
-    @Test
     @DisplayName("流程实例删除")
-    public void testDeployDeletedd(){
-        RuntimeService runtimeService = processEngine.getRuntimeService();
+    public void test001(){
         runtimeService.deleteProcessInstance("5001","废除");
+    }
+
+    @Test
+    @DisplayName("查询进行中的流程实例")
+    public void test002(){
+        List<ProcessInstance> list = runtimeService.createProcessInstanceQuery().list();
+        System.out.println("查询进行中的流程实例");
+        System.out.println(JSON.toJSONString(list));
+    }
+
+    @Test
+    @DisplayName("查询历史流程实例")
+    public void test004(){
+        List<HistoricProcessInstance> list = historyService.createHistoricProcessInstanceQuery()
+                .includeProcessVariables().list();
+        System.out.println("查询历史流程实例");
+        System.out.println(JSON.toJSONString(list));
+    }
+
+    @Test
+    @DisplayName("查询流程已完成任务列表")
+    public void test005(){
+        String processInstanceId = "2501";
+        List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .taskWithoutDeleteReason()
+                .orderByHistoricTaskInstanceStartTime().desc()
+                .finished().list();
+
+        System.out.println("查询流程任务列表");
+        list.forEach(item->{
+            System.out.println("*******************"+item.getProcessInstanceId());
+            System.out.println("getId ="+item.getId());
+            System.out.println("getProcessInstanceId ="+item.getProcessInstanceId());
+            System.out.println("getName ="+item.getName());
+            System.out.println("getTaskLocalVariables ="+JSON.toJSONString(item.getTaskLocalVariables()));
+            System.out.println("getAssignee ="+item.getAssignee());
+            System.out.println("getExecutionId ="+item.getExecutionId());
+            System.out.println("getTaskDefinitionKey ="+item.getTaskDefinitionKey());
+            System.out.println("getDeleteReason ="+item.getDeleteReason());
+        });
+    }
+
+    /**
+     * 已审批完成的任务无法修改处理人
+     */
+    @Test
+    @DisplayName("已完成任务受让人修改")
+    public void test006(){
+        taskService.setAssignee("17504", "车间主任审批2");
+    }
+
+    @Test
+    @DisplayName("删除流程实例")
+    public void test007(){
+        //historyService.deleteHistoricProcessInstance("27501");
+        //次删除不会清除历史记录，只是将流程结束，并设置删除原因,然后调用historyService的删除即可
+        //runtimeService.deleteProcessInstance("15001","终止");
+        //historyService.deleteHistoricProcessInstance("15001");
+    }
+
+    @Test
+    @DisplayName("查询任务信息")
+    public void test008(){
+        TaskQuery query = taskService.createTaskQuery();
+        query.processInstanceId("2501");
+        List<Task> tasks = query.list();
+        printTask(tasks);
+    }
+
+    @Test
+    @DisplayName("删除流程实例")
+    public void test009(){
+        taskService.addCandidateUser("2511","组长1");
+        taskService.addCandidateUser("2511","组长2");
+        taskService.addCandidateUser("2511","组长3");
+    }
+
+    @Test
+    @DisplayName("查询任务候选人信息")
+    public void test010(){
+        List<IdentityLink> list = taskService.getIdentityLinksForTask("2511");
+        list.forEach(item->{
+            System.out.println("***候选人信息");
+            System.out.println("getUserId = "+item.getUserId());
+        });
+    }
+
+    @Test
+    @DisplayName("设置受让人")
+    public void test011(){
+        taskService.setAssignee("12503","组长");
+    }
+
+    @Test
+    @DisplayName("节点回退")
+    public void test012(){
+        runtimeService.createChangeActivityStateBuilder()
+                .processInstanceId("2501")
+                .moveActivityIdsToSingleActivityId(Arrays.asList("sid-602CE508-641C-43C7-8001-065A32DA56A5"), "sid-C9093C97-1EBC-4CA0-B6E1-791230846996")
+                .changeState();
+    }
+
+    private void printTask(List<Task> list){
+        list.forEach(task -> {
+            System.out.println("*****************");
+            System.out.println("getId ="+task.getId());
+            System.out.println("getName ="+task.getName());
+            System.out.println("getExecutionId ="+task.getExecutionId());
+            System.out.println("getScopeId ="+task.getScopeId());
+            System.out.println("getProcessDefinitionId ="+task.getProcessDefinitionId());
+            System.out.println("getTaskDefinitionId ="+task.getTaskDefinitionId());
+            System.out.println("getScopeDefinitionId ="+task.getScopeDefinitionId());
+            System.out.println("getAssignee ="+task.getAssignee());
+            System.out.println("getProcessVariables ="+JSON.toJSONString(task.getProcessVariables()));
+        });
     }
 
     @Test
@@ -133,9 +205,12 @@ public class FlowableTest02 {
     }
 
     @Test
-    @DisplayName("组长查询代办任务")
+    @DisplayName("查询代办任务")
     public void testQueryTask(){
         queryTask("组长");
+        queryTask("车间主任");
+        queryTask("总经理");
+        queryTask("财务");
     }
 
     @Test
@@ -156,16 +231,10 @@ public class FlowableTest02 {
     }
 
     @Test
-    @DisplayName("车间主任查询代办任务")
-    public void testQueryTask1(){
-        queryTask("车间主任");
-    }
-
-    @Test
     @DisplayName("车间主任-修改报销金额")
     public void update001(){
         RuntimeService runtimeService = processEngine.getRuntimeService();
-        runtimeService.setVariable("22507","num",900);
+        runtimeService.setVariable("12501","num",900);
         System.out.println("车间主任-修改报销金额");
         queryTask("车间主任");
     }
@@ -175,7 +244,7 @@ public class FlowableTest02 {
     public void testCompleteTask1(){
         TaskService taskService = processEngine.getTaskService();
         List<Task> tasks = taskService.createTaskQuery()
-                .taskAssignee("车间主任")
+                .taskCandidateOrAssigned("车间主任")
                 .list();
         // 添加流程变量
         Map<String,Object> variables = new HashMap<>();
@@ -280,7 +349,7 @@ public class FlowableTest02 {
                 .includeTaskLocalVariables()
                 .list();
         for (Task task : list) {
-            System.out.println("代办任务:");
+            System.out.println("代办任务:"+taskCandidateOrAssigned);
             System.out.println("task.getProcessDefinitionId() = " + task.getProcessDefinitionId());
             System.out.println("task.getId() = " + task.getId());
             System.out.println("task.getAssignee() = " + task.getAssignee());
@@ -290,6 +359,7 @@ public class FlowableTest02 {
             System.out.println("task.getProcessVariables()= "+task.getProcessVariables());
             System.out.println("task.getProcessVariables()= "+task.getDueDate());
             System.out.println("task.getExecutionId()= "+task.getExecutionId());
+            System.out.println("task.getTaskDefinitionKey()= "+task.getTaskDefinitionKey());
             System.out.println();
         }
     }
