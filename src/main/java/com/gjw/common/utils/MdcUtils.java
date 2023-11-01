@@ -1,12 +1,10 @@
 package com.gjw.common.utils;
 
 import cn.hutool.core.lang.id.NanoId;
-import com.gjw.common.innovation.common.enums.MdcEnums;
+import com.gjw.common.enums.MdcEnums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
-
-import java.util.HashMap;
 
 @Slf4j
 public class MdcUtils {
