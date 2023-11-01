@@ -107,3 +107,7 @@ mybatis-plus:
       updateStrategy: NOT_NULL
       # 字段验证策略之 select,在 select 的时候的字段验证策略既 wrapper 根据内部 entity 生成的 where 条件
       where-strategy: NOT_NULL
+
+jwt:
+  expiration: 99999
+  secret: dfb6218e-6133-ef36-f33b-1e0994712457
