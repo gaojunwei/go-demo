@@ -10,9 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
 /**
- * @author: gaojunwei
- * @Date: 2019/6/3 9:54
- * @Description:
+ * JWT 工具
  */
 public class JwtUtils {
     /**
@@ -44,9 +42,6 @@ public class JwtUtils {
 
     /**
      * 验证JWT
-     *
-     * @param jwtStr
-     * @return
      */
     public static SingleResult<Claims> validateJWT(String jwtStr, String secretKey) {
         SingleResult<Claims> result = new SingleResult<>();
@@ -66,19 +61,13 @@ public class JwtUtils {
 
     private static SecretKey generalKey(String secretKey) {
         byte[] encodedKey = Base64.decodeBase64(secretKey);
-        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
-        return key;
+        return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
     }
 
     /**
      * 解析JWT字符串
-     *
-     * @param jwt
-     * @return
-     * @throws Exception
      */
     public static Claims parseJWT(String jwt, String secretKey) {
-        SecretKey scrtKey = generalKey(secretKey);
-        return Jwts.parser().setSigningKey(scrtKey).parseClaimsJws(jwt).getBody();
+        return Jwts.parser().setSigningKey(generalKey(secretKey)).parseClaimsJws(jwt).getBody();
     }
 }
