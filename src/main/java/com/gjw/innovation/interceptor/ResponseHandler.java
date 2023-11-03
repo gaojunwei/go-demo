@@ -1,7 +1,7 @@
 package com.gjw.innovation.interceptor;
 
-import com.gjw.common.innovation.common.MdcUtils;
 import com.gjw.common.result.BasicResult;
+import com.gjw.common.utils.MdcUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -23,7 +23,7 @@ public class ResponseHandler implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         if (o instanceof BasicResult) {
-            //设置请求流水ID
+            // 设置请求流水ID
             ((BasicResult) o).setSn(MdcUtils.getRequestId());
         }
         return o;

@@ -111,3 +111,7 @@ mybatis-plus:
 jwt:
   expiration: 99999
   secret: dfb6218e-6133-ef36-f33b-1e0994712457
+
+log:
+  save:
+    path: ./log

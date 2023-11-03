@@ -9,6 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class WxLoginOpenIdVo {
     private String openid;
-    private String sessionKey;
     private String token;
 }

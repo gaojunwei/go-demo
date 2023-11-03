@@ -8,5 +8,5 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import java.util.concurrent.ExecutionException;
 
 public interface WxUserService extends IService<WxUser> {
-    WxLoginOpenIdVo saveOpenid(String code) throws WxErrorException, ExecutionException, InterruptedException;
+    WxLoginOpenIdVo wxLogin(String code) throws WxErrorException, ExecutionException, InterruptedException;
 }

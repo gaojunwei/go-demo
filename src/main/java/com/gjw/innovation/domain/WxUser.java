@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @TableName("wx_user")
 @Getter
@@ -24,6 +25,14 @@ public class WxUser {
      * 微信openId
      */
     private String openId;
+    /**
+     * 微信sessionKey
+     */
+    private String sessionKey;
+    /**
+     * 登录时间
+     */
+    private LocalDateTime loginTime;
     /**
      * 默认值0，0未删除，1已删除
      */
