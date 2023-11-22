@@ -17,7 +17,7 @@ public class FlowExecutionListener implements ExecutionListener {
     private Expression fieldName;
     @Override
     public void notify(DelegateExecution execution) {
-        log.info("********** 执行 监听器 start");
+        log.info("********** ExecutionListener 执行 监听器 start");
         log.info("fieldName.getExpressionText() = {}",fieldName.getExpressionText());
         log.info("fieldName.getValue = {}",fieldName.getValue(execution));
         log.info("getEventName = {}",execution.getEventName());
@@ -25,7 +25,7 @@ public class FlowExecutionListener implements ExecutionListener {
         log.info("getProcessDefinitionId = {}",execution.getProcessDefinitionId());
         log.info("getVariables = {}",execution.getVariables());
         log.info("isEnded = {}",execution.isEnded());
-        log.info("********** 执行 监听器 end");
+        log.info("********** ExecutionListener 执行 监听器 end");
 
     }
 }
