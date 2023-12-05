@@ -1,0 +1,18 @@
+version: '3.9'
+
+networks:
+  proxy:
+    external: true
+
+services:
+  go-server:
+    image: go-server:v1.0
+    restart: always
+    deploy:
+      replicas: 1
+    networks: 
+      - proxy
+    environment:
+      TZ: Asia/Shanghai
+      ATTR_1: "attr_1-docker-jenkins"
+      attr_2: "attr_2-docker-jenkins"
