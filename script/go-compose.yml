@@ -13,8 +13,8 @@ services:
     networks: 
       - proxy
     ports:
-      - target: 80
-        published: 8801
+      - target: 8801
+        published: 80
         mode: host
     environment:
       TZ: Asia/Shanghai
