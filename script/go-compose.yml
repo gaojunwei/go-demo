@@ -12,6 +12,10 @@ services:
       replicas: 1
     networks: 
       - proxy
+    ports:
+      - target: 80
+        published: 8801
+        mode: host
     environment:
       TZ: Asia/Shanghai
       ATTR_1: "attr_1-docker-jenkins"
