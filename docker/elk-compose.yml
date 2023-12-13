@@ -1,0 +1,25 @@
+version: '3.9'
+
+networks:
+  proxy:
+    external: true
+
+services:
+  elasticsearch:
+    image: elasticsearch:7.13.0
+    container_name: elasticsearch-dev
+    networks:
+      - proxy
+    ports:
+      - "9200:9200"
+      - "50000:50000"
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai #保持与宿主机时区一直
+      - LANG=en_US.UTF-8 #设置编码格式
+      - "cluster.name=elasticsearch" #设置集群名称为elasticsearch
+      - "discovery.type=single-node" #以单一节点模式启动
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" #设置使用jvm内存大小
+    volumes:
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins #插件文件挂载
+      - ./elasticsearch/data:/usr/share/elasticsearch/data #数据文件挂载
