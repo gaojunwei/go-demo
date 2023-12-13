@@ -1,0 +1,47 @@
+version: '3.9'
+
+networks:
+  local_net:
+    external: true
+
+services:
+  es:
+    image: elasticsearch:7.17.15
+    container_name: es
+    restart: always
+    privileged: true
+    networks: 
+      - local_net
+    ports:
+      - target: 9200
+        published: 9200
+        mode: host
+      - target: 9300
+        published: 9300
+        mode: host
+    volumes:
+      - ./es/data:/usr/share/elasticsearch/data
+      - ./es/logs:/usr/share/elasticsearch/logs
+      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
+    environment:
+      TZ: Asia/Shanghai
+      discovery.type: single-node
+
+  kibana:
+    image: kibana:7.17.15
+    restart: always
+    privileged: true
+    container_name: kibana
+    networks:
+      - local_net
+    ports:
+      - target: 5601
+        published: 5601
+        mode: host
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    environment:
+      TZ: Asia/Shanghai
+    depends_on:
+      - es
