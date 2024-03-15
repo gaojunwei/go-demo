@@ -5,8 +5,7 @@
     <springProperty scope="context" name="appName" source="spring.application.name"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%5p: %d{yyyy-MM-dd HH:mm:ss} [traceId=%X{traceId}] [uri=%X{uri}] [method=%X{method}] [%t] [%c]
-                [%X{user}] %m%n
+            <pattern>%5p: %d{yyyy-MM-dd HH:mm:ss} [traceId=%X{traceId}] [uri=%X{uri}] [method=%X{method}] [%c] [%X{user}] %m%n
             </pattern>
             <charset>UTF-8</charset>
         </encoder>
