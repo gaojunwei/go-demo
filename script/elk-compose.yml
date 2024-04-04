@@ -1,47 +1,68 @@
-version: '3.9'
+version: '3'
 
 networks:
-  local_net:
+  elk:
     external: true
 
 services:
   es:
-    image: elasticsearch:7.17.15
+    image: elasticsearch:8.4.3
     container_name: es
-    restart: always
-    privileged: true
-    networks: 
-      - local_net
     ports:
-      - target: 9200
-        published: 9200
-        mode: host
-      - target: 9300
-        published: 9300
-        mode: host
-    volumes:
-      - ./es/data:/usr/share/elasticsearch/data
-      - ./es/logs:/usr/share/elasticsearch/logs
-      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ./es/config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
+      - "9200:9200"
+      - "9300:9300"
+    restart: always
+    networks:
+      - elk
     environment:
-      TZ: Asia/Shanghai
-      discovery.type: single-node
+      - TZ=Asia/Shanghai #保持与宿主机时区一直
+      - LANG=C.UTF-8 #设置编码格式
+      - LC_ALL=C.UTF-8
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    volumes:
+      - ./es/config:/usr/share/elasticsearch/config
+      - ./es/data:/usr/share/elasticsearch/data
+      - ./es/plugins:/usr/share/elasticsearch/plugins
+      - ./es/logs:/usr/share/elasticsearch/logs
 
   kibana:
-    image: kibana:7.17.15
-    restart: always
-    privileged: true
+    image: kibana:8.4.3
     container_name: kibana
-    networks:
-      - local_net
     ports:
-      - target: 5601
-        published: 5601
-        mode: host
-    volumes:
-      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - "5601:5601"
+    restart: always
+    networks:
+      - elk
     environment:
-      TZ: Asia/Shanghai
-    depends_on:
-      - es
+      - TZ=Asia/Shanghai #保持与宿主机时区一直
+      - LANG=C.UTF-8 #设置编码格式
+      - LC_ALL=C.UTF-8
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+    volumes:
+      - ./kibana/config:/usr/share/kibana/config
+      - ./kibana/data:/usr/share/kibana/data
+      - ./kibana/plugins:/usr/share/kibana/plugins
+      - ./kibana/logs:/usr/share/kibana/logs
+
+  logstash:
+    image: logstash:8.4.3
+    container_name: logstash
+    ports:
+      - "9600:9600"
+      - "5044:5044"
+      - "4560:4560"
+    restart: always
+    networks:
+      - elk
+    environment:
+      - TZ=Asia/Shanghai #保持与宿主机时区一直
+      - LANG=C.UTF-8 #设置编码格式
+      - LC_ALL=C.UTF-8
+    volumes:
+      - ./logstash/config:/usr/share/logstash/config
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
