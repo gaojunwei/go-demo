@@ -5,6 +5,7 @@ import com.gjw.common.enums.SystemCodeEnums;
 import com.gjw.common.result.SingleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +13,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 测试
@@ -78,5 +80,11 @@ public class IndexController {
     private String getHostname() throws UnknownHostException {
         InetAddress inetAddress = InetAddress.getLocalHost();
         return inetAddress.getHostName();
+    }
+
+
+    @Scheduled(fixedDelay = 1000)
+    public void task(){
+        logger.info("打印日志 {}", UUID.randomUUID());
     }
 }
