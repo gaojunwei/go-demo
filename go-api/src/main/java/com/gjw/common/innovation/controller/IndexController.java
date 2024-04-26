@@ -22,10 +22,10 @@ import java.util.UUID;
 @RequestMapping("/")
 @Slf4j
 public class IndexController {
-    @Value("${app.attr1}")
+    @Value("${app.attr1:'xxxx1'}")
     private String appAttr1;
 
-    @Value("${app.attr2}")
+    @Value("${app.attr2:'xxxx2'}")
     private String appAttr2;
 
     @RequestMapping("")
