@@ -1,0 +1,26 @@
+version: '3'
+
+networks:
+  elk:
+    external: true
+
+services:
+  kibana:
+    image: kibana:8.4.3
+    container_name: kib01
+    ports:
+      - "5601:5601"
+    restart: always
+    networks:
+      - elk
+    environment:
+      - TZ=Asia/Shanghai #保持与宿主机时区一直
+      - LANG=C.UTF-8 #设置编码格式
+      - LC_ALL=C.UTF-8
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+    volumes:
+      - ./kibana/config:/usr/share/kibana/config
