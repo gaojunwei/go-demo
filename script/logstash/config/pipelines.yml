@@ -3,4 +3,6 @@
 #   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
 
 - pipeline.id: main
-  path.config: "/usr/share/logstash/pipeline"
+  path.config: "/usr/share/logstash/pipeline/file"
+- pipeline.id: gjw
+  path.config: "/usr/share/logstash/pipeline/beat"
