@@ -84,7 +84,7 @@ public class IndexController {
     }
 
 
-    //@Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1000)
     public void task() {
         log.info("打印日志 {}", UUID.randomUUID());
     }

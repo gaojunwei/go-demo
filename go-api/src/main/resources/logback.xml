@@ -41,7 +41,7 @@
 
 
     <root level="INFO">
-        <!--<appender-ref ref="SYS_INFO"/>-->
+        <appender-ref ref="SYS_INFO"/>
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
