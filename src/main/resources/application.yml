@@ -1,25 +1,23 @@
-server:
-    port: 5670
 
-logging:
-  file:
-    path: ./logs
-    name: app-demo.log
-  level:
-    root: info
-    com:
-      gjw:
-        go:
-          job:
-            one: debug
-  pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{100}.%M:%L - %msg%n'
-    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
 
+iot:
+    mqtt:
+        clientId: gjw-client-1
+        defaultTopic: mqtt_test_topic
+        serverClientId: gjw-local-
+        servers: tcp://127.0.0.1:1883
 
 spring:
-  application:
-    name: go-demo
-  profiles:
-    active: local
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&allowMultiQueries=true
+        username: root
+        password: root
 
+#开启日志
+mybatis-plus:
+    configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    mapper-locations: classpath*:/mapper/*.xml
+server:
+    port: 9090
