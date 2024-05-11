@@ -31,4 +31,13 @@ public class DataController {
         }
         return "success";
     }
+    @GetMapping("/back")
+    public String returnCard(){
+        try {
+            dataService.returnCard();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "success";
+    }
 }

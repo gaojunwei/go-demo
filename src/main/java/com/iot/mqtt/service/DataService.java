@@ -33,6 +33,7 @@ public class DataService {
     private final String personnelId = "id";
     private final String takeCardTopic = "/gjw/position/application/takeCard";
     private final String pointTopic = "/position/application/position";
+    private final String returnCardTopic = "/gjw/position/application/returnCard";
     //private final String limit = " limit 1";
     private final String limit = " limit 498";
     private final String url = "http://127.0.0.1:8080/cardSender/faceIdentityNotify";
@@ -151,4 +152,21 @@ public class DataService {
             throw new RuntimeException("生成代发卡记录失败 " + MapUtil.getStr(JSON.parseObject(result), "msg"));
         }*/
     }
+
+
+    String returnCard = "{\"uniqueId\":\"%s\",\"personId\":%s,\"cardId\":%s,\"result\":\"0\",\"cardSenderId\":34,\"returnTime\":\"%s\",\"remark\":\"轮 询 还 卡 \"}";
+    public void returnCard(){
+        //查询卡信息
+        List<Map<String, Object>> cardList = dataBaseMapper.list("select * from person_position.card where card_number>=6600001 and card_number <= 6600498 order by card_number asc" + limit);
+
+        /**
+         * 获取人员和卡信息
+         */
+        cardList.stream().forEach(item->{
+            String mqttStr = String.format(returnCard,IdUtil.simpleUUID(),MapUtil.getLong(item,relatedId),MapUtil.getLong(item,cardNumber),DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
+            System.out.println("发送MQTT消息："+mqttStr);
+            mqttGateway.sendMessage2Mqtt(returnCardTopic, 1, mqttStr);
+        });
+    }
+
 }
