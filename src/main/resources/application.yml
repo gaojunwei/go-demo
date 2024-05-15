@@ -1,23 +1,38 @@
-
-
-iot:
-    mqtt:
-        clientId: gjw-client-1
-        defaultTopic: mqtt_test_topic
-        serverClientId: gjw-local-
-        servers: tcp://127.0.0.1:1883
-
-spring:
-    datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&allowMultiQueries=true
-        username: root
-        password: root
-
-#开启日志
-mybatis-plus:
-    configuration:
-        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    mapper-locations: classpath*:/mapper/*.xml
 server:
     port: 9090
+
+# springdoc-openapi项目配置
+springdoc:
+    swagger-ui:
+        path: /swagger-ui.html
+        tags-sorter: alpha
+        operations-sorter: alpha
+    api-docs:
+        path: /v3/api-docs
+    group-configs:
+        - group: 'default'
+          display-name: '基础信息管理'
+          paths-to-match: '/**'
+          packages-to-scan: com.iot.mqtt.business.basic.controller
+        - group: 'eqp-group'
+          display-name: '设备管理'
+          paths-to-match: '/**'
+          packages-to-scan: com.iot.mqtt.business.eqp.controller
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+    enable: true
+    setting:
+        language: zh_cn
+        swagger-model-name: 实体类列表
+    documents:
+      - name: 开发文档说明
+        locations: classpath:markdown/*
+        group: 基础信息管理
+      - name: 测试文档说明
+        locations: classpath:markdown2/*
+        group: 基础信息管理
+    #访问API页面认证
+    basic:
+      enable: false
+      username: abc
+      password: 123
