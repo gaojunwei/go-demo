@@ -24,22 +24,31 @@ message Author {
   int32 book_id = 5;
 }
 
+//返回对象集合
+message ReplyModel {
+  repeated Author author = 1;
+}
+message RequestModel {
+}
 
 service BookAuthorService {
+  //unary - synchronous
+  //client will send one request and server will respond with one response.
+  rpc listAllAuthor(RequestModel) returns(ReplyModel);
 
   //unary - synchronous
   //client will send one request and server will respond with one response.
-  rpc getAuthor(Author) returns(Author){}
+  rpc getAuthor(Author) returns(Author);
 
   //sever streaming - Asynchronous
   //client will send one request and server will send stream of response to the client.
-  rpc getBooksByAuthor(Author) returns(stream Book){}
+  rpc getBooksByAuthor(Author) returns(stream Book);
 
   //client streaming - Asynchronous
   //client will stream of request and server will respond with one response.
-  rpc getExpensiveBook(stream Book) returns(Book){}
+  rpc getExpensiveBook(stream Book) returns(Book);
 
   //bi-directional streaming - Asynchronous
   //client will send stream of request and server will respond with stream of response.
-  rpc getBooksByGender(stream Book) returns (stream Book) {}
+  rpc getBooksByGender(stream Book) returns (stream Book);
 }

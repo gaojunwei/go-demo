@@ -1,8 +1,6 @@
 package com.devproblems.grpc.server;
 
-import com.go.Author;
-import com.go.Book;
-import com.go.BookAuthorServiceGrpc;
+import com.go.*;
 import com.devproblems.TempDB;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -16,6 +14,12 @@ import java.util.List;
  */
 @GrpcService
 public class BookAuthorServerService extends BookAuthorServiceGrpc.BookAuthorServiceImplBase {
+    @Override
+    public void listAllAuthor(RequestModel request, StreamObserver<ReplyModel> responseObserver) {
+        responseObserver.onNext(ReplyModel.newBuilder().addAllAuthor(TempDB.getAuthorsFromTempDb()).build());
+        responseObserver.onCompleted();
+        System.out.println("grpc-server 获取作者列表信息");
+    }
 
     @Override
     public void getAuthor(Author request, StreamObserver<Author> responseObserver) {

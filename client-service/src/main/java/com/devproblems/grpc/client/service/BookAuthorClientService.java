@@ -1,8 +1,7 @@
 package com.devproblems.grpc.client.service;
 
-import com.go.Author;
-import com.go.Book;
-import com.go.BookAuthorServiceGrpc;
+import com.alibaba.fastjson2.JSON;
+import com.go.*;
 import com.devproblems.TempDB;
 import com.google.protobuf.Descriptors;
 import io.grpc.stub.StreamObserver;
@@ -25,6 +24,12 @@ public class BookAuthorClientService {
 
     @GrpcClient("grpc-devproblems-service")
     BookAuthorServiceGrpc.BookAuthorServiceStub asynchronousClient;
+
+    public void listAllAuthor() {
+        RequestModel requestModel = RequestModel.newBuilder().build();
+        ReplyModel response = synchronousClient.listAllAuthor(requestModel);
+        System.out.println("响应数据："+JSON.toJSONString(response.getAuthorList()));
+    }
 
     public Map<Descriptors.FieldDescriptor, Object> getAuthor(int authorId) {
         Author authorRequest = Author.newBuilder().setAuthorId(authorId).build();
