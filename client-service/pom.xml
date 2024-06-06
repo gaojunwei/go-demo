@@ -21,7 +21,6 @@
         <dependency>
             <groupId>com.sarang.devproblems</groupId>
             <artifactId>grpc-proto</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.devh</groupId>
