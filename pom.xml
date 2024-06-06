@@ -3,16 +3,52 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.sarang.devproblems</groupId>
+    <artifactId>spring-boot-grpc</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
     <modules>
         <module>client-service</module>
         <module>grpc-service</module>
-        <module>proto</module>
+        <module>grpc-proto</module>
     </modules>
 
-    <groupId>com.sarang.devproblems</groupId>
-    <artifactId>spring-boot-grpc</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>spring-boot-grpc</name>
+
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <grpc.client.starter>2.9.0.RELEASE</grpc.client.starter>
+        <grpc.server.starter>2.9.0.RELEASE</grpc.server.starter>
+
+        <spring-boot.version>2.6.2</spring-boot.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- SpringBoot的依赖配置-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>net.devh</groupId>
+                <artifactId>grpc-client-spring-boot-starter</artifactId>
+                <version>${grpc.client.starter}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.devh</groupId>
+                <artifactId>grpc-spring-boot-starter</artifactId>
+                <version>${grpc.server.starter}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

@@ -25,6 +25,7 @@ public class BookAuthorServerService extends BookAuthorServiceGrpc.BookAuthorSer
                 .findFirst()
                 .ifPresent(responseObserver::onNext);
         responseObserver.onCompleted();
+        System.out.println("grpc-server 获取作者信息");
     }
 
     @Override
