@@ -25,4 +25,32 @@ public class IndexController {
     public BookVo two() {
         return indexService.two();
     }
+
+    @GetMapping("three")
+    public int three() {
+        return indexService.three();
+    }
+
+    @GetMapping("four")
+    public int four() {
+        return indexService.four();
+    }
+
+    @GetMapping("cpu")
+    public String cpuHigh() {
+        indexService.cpuHigh();
+        return "cpuHigh";
+    }
+
+    @GetMapping("memory")
+    public String memoryHigh() {
+        indexService.memoryHigh();
+        return "memoryHigh";
+    }
+
+    @GetMapping("thread")
+    public String deadThread() {
+        indexService.deadThread();
+        return "deadThread";
+    }
 }

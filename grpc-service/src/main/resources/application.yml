@@ -4,3 +4,4 @@ grpc:
   server:
     port: 9000
 
+gjw.test: value001
