@@ -1,0 +1,7 @@
+server:
+  port: 9090
+gjw:
+  url: 127.0.0.1
+  port: 123456
+  user-name: xxxx
+  password: 111111
