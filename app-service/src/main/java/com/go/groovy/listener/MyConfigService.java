@@ -8,15 +8,18 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class TextListener {
+public class MyConfigService {
     @Resource
     private ConfigService configService;
 
+    /**
+     * Nacos 获取配置
+     */
     public String getConfigContent(String dataId, String group) {
         try {
-            return configService.getConfig(dataId, group, 5000);
+            return configService.getConfig(dataId, group, 3000);
         } catch (NacosException e) {
-            log.error("获取配置失败", e);
+            log.error("获取配置失败 dataId:{},group:{}", dataId, group, e);
             return null;
         }
     }
