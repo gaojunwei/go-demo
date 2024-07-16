@@ -1,2 +1,22 @@
 server:
   port: 9090
+
+spring:
+  application:
+    name: nacos-config-example
+  cloud:
+    nacos:
+      config:
+        username: nacos
+        password: nacos
+        server-addr: 127.0.0.1:8848
+        namespace: dev
+        enable-remote-sync-config: true
+  config:
+    import:
+      - nacos:gjw-test.yml?refreshEnabled=true&group=dev-group
+      - nacos:groovy_script?refreshEnabled=true&group=dev_group
+
+
+gjw:
+  test2: xxooo

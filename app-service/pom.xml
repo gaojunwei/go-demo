@@ -19,11 +19,9 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-
         <dependency>
-            <groupId>com.sarang.devproblems</groupId>
-            <artifactId>protocol-dlt645-core</artifactId>
-            <version>${parent.version}</version>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
         <dependency>
