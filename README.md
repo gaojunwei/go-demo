@@ -198,3 +198,58 @@ public class NacosConfigChangeListener implements Listener {
 ![控制台打印](image/4.jpg)
 ![控制台打印](image/5.jpg)
 
+# 集成groovy脚本执行能力
+>引入目的，可以动态修改脚本，并实时生效，动态脚本和spring互通，方便动态修改业务逻辑，并实时生效；
+
+## 引入依赖
+```xml
+<dependency>
+    <groupId>org.apache.groovy</groupId>
+    <artifactId>groovy-all</artifactId>
+    <version>4.0.22</version>
+</dependency>
+```
+## groovy脚本调用spring实例 bean方法示例
+- GroovyInvokeJavaService.java
+```java
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+/**
+ * Groovy脚本 调用spring bean 案例
+ */
+@Service
+@Slf4j
+public class GroovyInvokeJavaService {
+    public String groovyInvokeJava() {
+        return "Groovy脚本 调用spring bean 无参数数据成功";
+    }
+
+    public String groovyInvokeJavaParam(int a, int b) {
+        return "Groovy脚本 调用spring bean 有参数数据成功 a=" + a + " b=" + b;
+    }
+}
+```
+- groovy脚本(通过nacos配置中心获取)
+```groovy
+package script
+
+import cn.hutool.extra.spring.SpringUtil
+import com.go.groovy.groovy.service.GroovyInvokeJavaService
+
+def doWork() {
+    GroovyInvokeJavaService groovyInvokeJavaService = SpringUtil.getBean("groovyInvokeJavaService");
+    return  groovyInvokeJavaService.groovyInvokeJava()+" 这是一个测试无参";
+}
+
+
+def doWork2(int a, int b) {
+    GroovyInvokeJavaService groovyInvokeJavaService = SpringUtil.getBean("groovyInvokeJavaService");
+    return  groovyInvokeJavaService.groovyInvokeJava()+" 这是一个测试有参 a="+a+",b="+b+",a+b="+(a+b);
+}
+```
+[GroovyCache.java](app-service%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgo%2Fgroovy%2Fgroovy%2Fservice%2Fcache%2FGroovyCache.java)：groovy脚本执行对象缓存，预防OOM;
+## 效果展示
+![控制台打印](image/g1.jpg)
+![控制台打印](image/g2.jpg)
+![控制台打印](image/g3.jpg)

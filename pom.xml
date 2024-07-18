@@ -22,7 +22,6 @@
         <os.maven.plugin.version>1.7.1</os.maven.plugin.version>
         <com.google.protobuf.version>3.25.1</com.google.protobuf.version>
         <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
-        <groovy.version>4.0.22</groovy.version>
 
         <spring-boot.version>3.0.2</spring-boot.version>
         <spring-cloud-alibaba.version>2022.0.0.0-RC2</spring-cloud-alibaba.version>
@@ -44,13 +43,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.apache.groovy</groupId>
-                <artifactId>groovy-all</artifactId>
-                <version>${groovy.version}</version>
-                <type>pom</type>
-            </dependency>
-
 
             <dependency>
                 <groupId>com.alibaba.fastjson2</groupId>

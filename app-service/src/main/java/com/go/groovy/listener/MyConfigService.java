@@ -2,6 +2,7 @@ package com.go.groovy.listener;
 
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.go.groovy.groovy.service.enums.GroovyScriptEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,5 +23,9 @@ public class MyConfigService {
             log.error("获取配置失败 dataId:{},group:{}", dataId, group, e);
             return null;
         }
+    }
+
+    public String getScript(GroovyScriptEnum scriptEnum) {
+        return getConfigContent(scriptEnum.getDataId(), scriptEnum.getGroupId());
     }
 }
