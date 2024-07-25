@@ -3,7 +3,7 @@ package com.go.groovy.groovy.service.cache;
 import com.go.groovy.exception.ServiceException;
 import com.go.groovy.groovy.service.enums.GroovyScriptEnum;
 import com.go.groovy.listener.MyConfigService;
-import groovy.lang.GroovyShell;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.Script;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,9 +21,21 @@ public class GroovyCache implements InitializingBean {
     private final ConcurrentMap<String, Script> cache = new ConcurrentHashMap<>();
 
     public void reload() {
-        Arrays.stream(GroovyScriptEnum.values()).forEach(item -> {
-            cache.put(item.getKey(), new GroovyShell().parse(myConfigService.getScript(item)));
-        });
+        //加锁，防止并发
+        synchronized (this){
+            Arrays.stream(GroovyScriptEnum.values()).forEach(item -> {
+                try {
+                    GroovyClassLoader classLoader = new GroovyClassLoader();
+                    Class<?> clazz = classLoader.parseClass(myConfigService.getScript(item));
+                    //维护缓存（）
+                    cache.put(item.getKey(), (Script) clazz.newInstance());
+                    //清除GroovyClassLoader的缓存
+                    classLoader.clearCache();
+                } catch (IllegalAccessException | InstantiationException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 
     public <T> T run(GroovyScriptEnum scriptEnum, Object[] param) {

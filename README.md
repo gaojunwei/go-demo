@@ -248,8 +248,103 @@ def doWork2(int a, int b) {
     return  groovyInvokeJavaService.groovyInvokeJava()+" 这是一个测试有参 a="+a+",b="+b+",a+b="+(a+b);
 }
 ```
-[GroovyCache.java](app-service%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgo%2Fgroovy%2Fgroovy%2Fservice%2Fcache%2FGroovyCache.java)：groovy脚本执行对象缓存，预防OOM;
 ## 效果展示
 ![控制台打印](image/g1.jpg)
 ![控制台打印](image/g2.jpg)
 ![控制台打印](image/g3.jpg)
+
+# 进阶使用
+## 在 Java 中使用 Groovy 有三种方式：
+- GroovyShell
+- ScriptEngineManager
+- GroovyClassLoader
+
+> GroovyShell
+```java
+public static void main(String[] args) {
+    final String script = "Runtime.getRuntime().availableProcessors()";
+    Binding intBinding = new Binding();
+    GroovyShell shell = new GroovyShell(intBinding);
+    final Object eval = shell.evaluate(script);
+    System.out.println(eval);
+}
+```
+> ScriptEngineManager
+```java
+public static void main(String[] args) throws ScriptException, NoSuchMethodException {
+    ScriptEngineManager factory = new ScriptEngineManager();
+    // 每次生成一个engine实例
+    ScriptEngine engine = factory.getEngineByName("groovy");
+    Bindings binding = engine.createBindings();
+    // 入参
+    binding.put("date", new Date());
+    // 如果script文本来自文件,请首先获取文件内容
+    engine.eval("def getTime(){return date.getTime();}", binding);
+    engine.eval("def sayHello(name,age){return 'Hello,I am ' + name + ',age' + age;}");
+    // 反射到方法
+    Long time = (Long) ((Invocable) engine).invokeFunction("getTime", null);
+    System.out.println(time);
+    String message = (String) ((Invocable) engine).invokeFunction("sayHello", "zhangsan", 12);
+    System.out.println(message);
+}
+```
+> GroovyClassLoader
+```java
+public static void groovyClassLoader() throws InstantiationException, IllegalAccessException {
+    GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
+    // 可以是纯Java代码
+    String helloScript = "package com.vivo.groovy.util" +
+            "class Hello {" +
+            "String say(String name) {" +
+            "System.out.println(\"hello, \" + name)" +
+            " return name;" +
+            "}" +
+            "}";
+    Class helloClass = groovyClassLoader.parseClass(helloScript);
+    GroovyObject object = (GroovyObject) helloClass.newInstance();
+    // 控制台输出"hello, vivo"
+    Object ret = object.invokeMethod("say", "vivo");
+    // 打印vivo
+    System.out.println(ret.toString());
+}
+```
+Groovy 官方提供 GroovyClassLoader 类，支持从文件、URL或字符串中加载解析 Groovy Class，实例化对象，反射调用指定方法。GroovyShell、ScriptEngineManager 底层核心也是调用了 GroovyClassLoader ，并且还会存在性能问题。所以一般场景来说还是比较推荐使用 GroovyClassLoader
+
+## 踩坑指南
+### 内存泄露
+GroovyClassLoader 类加载器每次调用 parseClass 方法执行 Groovy 脚本，都会重新编译脚本，调用类加载器进行类加载。我们知道类对象信息是放在 JVM 的 Metaspace 区域中，重复不断地执行 Groovy 脚本意味着会创建大量的类，容易导致 Metaspace 内存溢出，造成内存泄露。
+```java
+
+```
+
+可以看到每次调用 parseClass 方法，都会生成一个 Class 对象，而对象名是 "Script_" + EncodingGroovyMethods.md5(text) + ".groovy" 组成，也就是说，即使是相同内容的脚本，都会被认为是新的代码，进行新的编译和加载。而你的业务逻辑不断重复执行就会一直生成新的类，最终导致 Metaspace 溢出。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
