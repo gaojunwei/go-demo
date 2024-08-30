@@ -19,9 +19,10 @@
 - [X] 任务查询
 - [X] 支持任务节点开始事件回调
 - [X] SPEL表达式支持
-- [X] 领取任务
-- [X] 归还任务
-- [ ] 任务回退任意节点
+- [X] 领取任务（IRuTaskService.takeTask）
+- [X] 归还任务（IRuTaskService.giveBack）
+- [X] 任务回退（IRuTaskService.backPreNodeTask）
+- [X] 任务表单保存草稿（IRuVariableService.saveTaskVariable）
 - [ ] 任务跳转任意节点
 
 ## 核心类说明
@@ -32,6 +33,7 @@
 核心解析工具：[ProcessAnalysisUtil.kt](./flow-spring-starter/src/main/java/com/go/starter/core/utils/ProcessAnalysisUtil.kt)  
 流程实例监听器：[ProcessListener.kt](./flow-spring-starter/src/main/java/com/go/starter/core/listener/ProcessListener.kt)  
 流程实例监听器：[TaskListener.kt](./flow-spring-starter/src/main/java/com/go/starter/core/listener/TaskListener.kt)  
+节点任务表单：[BaseForm](./flow-spring-starter/src/main/java/com/go/starter/core/form/BaseForm.kt)
 
 ## 测试代码
 ![测试代码位置](./image/01.png)

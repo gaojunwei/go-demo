@@ -5,6 +5,9 @@ import com.go.starter.core.FlowContext
 import com.go.starter.core.model.NodeModel
 import com.go.starter.domain.RuTask
 
+/**
+ * 运行时任务服务
+ */
 interface IRuTaskService {
     /**
      * 创建任务，并维护历史任务
@@ -48,7 +51,7 @@ interface IRuTaskService {
     /**
      * 关闭流程任务（关闭流程实例时调用）
      */
-    fun closeTask(instanceNo: String,reason: String)
+    fun closeTask(instanceNo: String, reason: String)
 
     /**
      * 统计当前实例下进行中的节点ID集合
@@ -64,4 +67,11 @@ interface IRuTaskService {
         instanceNo: String? = null,
         page: Page<RuTask>
     ): Page<RuTask>
+
+    /**
+     * 任务回退(默认删除历史任务)
+     * 描述：当前进行中的任务进行回退到父级任务，删除并回滚历史任务;
+     * @see com.go.starter.core.form.BaseForm.fallback 通过实现表单的 fallback 方法进行回退业务逻辑
+     */
+    fun backPreNodeTask(taskId: Long, deleteHisTask: Boolean = true)
 }

@@ -65,7 +65,7 @@ class NodeModel {
             START,USER_TASK -> {
                 FlowException.assertFalse(targetRef == null, "[targetRef]不能为空,nodeId:$nodeId")
             }
-            EXCLUSIVE_GATEWAY -> {
+            EXCLUSIVE_GATEWAY,PARALLEL_GATEWAY -> {
                 FlowException.assertFalse(flowConditions.isNullOrEmpty(), "[flowConditions]不能为空,nodeId:$nodeId")
             }
             else -> {}

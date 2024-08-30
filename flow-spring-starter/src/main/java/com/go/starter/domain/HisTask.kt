@@ -46,4 +46,18 @@ open class HisTask {
 
     // 删除原因
     var deleteReason: String? = null
+
+    //父级任务ID
+    var parentTaskId: Long? = null
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as HisTask
+        return taskId == other.taskId
+    }
+
+    override fun hashCode(): Int {
+        return taskId?.hashCode() ?: 0
+    }
 }

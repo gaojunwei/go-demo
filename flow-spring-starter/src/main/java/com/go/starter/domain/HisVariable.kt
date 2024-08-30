@@ -10,14 +10,14 @@ import java.time.LocalDateTime
  */
 @TableName("fw_his_variable", autoResultMap = true)
 class HisVariable {
-    // 任务 ID
+    // 主键ID
     @TableId(type = IdType.AUTO)
     var id: Long? = null
 
-    // 业务ID
+    // 流程编号
     var instanceNo: String? = null
 
-    // 任务 ID
+    // 任务ID（为0时表示为流程变量）
     var taskId: Long? = 0
 
     // 变量名称

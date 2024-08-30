@@ -5,6 +5,10 @@ import com.go.starter.core.enums.InstanceStateEnum
 import com.go.starter.domain.HisInstance
 import com.go.starter.service.bo.CreateInstanceBo
 
+/**
+ * 流程实例服务
+ * @formatter:off
+ */
 interface IHisInstanceService {
     /**
      * 生成流程实例
@@ -39,9 +43,5 @@ interface IHisInstanceService {
     /**
      * 关闭流程实例
      */
-    fun closeInstance(
-        flowContext: FlowContext,
-        instanceStateEnum: InstanceStateEnum,
-        deleteReason: String? = null
-    )
+    fun closeInstance(flowContext: FlowContext, instanceStateEnum: InstanceStateEnum, deleteReason: String? = null)
 }

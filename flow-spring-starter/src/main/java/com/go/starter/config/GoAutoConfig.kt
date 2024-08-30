@@ -43,8 +43,8 @@ open class GoAutoConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    open fun hisTaskService(hisTaskMapper: HisTaskMapper): IHisTaskService {
-        return HisTaskServiceImpl(hisTaskMapper)
+    open fun hisTaskService(hisTaskMapper: HisTaskMapper, ruTaskMapper: RuTaskMapper, hisVariableMapper: HisVariableMapper, ruVariableMapper: RuVariableMapper,): IHisTaskService {
+        return HisTaskServiceImpl(hisTaskMapper, ruTaskMapper, hisVariableMapper, ruVariableMapper)
     }
 
     @Bean
@@ -67,6 +67,7 @@ open class GoAutoConfig {
         processParse: ProcessParse,
         instanceExtService: IInstanceExtService,
         hisInstanceService: IHisInstanceService,
+        hisTaskService: IHisTaskService,
     ): IRuTaskService {
         return RuTaskServiceImpl(
             ruTaskMapper = ruTaskMapper,
@@ -75,7 +76,8 @@ open class GoAutoConfig {
             ruVariableMapper = ruVariableMapper,
             ruVariableService = ruVariableService,
             processParse = processParse,
-            hisInstanceService = hisInstanceService
+            hisInstanceService = hisInstanceService,
+            hisTaskService = hisTaskService,
         )
     }
 
@@ -86,7 +88,7 @@ open class GoAutoConfig {
         ruVariableMapper: RuVariableMapper,
         hisInstanceService: IHisInstanceService,
     ): IRuVariableService {
-        return RuVariableServiceImpl(hisVariableMapper, ruVariableMapper,hisInstanceService)
+        return RuVariableServiceImpl(hisVariableMapper, ruVariableMapper, hisInstanceService)
     }
 
     @Bean

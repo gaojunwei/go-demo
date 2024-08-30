@@ -43,4 +43,7 @@ class RuTask {
 
     // 创建时间
     var createTime: LocalDateTime? = null
+
+    //父级任务ID
+    var parentTaskId: Long? = null
 }

@@ -16,6 +16,8 @@ data class FlowContext(
     var processDefinition: ProcessDefinition,
     //流程实例全局变量
     var processVariable: Map<String, String> = mutableMapOf(),
+    //父级任务ID
+    var parentTaskId: Long? = null
 ) {
 
     /**

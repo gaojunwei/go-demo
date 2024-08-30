@@ -18,6 +18,7 @@ import com.go.starter.mapper.RuVariableMapper
 import com.go.starter.mapstruct.HisTaskConverter
 import com.go.starter.mapstruct.HisVariableConverter
 import com.go.starter.service.IHisInstanceService
+import com.go.starter.service.IHisTaskService
 import com.go.starter.service.IRuTaskService
 import com.go.starter.service.IRuVariableService
 import org.springframework.context.annotation.Lazy
@@ -33,6 +34,7 @@ open class RuTaskServiceImpl(
     private val ruVariableService: IRuVariableService,
     private val processParse: ProcessParse,
     @Lazy private val hisInstanceService: IHisInstanceService,
+    private val hisTaskService: IHisTaskService,
 ) : IRuTaskService {
 
     override fun createTask(
@@ -65,6 +67,8 @@ open class RuTaskServiceImpl(
             this.formKey = nodeModel.formKey
             // 创建时间
             this.createTime = LocalDateTime.now()
+            //父级任务ID
+            this.parentTaskId = flowContext.parentTaskId
         }
         FlowException.assertFalse(ruTaskMapper.insert(ruTask) != 1, "添加任务失败")
         val taskId = ruTask.taskId!!
@@ -125,14 +129,18 @@ open class RuTaskServiceImpl(
         //获取任务处理人员
         val pair = flowContext.getTaskUser(task.nodeId!!)
         //执行修改
-        FlowException.assertFalse(!KtUpdateChainWrapper(RuTask::class.java)
-            .set(RuTask::assignee,pair.first)
-            .set(RuTask::candidates,pair.second)
-            .eq(RuTask::taskId,taskId).update(),"任务归还失败")
-        if(pair.first.isNotBlank()){
-            FlowException.assertFalse(!KtUpdateChainWrapper(HisTask::class.java)
-                .set(HisTask::assignee,pair.first)
-                .eq(HisTask::taskId,taskId).update(),"任务归还失败")
+        FlowException.assertFalse(
+            !KtUpdateChainWrapper(RuTask::class.java)
+                .set(RuTask::assignee, pair.first)
+                .set(RuTask::candidates, pair.second)
+                .eq(RuTask::taskId, taskId).update(), "任务归还失败"
+        )
+        if (pair.first.isNotBlank()) {
+            FlowException.assertFalse(
+                !KtUpdateChainWrapper(HisTask::class.java)
+                    .set(HisTask::assignee, pair.first)
+                    .eq(HisTask::taskId, taskId).update(), "任务归还失败"
+            )
         }
     }
 
@@ -165,7 +173,11 @@ open class RuTaskServiceImpl(
         FlowException.assertFalse(ruTaskMapper.deleteById(taskId) != 1, "任务完成但删除失败")
         ruVariableService.deleteTaskRuVariable(instanceNo, taskId)
         //生成下一个任务
-        processParse.createNextTask(task.nodeId, hisInstanceService.flowContext(instanceNo))
+        processParse.createNextTask(
+            currentNodeId = task.nodeId,
+            flowContext = hisInstanceService.flowContext(instanceNo).apply {
+                parentTaskId = task.taskId
+            })
     }
 
     override fun getTaskForce(taskId: Long): RuTask {
@@ -206,6 +218,28 @@ open class RuTaskServiceImpl(
             .eq(RuTask::assignee, assignee)
             .page(page)
     }
+
+    @Transactional(rollbackFor = [Exception::class])
+    override fun backPreNodeTask(taskId: Long, deleteHisTask: Boolean) {
+        //获取任务详情
+        val task = getTask(taskId)!!
+        //判断有无父级任务
+        val parentTaskId = task.parentTaskId
+        FlowException.assertFalse(parentTaskId == null, "[${task.nodeId}]该节点任务无父级任务回退失败")
+        //获取父级任务的父级任务
+        val parentTask = hisTaskService.getParentTask(parentTaskId!!)
+        var currentNodeId = parentTask?.nodeId
+        //获取父级任务下的所有子任务
+        hisTaskService.rollBackChildTask(task.parentTaskId!!)
+        //生成新任务
+        processParse.createNextTask(
+            currentNodeId = currentNodeId,
+            flowContext = hisInstanceService.flowContext(task.instanceNo!!).apply {
+                this.parentTaskId = parentTask?.parentTaskId
+            }
+        )
+    }
+
 
     private fun getTask(taskId: Long, force: Boolean = true): RuTask? {
         val task = ruTaskMapper.selectById(taskId)
