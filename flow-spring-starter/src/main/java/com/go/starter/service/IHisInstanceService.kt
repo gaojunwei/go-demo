@@ -1,0 +1,47 @@
+package com.go.starter.service
+
+import com.go.starter.core.FlowContext
+import com.go.starter.core.enums.InstanceStateEnum
+import com.go.starter.domain.HisInstance
+import com.go.starter.service.bo.CreateInstanceBo
+
+interface IHisInstanceService {
+    /**
+     * 生成流程实例
+     */
+    fun createInstance(process: CreateInstanceBo): Long
+
+    /**
+     * 获取实例上下文
+     */
+    fun flowContext(instanceNo: String): FlowContext
+
+    /**
+     * 流程实例详情
+     */
+    fun detailForce(instanceNo: String): HisInstance
+
+    /**
+     * 断言存在运行中的实例
+     */
+    fun checkExistRuInstance(instanceNo: String)
+
+    /**
+     * 修改节点受让人（修改节点生成任务实例时生效）
+     */
+    fun updateNodeAssignee(instanceNo: String, nodeId: String, assignee: String)
+
+    /**
+     * 修改节点候选人（修改节点生成任务实例时生效）
+     */
+    fun updateNodeCandidateUsers(instanceNo: String, nodeId: String, candidateUsers: List<String>)
+
+    /**
+     * 关闭流程实例
+     */
+    fun closeInstance(
+        flowContext: FlowContext,
+        instanceStateEnum: InstanceStateEnum,
+        deleteReason: String? = null
+    )
+}
