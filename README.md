@@ -1,20 +1,5 @@
 # Flow工作流
-
-## 调试脚本
-
-```bash
-#清空表SQL
-TRUNCATE TABLE fw_his_instance;
-TRUNCATE TABLE fw_his_task;
-TRUNCATE TABLE fw_his_variable;
-TRUNCATE TABLE fw_instance_ext;
-#TRUNCATE TABLE fw_process;
-TRUNCATE TABLE fw_ru_task;
-TRUNCATE TABLE fw_ru_variable;
-```
-
 ## 支持功能
-
 - 流程定义
 - [X] 部署流程定义JSON数据
 - [X] 停用流程定义
@@ -45,6 +30,8 @@ TRUNCATE TABLE fw_ru_variable;
 流程引擎上下文：[FlowContext](./spring-starter-demo/src/main/java/com/go/starter/core/FlowContext.kt)  
 流程涉及枚举：[FlowEnum](./spring-starter-demo/src/main/java/com/go/starter/core/enums/FlowEnum.kt)
 
+## 测试代码
+![测试代码位置](./image/01.png)
 ## 流程定义示例
 
 ```json
@@ -121,4 +108,17 @@ TRUNCATE TABLE fw_ru_variable;
     }
   ]
 }
+```
+
+## 调试脚本
+
+```bash
+#清空表SQL
+TRUNCATE TABLE fw_his_instance;
+TRUNCATE TABLE fw_his_task;
+TRUNCATE TABLE fw_his_variable;
+TRUNCATE TABLE fw_instance_ext;
+#TRUNCATE TABLE fw_process;
+TRUNCATE TABLE fw_ru_task;
+TRUNCATE TABLE fw_ru_variable;
 ```
