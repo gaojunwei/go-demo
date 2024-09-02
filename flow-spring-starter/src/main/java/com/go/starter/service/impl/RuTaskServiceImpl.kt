@@ -235,7 +235,7 @@ open class RuTaskServiceImpl(
         processParse.createNextTask(
             currentNodeId = currentNodeId,
             flowContext = hisInstanceService.flowContext(task.instanceNo!!).apply {
-                this.parentTaskId = parentTask?.parentTaskId
+                this.parentTaskId = parentTask?.taskId
             }
         )
     }
@@ -243,14 +243,32 @@ open class RuTaskServiceImpl(
     override fun backToPointNodeTask(taskId: Long, nodeId: String) {
         //获取任务详情
         val task = getTask(taskId)!!
-        KtQueryChainWrapper(HisTask::class.java).eq(HisTask::instanceNo, task.instanceNo).one()
-
-        TODO("Not yet implemented")
+        //获取历史任务中指定节点最近的执行任务
+        val hisTask = KtQueryChainWrapper(HisTask::class.java)
+            .eq(HisTask::instanceNo, task.instanceNo)
+            .eq(HisTask::nodeId, nodeId)
+            .orderByDesc(HisTask::endTime)
+            .last("limit 1")
+            .one()
+        FlowException.assertFalse(hisTask == null, "无此节点的历史任务存在")
+        FlowException.assertFalse(task.nodeId!! == hisTask.nodeId!!, "与待审批任务节点相同，无法回退")
+        //获取父级任务
+        val parentTask = hisTaskService.getParentTask(hisTask.taskId!!)
+        var currentNodeId = parentTask?.nodeId
+        //获取父级任务下的所有子任务
+        hisTaskService.rollBackChildTask(task.parentTaskId!!)
+        //生成新任务
+        processParse.createNextTask(
+            currentNodeId = currentNodeId,
+            flowContext = hisInstanceService.flowContext(task.instanceNo!!).apply {
+                this.parentTaskId = parentTask?.taskId
+            }
+        )
     }
 
     private fun getTask(taskId: Long, force: Boolean = true): RuTask? {
         val task = ruTaskMapper.selectById(taskId)
-        FlowException.assertFalse(task == null && force, "任务不存在")
+        FlowException.assertFalse(task == null && force, "待审批任务不存在")
         return task
     }
 
