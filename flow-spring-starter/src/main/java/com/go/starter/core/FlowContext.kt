@@ -55,6 +55,16 @@ data class FlowContext(
     }
 
     /**
+     * 获取任务节点的处理人员信息key值
+     */
+    fun getTaskUserKey(nodeModel: NodeModel): Pair<String, String> {
+        return Pair(
+            nodeModel.assignee!!.replaceFirst("#", ""),
+            nodeModel.candidateUsers!!.replaceFirst("#", "")
+        )
+    }
+
+    /**
      * 获取流程实例的监听器
      */
     fun getInstanceListener(): String? {

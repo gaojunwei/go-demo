@@ -11,10 +11,12 @@
 - [X] 支持包容网关(通过并行网关即可实现 [NodeModel.kt](flow-spring-starter/src/main/java/com/go/starter/core/model/NodeModel.kt))
 - [X] 支持流程开始和结束事件回调([ProcessListener.kt](flow-spring-starter/src/main/java/com/go/starter/core/listener/ProcessListener.kt))
 - [X] 流程关闭(IHisInstanceService.closeInstance)
-- [X] 下游节点人员变更(IRuVariableService.saveProcessVariable)
-- [X] 动态添加用户任务节点(IHisInstanceService.addUserTaskNode)
-
-- 运行任务实例
+- [X] 流程变量变更(IRuVariableService.saveProcessVariable)
+- [X] 动态添加用户任务节点(IHisInstanceService.addUserTaskNode)  <span style="color:red;">待测试</span>
+- [X] 实例节点受让人变更
+- [X] 实例节点候选人变更
+- 
+- 运行时任务实例
 - [X] 任务查询
 - [X] 支持任务节点开始事件回调([TaskListener.kt](flow-spring-starter/src/main/java/com/go/starter/core/listener/TaskListener.kt))
 - [X] SPEL表达式支持
@@ -22,7 +24,7 @@
 - [X] 归还任务(IRuTaskService.giveBack)
 - [X] 当前任务回退到上一个任务(IRuTaskService.backPreNodeTask)
 - [X] 当前任务回退到历史指定节点的任务(IRuTaskService.backToPointNodeTask) <span style="color:red;">待测试</span>
-- [X] 任务表单保存草稿(IRuVariableService.saveTaskVariable) <span style="color:red;">待测试</span>
+- [X] 任务变量变更(IRuVariableService.saveTaskVariable) <span style="color:red;">待测试</span>
 - [ ] 任务跳转任意节点
 
 ## 核心类说明

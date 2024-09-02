@@ -50,4 +50,14 @@ interface IHisInstanceService {
      * 添加节点(支持用户任务后追加同类型任务节点)，追加的节点指向节点程序自动维护
      */
     fun addUserTaskNode(instanceNo: String,afterNodeId:String,nodeModel: NodeModel)
+
+    /**
+     * 运行中实例节点受让人变更
+     */
+    fun changeNodeAssignee(instanceNo: String, nodeId: String, assignee: String)
+
+    /**
+     * 运行中实例节点候选人变更
+     */
+    fun changeNodeCandidateUsers(instanceNo: String, nodeId: String, candidateUsers: List<String>)
 }

@@ -194,4 +194,48 @@ open class HisInstanceServiceImpl(
         //更新流程实例对应的流程定义文件数据
         instanceExtService.updateModelContent(instanceNo, JSON.toJSONString(flowContext.processDefinition))
     }
+
+    override fun changeNodeAssignee(instanceNo: String, nodeId: String, assignee: String) {
+        changeNodeUsers(instanceNo = instanceNo, nodeId = nodeId, assignee = assignee)
+    }
+
+    override fun changeNodeCandidateUsers(instanceNo: String, nodeId: String, candidateUsers: List<String>) {
+        changeNodeUsers(instanceNo = instanceNo, nodeId = nodeId, candidateUsers = candidateUsers)
+    }
+
+    /**
+     * 任务节点人员变更
+     */
+    private fun changeNodeUsers(
+        instanceNo: String,
+        nodeId: String,
+        assignee: String = "",
+        candidateUsers: List<String> = emptyList()
+    ) {
+        FlowException.assertFalse(
+            assignee.isNullOrBlank() && candidateUsers.isNullOrEmpty(),
+            "任务节点用户不能设置为空"
+        )
+        //获取流程实例上下文
+        val flowContext = flowContext(instanceNo)
+        val nodeModel = flowContext.getNodeModel(nodeId)
+        val pair = flowContext.getTaskUserKey(nodeModel)
+        //更新流程实例变量
+        val paramMap = if (!assignee.isNullOrBlank()) {
+            mapOf(pair.first to assignee)
+        } else {
+            mapOf(pair.second to JSON.toJSONString(candidateUsers))
+        }
+        ruVariableService.saveProcessVariable(instanceNo, paramMap)
+        //当前节点任务处理
+        val ruTasks = ruTaskService.listRuTaskByInstanceNo(instanceNo)
+        if (ruTasks.isNullOrEmpty()) return
+        ruTasks.filter { it.nodeId!! == nodeId }.forEach {
+            if(!assignee.isNullOrBlank()){
+                ruTaskService.updateAssignee(it.taskId!!, assignee)
+            }else{
+                ruTaskService.updateCandidates(it.taskId!!, candidateUsers)
+            }
+        }
+    }
 }

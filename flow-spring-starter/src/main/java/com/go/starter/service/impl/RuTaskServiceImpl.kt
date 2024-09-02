@@ -206,6 +206,10 @@ open class RuTaskServiceImpl(
             .map { it.nodeId!! }.toSet()
     }
 
+    override fun listRuTaskByInstanceNo(instanceNo: String): List<RuTask> {
+        return KtQueryChainWrapper(RuTask::class.java).eq(RuTask::instanceNo, instanceNo).list()
+    }
+
     override fun pageRuTaskByAssignee(
         assignee: String,
         processKey: String?,
@@ -264,6 +268,24 @@ open class RuTaskServiceImpl(
                 this.parentTaskId = parentTask?.taskId
             }
         )
+    }
+
+    override fun updateAssignee(taskId: Long, assignee: String) {
+        KtUpdateChainWrapper(RuTask::class.java)
+            .set(RuTask::assignee, assignee)
+            .set(RuTask::candidates, "")
+            .eq(RuTask::taskId, taskId).update()
+    }
+
+    override fun updateCandidates(taskId: Long, candidates: List<String>) {
+        KtUpdateChainWrapper(RuTask::class.java)
+            .set(
+                RuTask::candidates,
+                candidates,
+                "javaType=string,jdbcType=ARRAY,typeHandler=com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler"
+            )
+            .set(RuTask::assignee, "")
+            .eq(RuTask::taskId, taskId).update()
     }
 
     private fun getTask(taskId: Long, force: Boolean = true): RuTask? {

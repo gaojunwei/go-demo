@@ -59,6 +59,11 @@ interface IRuTaskService {
     fun listRuTaskNodeIdByInstanceId(instanceId: Long): Set<String>
 
     /**
+     * 统计当前实例下进行中的任务
+     */
+    fun listRuTaskByInstanceNo(instanceNo: String): List<RuTask>
+
+    /**
      * 查询指定用户的任务
      */
     fun pageRuTaskByAssignee(
@@ -81,4 +86,14 @@ interface IRuTaskService {
      * @see com.go.starter.core.form.BaseForm.fallback 通过实现表单的 fallback 方法进行回退业务逻辑
      */
     fun backToPointNodeTask(taskId: Long, nodeId: String)
+
+    /**
+     * 更新任务受让人
+     */
+    fun updateAssignee(taskId: Long, assignee: String)
+
+    /**
+     * 更新任务候选人
+     */
+    fun updateCandidates(taskId: Long, candidates: List<String>)
 }
