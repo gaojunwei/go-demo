@@ -11,6 +11,7 @@ import com.go.starter.core.exception.FlowException
 import com.go.starter.core.model.NodeModel
 import com.go.starter.core.utils.ProcessAnalysisUtil
 import com.go.starter.domain.HisInstance
+import com.go.starter.domain.HisTask
 import com.go.starter.domain.InstanceExt
 import com.go.starter.mapper.HisInstanceMapper
 import com.go.starter.mapper.InstanceExtMapper
@@ -203,6 +204,25 @@ open class HisInstanceServiceImpl(
         changeNodeUsers(instanceNo = instanceNo, nodeId = nodeId, candidateUsers = candidateUsers)
     }
 
+    override fun listBackNodes(instanceNo: String): List<NodeModel> {
+        val hisTasks = KtQueryChainWrapper(HisTask::class.java)
+            .select(HisTask::nodeId, HisTask::endTime)
+            .eq(HisTask::instanceNo, instanceNo)
+            .isNotNull(HisTask::endTime)
+            .orderByDesc(HisTask::endTime)
+            .list()
+        if (hisTasks.isEmpty()) return emptyList()
+        val flowContext = flowContext(instanceNo)
+        val result = mutableListOf<NodeModel>()
+        val nodeIds = emptyList<String>()
+        hisTasks.forEach {
+            if (!nodeIds.contains(it.nodeId!!)) {
+                result.add(flowContext.getNodeModel(it.nodeId!!))
+            }
+        }
+        return result
+    }
+
     /**
      * 任务节点人员变更
      */
@@ -231,9 +251,9 @@ open class HisInstanceServiceImpl(
         val ruTasks = ruTaskService.listRuTaskByInstanceNo(instanceNo)
         if (ruTasks.isNullOrEmpty()) return
         ruTasks.filter { it.nodeId!! == nodeId }.forEach {
-            if(!assignee.isNullOrBlank()){
+            if (!assignee.isNullOrBlank()) {
                 ruTaskService.updateAssignee(it.taskId!!, assignee)
-            }else{
+            } else {
                 ruTaskService.updateCandidates(it.taskId!!, candidateUsers)
             }
         }

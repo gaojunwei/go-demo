@@ -12,18 +12,18 @@
 - [X] 支持流程开始和结束事件回调([ProcessListener.kt](flow-spring-starter/src/main/java/com/go/starter/core/listener/ProcessListener.kt))
 - [X] 流程关闭(IHisInstanceService.closeInstance)
 - [X] 流程变量变更(IRuVariableService.saveProcessVariable)
-- [X] 动态添加用户任务节点(IHisInstanceService.addUserTaskNode)  <span style="color:red;">待测试</span>
-- [X] 实例节点受让人变更
-- [X] 实例节点候选人变更
-- 
+- [X] 动态添加用户任务节点(IHisInstanceService.addUserTaskNode) <span style="color:red;">待测试</span>
+- [X] 实例节点受让人变更(IHisInstanceService.changeNodeAssignee) <span style="color:red;">待测试</span>
+- [X] 实例节点候选人变更(IHisInstanceService.changeNodeCandidateUsers) <span style="color:red;">待测试</span>
+- [X] 获取可回退节点列表数据（按结束事件倒序）(IHisInstanceService.listBackNodes) <span style="color:red;">待测试</span>
+
 - 运行时任务实例
 - [X] 任务查询
 - [X] 支持任务节点开始事件回调([TaskListener.kt](flow-spring-starter/src/main/java/com/go/starter/core/listener/TaskListener.kt))
 - [X] SPEL表达式支持
 - [X] 领取任务(IRuTaskService.takeTask)
 - [X] 归还任务(IRuTaskService.giveBack)
-- [X] 当前任务回退到上一个任务(IRuTaskService.backPreNodeTask)
-- [ ] 获取可回退节点列表数据（按结束事件倒序）
+- [X] 当前任务回退到上一个任务(IRuTaskService.backPreNodeTask) <span style="color:red;">待测试</span>
 - [X] 当前任务回退到历史指定节点的任务(IRuTaskService.backToPointNodeTask) <span style="color:red;">待测试</span>
 - [X] 任务变量变更(IRuVariableService.saveTaskVariable) <span style="color:red;">待测试</span>
 - [ ] 任务跳转任意节点

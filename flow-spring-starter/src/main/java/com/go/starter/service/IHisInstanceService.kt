@@ -60,4 +60,9 @@ interface IHisInstanceService {
      * 运行中实例节点候选人变更
      */
     fun changeNodeCandidateUsers(instanceNo: String, nodeId: String, candidateUsers: List<String>)
+
+    /**
+     * 获取可回退节点列表数据（按结束事件倒序）
+     */
+    fun listBackNodes(instanceNo: String): List<NodeModel>
 }
