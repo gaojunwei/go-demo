@@ -23,6 +23,7 @@
 - [X] 领取任务(IRuTaskService.takeTask)
 - [X] 归还任务(IRuTaskService.giveBack)
 - [X] 当前任务回退到上一个任务(IRuTaskService.backPreNodeTask)
+- [ ] 获取可回退节点列表数据（按结束事件倒序）
 - [X] 当前任务回退到历史指定节点的任务(IRuTaskService.backToPointNodeTask) <span style="color:red;">待测试</span>
 - [X] 任务变量变更(IRuVariableService.saveTaskVariable) <span style="color:red;">待测试</span>
 - [ ] 任务跳转任意节点
