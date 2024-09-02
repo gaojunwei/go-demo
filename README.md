@@ -5,15 +5,14 @@
 - [X] 停用流程定义
 - [X] 启用流程定义
 - 流程实例
-- [X] 支持用户任务节点
-- [X] 支持排他网关
-- [X] 支持并行网关
-- [X] 支持包容网关
-- [X] 支持流程开始和结束事件回调
-- [X] 流程关闭
-- [X] 下游节点人员变更
-- [ ] 动态新增节点
-- [ ] 动态删减节点
+- [X] 支持用户任务节点(USER_TASK)
+- [X] 支持排他网关(EXCLUSIVE_GATEWAY)
+- [X] 支持并行网关(PARALLEL_GATEWAY)
+- [X] 支持包容网关(通过并行网关即可实现)
+- [X] 支持流程开始和结束事件回调([ProcessListener.kt](flow-spring-starter/src/main/java/com/go/starter/core/listener/ProcessListener.kt) | [TaskListener.kt](flow-spring-starter/src/main/java/com/go/starter/core/listener/TaskListener.kt))
+- [X] 流程关闭(IHisInstanceService.closeInstance)
+- [X] 下游节点人员变更(IRuVariableService.saveProcessVariable)
+- [X] 动态添加用户任务节点(IHisInstanceService.addUserTaskNode)
 
 - 运行任务实例
 - [X] 任务查询
@@ -21,7 +20,8 @@
 - [X] SPEL表达式支持
 - [X] 领取任务（IRuTaskService.takeTask）
 - [X] 归还任务（IRuTaskService.giveBack）
-- [X] 任务回退（IRuTaskService.backPreNodeTask）
+- [X] 任务回退到上一个任务（IRuTaskService.backPreNodeTask）
+- [ ] 任务回退到指定节点任务
 - [X] 任务表单保存草稿（IRuVariableService.saveTaskVariable）
 - [ ] 任务跳转任意节点
 

@@ -3,6 +3,7 @@ package com.go.starter.core.model
 import com.go.starter.core.enums.NodeTypeEnum
 import com.go.starter.core.enums.NodeTypeEnum.*
 import com.go.starter.core.exception.FlowException
+import com.go.starter.core.listener.TaskListener
 
 /**
  * 节点实例
@@ -61,14 +62,58 @@ class NodeModel {
         FlowException.assertFalse(nodeName.isNullOrBlank(), "[nodeName]不能为空,nodeId:$nodeId")
         FlowException.assertFalse(nodeType == null, "[nodeType]不能为空,nodeId:$nodeId")
 
-        when(nodeType!!){
-            START,USER_TASK -> {
-                FlowException.assertFalse(targetRef == null, "[targetRef]不能为空,nodeId:$nodeId")
+        when (nodeType!!) {
+            START -> {
+                FlowException.assertFalse(targetRef.isNullOrBlank(), "[targetRef]不能为空,nodeId:$nodeId")
             }
-            EXCLUSIVE_GATEWAY,PARALLEL_GATEWAY -> {
+
+            USER_TASK -> {
+                FlowException.assertFalse(targetRef.isNullOrBlank(), "[targetRef]不能为空,nodeId:$nodeId")
+                FlowException.assertFalse(assignee.isNullOrBlank(), "[assignee]不能为空,nodeId:$nodeId")
+                FlowException.assertFalse(candidateUsers.isNullOrBlank(), "[candidateUsers]不能为空,nodeId:$nodeId")
+                this.taskListener?.let {
+                    try {
+                        FlowException.assertFalse(
+                            !TaskListener::class.java.isAssignableFrom(Class.forName(it)),
+                            "[任务监听器]必须继承TaskListener"
+                        )
+                    } catch (e: ClassNotFoundException) {
+                        FlowException.throwException("任务监听器必须继承 TaskListener")
+                    }
+                }
+            }
+
+            EXCLUSIVE_GATEWAY, PARALLEL_GATEWAY -> {
                 FlowException.assertFalse(flowConditions.isNullOrEmpty(), "[flowConditions]不能为空,nodeId:$nodeId")
             }
+
             else -> {}
+        }
+    }
+
+    companion object {
+        /**
+         * 构建用户任务节点
+         */
+        fun ofUserTaskNodeModel(
+            nodeId: String,
+            nodeName: String,
+            targetRef: String,
+            assignee: String,
+            candidateUsers: String,
+            formKey: String? = null,
+            taskListener: String? = null
+        ): NodeModel {
+            return NodeModel().apply {
+                this.nodeId = nodeId
+                this.nodeName = nodeName
+                this.nodeType = USER_TASK
+                this.targetRef = targetRef
+                this.assignee = assignee
+                this.candidateUsers = candidateUsers
+                this.formKey = formKey
+                this.taskListener = taskListener
+            }
         }
     }
 }
@@ -76,4 +121,4 @@ class NodeModel {
 /**
  * 条件实体
  */
-data class FlowCondition(val nodeId:String, val conExpression:String, var result:Boolean = false)
+data class FlowCondition(val nodeId: String, val conExpression: String, var result: Boolean = false)

@@ -60,4 +60,11 @@ data class FlowContext(
     fun getInstanceListener(): String? {
         return processDefinition.instanceListener
     }
+
+    /**
+     * 获取节点定义数据
+     */
+    fun getNodeModel(nodeId: String): NodeModel {
+        return ProcessAnalysisUtil.getNodeDefinition(nodeId, processDefinition)
+    }
 }

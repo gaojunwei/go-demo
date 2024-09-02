@@ -2,6 +2,7 @@ package com.go.starter.service
 
 import com.go.starter.core.FlowContext
 import com.go.starter.core.enums.InstanceStateEnum
+import com.go.starter.core.model.NodeModel
 import com.go.starter.domain.HisInstance
 import com.go.starter.service.bo.CreateInstanceBo
 
@@ -44,4 +45,9 @@ interface IHisInstanceService {
      * 关闭流程实例
      */
     fun closeInstance(flowContext: FlowContext, instanceStateEnum: InstanceStateEnum, deleteReason: String? = null)
+
+    /**
+     * 添加节点(支持用户任务后追加同类型任务节点)，追加的节点指向节点程序自动维护
+     */
+    fun addUserTaskNode(instanceNo: String,afterNodeId:String,nodeModel: NodeModel)
 }

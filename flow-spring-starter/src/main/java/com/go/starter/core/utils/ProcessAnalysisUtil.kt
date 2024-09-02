@@ -14,6 +14,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext
 
 /**
  * 流程处理工具
+ * @formatter:off
  */
 class ProcessAnalysisUtil {
     companion object {
@@ -43,7 +44,7 @@ class ProcessAnalysisUtil {
         ): List<NodeModel> {
             val processDefinition = flowContext.processDefinition
             val nodeList = processDefinition.nodes!!
-            //@formatter:off 获取节点信息
+            // 获取节点信息
             val nextNode = if (ruTaskNodeIds.isEmpty() || determineParallelTaskContinue(nextNodeId, ruTaskNodeIds, processDefinition)) {
                 nodeList.first { it.nodeId == nextNodeId }
             } else {
@@ -148,21 +149,6 @@ class ProcessAnalysisUtil {
                     }
                 }
             }
-        }
-
-        /**
-         * 检测流程定义文件是否合法
-         */
-        fun check(processDefinition: ProcessDefinition) {
-            //流程定义属性校验
-            FlowException.assertFalse(processDefinition.processName.isNullOrBlank(), "[流程名称]不能为空")
-            FlowException.assertFalse(processDefinition.processKey.isNullOrBlank(), "[流程KEY]不能为空")
-            FlowException.assertFalse(processDefinition.nodes.isNullOrEmpty(), "[流程节点]不能为空")
-            //节点数据校验
-            processDefinition.nodes!!.forEach { node ->
-                node.check()
-            }
-            //todo gjw 检测流程定义文件是否合法
         }
 
         /**

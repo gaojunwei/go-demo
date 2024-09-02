@@ -14,6 +14,12 @@ class RuTaskTwoTest: AbstractSpringTest() {
     lateinit var ruTaskService: IRuTaskService
 
     @Test
+    @DisplayName("任务回退")
+    fun takeTask3() {
+        //todo gjw 任务回退到上一个任务节点
+    }
+
+    @Test
     @DisplayName("审核任务")
     fun test002() {
         val taskVariable = mutableMapOf("op_user" to "n_3_user2")

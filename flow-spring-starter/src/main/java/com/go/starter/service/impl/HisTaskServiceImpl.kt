@@ -56,7 +56,7 @@ open class HisTaskServiceImpl(
     }
 
     /**
-     * 查询父任务的所有子任务任务，并按节点ID去重
+     * 查询父任务及所有子任务任务
      */
     private fun listChildTask(parentTaskId: Long): Set<HisTask> {
         val childTaskSet = mutableSetOf<HisTask>()

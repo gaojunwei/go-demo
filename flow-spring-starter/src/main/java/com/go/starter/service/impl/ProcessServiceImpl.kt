@@ -3,6 +3,7 @@ package com.go.starter.service.impl
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryChainWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateChainWrapper
 import com.go.starter.core.exception.FlowException
+import com.go.starter.core.model.ProcessDefinition
 import com.go.starter.core.utils.ProcessAnalysisUtil
 import com.go.starter.domain.Process
 import com.go.starter.mapper.FwProcessMapper
@@ -16,7 +17,7 @@ open class ProcessServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun deploy(jsonStr: String): Long {
         val definition = ProcessAnalysisUtil.processModelToProcessDefinition(jsonStr)
-        ProcessAnalysisUtil.check(definition)
+        ProcessDefinition.processCheck(definition)
         //禁用可用状态的定义数据
         stopUseHistoryProcess(definition.processKey!!)
         //新增流程定义文件

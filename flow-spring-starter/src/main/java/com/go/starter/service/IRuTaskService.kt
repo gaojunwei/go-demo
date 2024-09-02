@@ -73,5 +73,10 @@ interface IRuTaskService {
      * 描述：当前进行中的任务进行回退到父级任务，删除并回滚历史任务;
      * @see com.go.starter.core.form.BaseForm.fallback 通过实现表单的 fallback 方法进行回退业务逻辑
      */
-    fun backPreNodeTask(taskId: Long, deleteHisTask: Boolean = true)
+    fun backPreNodeTask(taskId: Long)
+
+    /**
+     * todo gjw 任务回退到指定节点
+     */
+    fun backToPointNodeTask(taskId: Long, nodeId: String)
 }

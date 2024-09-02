@@ -29,7 +29,8 @@ open class GoAutoConfig {
         processService: IProcessService,
         @Lazy ruVariableService: IRuVariableService,
         @Lazy ruTaskService: IRuTaskService,
-        processParse: ProcessParse
+        processParse: ProcessParse,
+        instanceExtService: IInstanceExtService,
     ): IHisInstanceService {
         return HisInstanceServiceImpl(
             hisInstanceMapper,
@@ -37,7 +38,8 @@ open class GoAutoConfig {
             processService,
             ruVariableService,
             ruTaskService,
-            processParse
+            processParse,
+            instanceExtService,
         )
     }
 

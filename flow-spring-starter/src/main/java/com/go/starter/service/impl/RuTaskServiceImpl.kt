@@ -220,7 +220,7 @@ open class RuTaskServiceImpl(
     }
 
     @Transactional(rollbackFor = [Exception::class])
-    override fun backPreNodeTask(taskId: Long, deleteHisTask: Boolean) {
+    override fun backPreNodeTask(taskId: Long) {
         //获取任务详情
         val task = getTask(taskId)!!
         //判断有无父级任务
@@ -240,6 +240,13 @@ open class RuTaskServiceImpl(
         )
     }
 
+    override fun backToPointNodeTask(taskId: Long, nodeId: String) {
+        //获取任务详情
+        val task = getTask(taskId)!!
+        KtQueryChainWrapper(HisTask::class.java).eq(HisTask::instanceNo, task.instanceNo).one()
+
+        TODO("Not yet implemented")
+    }
 
     private fun getTask(taskId: Long, force: Boolean = true): RuTask? {
         val task = ruTaskMapper.selectById(taskId)

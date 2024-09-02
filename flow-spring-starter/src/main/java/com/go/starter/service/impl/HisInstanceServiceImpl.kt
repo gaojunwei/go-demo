@@ -6,16 +6,15 @@ import com.baomidou.mybatisplus.extension.kotlin.KtUpdateChainWrapper
 import com.go.starter.core.FlowContext
 import com.go.starter.core.ProcessParse
 import com.go.starter.core.enums.InstanceStateEnum
+import com.go.starter.core.enums.NodeTypeEnum
 import com.go.starter.core.exception.FlowException
+import com.go.starter.core.model.NodeModel
 import com.go.starter.core.utils.ProcessAnalysisUtil
 import com.go.starter.domain.HisInstance
 import com.go.starter.domain.InstanceExt
 import com.go.starter.mapper.HisInstanceMapper
 import com.go.starter.mapper.InstanceExtMapper
-import com.go.starter.service.IHisInstanceService
-import com.go.starter.service.IProcessService
-import com.go.starter.service.IRuTaskService
-import com.go.starter.service.IRuVariableService
+import com.go.starter.service.*
 import com.go.starter.service.bo.CreateInstanceBo
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
@@ -29,6 +28,7 @@ open class HisInstanceServiceImpl(
     private val ruVariableService: IRuVariableService,
     private val ruTaskService: IRuTaskService,
     private val processParse: ProcessParse,
+    private val instanceExtService: IInstanceExtService,
 ) : IHisInstanceService {
     private val logger = LoggerFactory.getLogger(HisInstanceServiceImpl::class.java)
 
@@ -130,11 +130,11 @@ open class HisInstanceServiceImpl(
         val flowContext = flowContext(instanceNo)
         //获取任务处理人员
         val pairKey = flowContext.getTaskUserKey(nodeId)
-        val map = mutableMapOf<String,String>()
-        if(assignee.isNullOrBlank()){
+        val map = mutableMapOf<String, String>()
+        if (assignee.isNullOrBlank()) {
             map[pairKey.first] = assignee!!
         }
-        if(candidateUsers.isNullOrEmpty()){
+        if (candidateUsers.isNullOrEmpty()) {
             map[pairKey.second] = JSON.toJSONString(candidateUsers)
         }
         ruVariableService.saveProcessVariable(instanceNo, map)
@@ -171,5 +171,27 @@ open class HisInstanceServiceImpl(
         ruTaskService.closeTask(instanceNo, deleteReason ?: "")
         //清除流程实例的运行时变量数据
         ruVariableService.deleteProcessRuVariable(instanceNo)
+    }
+
+    override fun addUserTaskNode(instanceNo: String, afterNodeId: String, nodeModel: NodeModel) {
+        //用户任务节点校验
+        nodeModel.targetRef = "addNode"
+        nodeModel.check()
+        FlowException.assertFalse(nodeModel.nodeType != NodeTypeEnum.USER_TASK, "新增节点类型必须为USER_TASK类型")
+        //获取流程实例上下文
+        val flowContext = flowContext(instanceNo)
+        //获取被追加节点的节点模型
+        val afterNodeModel = flowContext.getNodeModel(afterNodeId)
+        FlowException.assertFalse(
+            afterNodeModel.nodeType != NodeTypeEnum.USER_TASK,
+            "节点类型非USER_TASK，不允许新增节点"
+        )
+        //添加新节点到流程定义中
+        val targetRef = afterNodeModel.targetRef!!
+        afterNodeModel.targetRef = nodeModel.nodeId!!
+        nodeModel.targetRef = targetRef
+        flowContext.processDefinition.nodes!!.add(nodeModel)
+        //更新流程实例对应的流程定义文件数据
+        instanceExtService.updateModelContent(instanceNo, JSON.toJSONString(flowContext.processDefinition))
     }
 }

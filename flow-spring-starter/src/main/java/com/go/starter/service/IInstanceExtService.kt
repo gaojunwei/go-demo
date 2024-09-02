@@ -5,4 +5,6 @@ import com.go.starter.domain.InstanceExt
 interface IInstanceExtService {
 
     fun detail(instanceNo: String): InstanceExt
+
+    fun updateModelContent(instanceNo: String, modelContent: String)
 }
