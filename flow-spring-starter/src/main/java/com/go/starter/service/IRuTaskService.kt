@@ -7,26 +7,18 @@ import com.go.starter.domain.RuTask
 
 /**
  * 运行时任务服务
+ * @formatter:off
  */
 interface IRuTaskService {
     /**
      * 创建任务，并维护历史任务
      */
-    fun createTask(
-        flowContext: FlowContext,
-        nodeModel: NodeModel,
-        assignee: String = "",
-        candidates: List<String> = emptyList(),
-        taskVariable: Map<String, String> = emptyMap()
-    ): Long
+    fun createTask(flowContext: FlowContext, nodeModel: NodeModel, assignee: String = "", candidates: List<String> = emptyList(), taskVariable: Map<String, String> = emptyMap()): Long
 
     /**
      * 领取任务
      */
-    fun takeTask(
-        taskId: Long,
-        assignee: String
-    )
+    fun takeTask(taskId: Long, assignee: String)
 
     /**
      * 归还任务,重新初始化当前任务的候选人和受让人
@@ -36,12 +28,7 @@ interface IRuTaskService {
     /**
      * 完成任务
      */
-    fun completeTask(
-        taskId: Long,
-        userId: String,
-        taskVariable: Map<String, String>? = null,
-        instanceVariable: Map<String, String>? = null
-    )
+    fun completeTask(taskId: Long, userId: String, taskVariable: Map<String, String>? = null, instanceVariable: Map<String, String>? = null)
 
     /**
      * 获取运行时任务详情
@@ -66,12 +53,7 @@ interface IRuTaskService {
     /**
      * 查询指定用户的任务
      */
-    fun pageRuTaskByAssignee(
-        assignee: String,
-        processKey: String? = null,
-        instanceNo: String? = null,
-        page: Page<RuTask>
-    ): Page<RuTask>
+    fun pageRuTaskByAssignee(assignee: String, processKey: String? = null, instanceNo: String? = null, page: Page<RuTask>): Page<RuTask>
 
     /**
      * 任务回退(默认删除历史任务)
