@@ -45,8 +45,14 @@ open class GoAutoConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    open fun hisTaskService(hisTaskMapper: HisTaskMapper, ruTaskMapper: RuTaskMapper, hisVariableMapper: HisVariableMapper, ruVariableMapper: RuVariableMapper,): IHisTaskService {
-        return HisTaskServiceImpl(hisTaskMapper, ruTaskMapper, hisVariableMapper, ruVariableMapper)
+    open fun hisTaskService(
+        hisTaskMapper: HisTaskMapper,
+        ruTaskMapper: RuTaskMapper,
+        hisVariableMapper: HisVariableMapper,
+        ruVariableMapper: RuVariableMapper,
+        @Lazy ruTaskService: IRuTaskService,
+    ): IHisTaskService {
+        return HisTaskServiceImpl(hisTaskMapper, hisVariableMapper, ruTaskService)
     }
 
     @Bean

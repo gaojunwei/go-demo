@@ -7,5 +7,5 @@ interface BaseForm {
     /**
      * 节点回退处理逻辑
      */
-    fun fallback(processId: String)
+    fun fallback(instanceNo: String)
 }

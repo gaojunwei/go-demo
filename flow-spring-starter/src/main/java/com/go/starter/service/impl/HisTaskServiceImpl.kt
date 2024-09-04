@@ -5,33 +5,29 @@ import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.go.starter.core.form.BaseForm
 import com.go.starter.domain.HisTask
 import com.go.starter.domain.HisVariable
-import com.go.starter.domain.RuTask
-import com.go.starter.domain.RuVariable
 import com.go.starter.mapper.HisTaskMapper
 import com.go.starter.mapper.HisVariableMapper
-import com.go.starter.mapper.RuTaskMapper
-import com.go.starter.mapper.RuVariableMapper
 import com.go.starter.service.IHisTaskService
+import com.go.starter.service.IRuTaskService
+import org.springframework.context.annotation.Lazy
 import org.springframework.transaction.annotation.Transactional
 
 open class HisTaskServiceImpl(
     private val hisTaskMapper: HisTaskMapper,
-    private val ruTaskMapper: RuTaskMapper,
     private val hisVariableMapper: HisVariableMapper,
-    private val ruVariableMapper: RuVariableMapper,
+    @Lazy private val ruTaskService: IRuTaskService,
 ) : IHisTaskService {
 
     @Transactional(rollbackFor = [Exception::class])
-    override fun rollBackChildTask(parentTaskId: Long) {
+    override fun rollBackChildTask(parentTaskId: Long, ruTaskId: Long) {
         //获取所有子任务并按
         val childList = listChildTask(parentTaskId).toList()
         //删除任务及任务变量
         val taskIds = childList.map { it.taskId!! }
         hisTaskMapper.delete(KtQueryWrapper(HisTask::class.java).`in`(HisTask::taskId, taskIds))
         hisVariableMapper.delete(KtQueryWrapper(HisVariable::class.java).`in`(HisVariable::taskId, taskIds))
-        val ruTaskIds = childList.filter { it.endTime == null }.map { it.taskId!! }
-        ruTaskMapper.delete(KtQueryWrapper(RuTask::class.java).`in`(RuTask::taskId, ruTaskIds))
-        ruVariableMapper.delete(KtQueryWrapper(RuVariable::class.java).`in`(RuVariable::taskId, ruTaskIds))
+        val ruTaskIds = (childList.filter { it.endTime == null }.map { it.taskId!! } + ruTaskId).distinct()
+        ruTaskIds.forEach { ruTaskService.deleteRuTask(it) }
         //按节点最近完成时间倒序进行业务回滚
         val dealList = mutableListOf<String>()
         childList.filter { it.endTime != null }.sortedByDescending { it.endTime }.forEach { hisTask ->
@@ -62,8 +58,8 @@ open class HisTaskServiceImpl(
         val childTaskSet = mutableSetOf<HisTask>()
         val childList = KtQueryChainWrapper(HisTask::class.java).eq(HisTask::parentTaskId, parentTaskId)
             .orderByDesc(HisTask::startTime).list()
-        if (!childList.isNullOrEmpty()) {
-            return childTaskSet
+        if (childList.isNullOrEmpty()) {
+            return childTaskSet + getTaskForce(parentTaskId)
         }
         childTaskSet.addAll(childList)
         childList.forEach { child ->

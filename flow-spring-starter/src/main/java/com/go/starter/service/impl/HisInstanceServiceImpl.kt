@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.kotlin.KtQueryChainWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateChainWrapper
 import com.go.starter.core.FlowContext
 import com.go.starter.core.ProcessParse
+import com.go.starter.core.enums.InstanceEventEnum
 import com.go.starter.core.enums.InstanceStateEnum
 import com.go.starter.core.enums.NodeTypeEnum
 import com.go.starter.core.exception.FlowException
@@ -72,14 +73,19 @@ open class HisInstanceServiceImpl(
         ruVariableService.saveProcessVariable(param.instanceNo, param.processVariable)
         //生成任务
         val processDefinition = ProcessAnalysisUtil.processModelToProcessDefinition(processModel = processModel)
+        val flowContext = FlowContext(
+            instance = instance,
+            processDefinition = processDefinition,
+            processVariable = param.processVariable
+        )
         processParse.createNextTask(
             currentNodeId = null,
-            flowContext = FlowContext(
-                instance = instance,
-                processDefinition = processDefinition,
-                processVariable = param.processVariable
-            ),
+            flowContext = flowContext,
         )
+        //流程事件通知处理
+        flowContext.getInstanceListener()?.let { instanceListener ->
+            processParse.processNotify(instanceListener, flowContext, InstanceEventEnum.START)
+        }
         return instanceId
     }
 

@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.math.abs
 
 open class RuTaskServiceImpl(
     private val ruTaskMapper: RuTaskMapper,
@@ -158,10 +159,11 @@ open class RuTaskServiceImpl(
         val instanceNo = task.instanceNo!!
         //维护历史任务数据
         val endTime = LocalDateTime.now()
+        val duration = abs(ChronoUnit.MILLIS.between(task.createTime, endTime))
         FlowException.assertFalse(
             !KtUpdateChainWrapper(HisTask::class.java)
                 .set(HisTask::endTime, endTime)
-                .set(HisTask::duration, ChronoUnit.MILLIS.between(task.createTime, endTime))
+                .set(HisTask::duration, duration)
                 .eq(HisTask::taskId, taskId)
                 .isNull(HisTask::endTime)
                 .update(), "操作失败请重试"
@@ -224,24 +226,22 @@ open class RuTaskServiceImpl(
     }
 
     @Transactional(rollbackFor = [Exception::class])
+    override fun deleteRuTask(taskId: Long) {
+        val task = getTaskForce(taskId)
+        ruVariableService.deleteTaskVariable(task.instanceNo!!, taskId)
+        ruTaskMapper.deleteById(taskId)
+        hisTaskMapper.deleteById(taskId)
+    }
+
+    @Transactional(rollbackFor = [Exception::class])
     override fun backPreNodeTask(taskId: Long) {
         //获取任务详情
         val task = getTask(taskId)!!
         //判断有无父级任务
         val parentTaskId = task.parentTaskId
         FlowException.assertFalse(parentTaskId == null, "[${task.nodeId}]该节点任务无父级任务回退失败")
-        //获取父级任务的父级任务
-        val parentTask = hisTaskService.getParentTask(parentTaskId!!)
-        var currentNodeId = parentTask?.nodeId
-        //获取父级任务下的所有子任务
-        hisTaskService.rollBackChildTask(task.parentTaskId!!)
-        //生成新任务
-        processParse.createNextTask(
-            currentNodeId = currentNodeId,
-            flowContext = hisInstanceService.flowContext(task.instanceNo!!).apply {
-                this.parentTaskId = parentTask?.taskId
-            }
-        )
+        //进行任务回滚并生成新任务
+        backToPointNodeTask(instanceNo = task.instanceNo!!, task.parentTaskId!!, taskId)
     }
 
     override fun backToPointNodeTask(taskId: Long, nodeId: String) {
@@ -256,18 +256,20 @@ open class RuTaskServiceImpl(
             .one()
         FlowException.assertFalse(hisTask == null, "无此节点的历史任务存在")
         FlowException.assertFalse(task.nodeId!! == hisTask.nodeId!!, "与待审批任务节点相同，无法回退")
-        //获取父级任务
-        val parentTask = hisTaskService.getParentTask(hisTask.taskId!!)
-        var currentNodeId = parentTask?.nodeId
+        //进行任务回滚并生成新任务
+        backToPointNodeTask(instanceNo = task.instanceNo!!, hisTask.taskId!!, taskId)
+    }
+
+    private fun backToPointNodeTask(instanceNo: String, rollbackTaskId: Long, ruTaskId: Long) {
+        //获取任务详情
+        val task = hisTaskService.getTaskForce(rollbackTaskId)
         //获取父级任务下的所有子任务
-        hisTaskService.rollBackChildTask(task.parentTaskId!!)
+        hisTaskService.rollBackChildTask(rollbackTaskId, ruTaskId)
+        val flowContext = hisInstanceService.flowContext(instanceNo).apply {
+            this.parentTaskId = task.parentTaskId
+        }
         //生成新任务
-        processParse.createNextTask(
-            currentNodeId = currentNodeId,
-            flowContext = hisInstanceService.flowContext(task.instanceNo!!).apply {
-                this.parentTaskId = parentTask?.taskId
-            }
-        )
+        processParse.taskProcess(arrayListOf(flowContext.getNodeModel(task.nodeId!!)), flowContext)
     }
 
     override fun updateAssignee(taskId: Long, assignee: String) {

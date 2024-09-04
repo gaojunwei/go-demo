@@ -46,7 +46,7 @@ interface IRuTaskService {
     fun listRuTaskNodeIdByInstanceId(instanceId: Long): Set<String>
 
     /**
-     * 统计当前实例下进行中的任务
+     * 查询当前实例下进行中的任务
      */
     fun listRuTaskByInstanceNo(instanceNo: String): List<RuTask>
 
@@ -54,6 +54,11 @@ interface IRuTaskService {
      * 查询指定用户的任务
      */
     fun pageRuTaskByAssignee(assignee: String, processKey: String? = null, instanceNo: String? = null, page: Page<RuTask>): Page<RuTask>
+
+    /**
+     * 删除任务(变量数据及任务)
+     */
+    fun deleteRuTask(taskId: Long)
 
     /**
      * 任务回退(默认删除历史任务)

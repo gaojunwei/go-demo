@@ -2,7 +2,7 @@ package com.go.starter.core
 
 import com.go.starter.core.enums.InstanceEventEnum
 import com.go.starter.core.enums.InstanceEventEnum.END
-import com.go.starter.core.enums.InstanceEventEnum.START
+import com.go.starter.core.enums.InstanceStateEnum
 import com.go.starter.core.enums.NodeTypeEnum
 import com.go.starter.core.enums.TaskEventEnum
 import com.go.starter.core.listener.ProcessListener
@@ -35,10 +35,12 @@ open class ProcessParse(
         var instanceEvent: InstanceEventEnum? = null
         //获取当前节点信息首次启动默认为开始节点
         val currentNode = ProcessAnalysisUtil.getNodeDefinition(currentNodeId, processDefinition)
-        val nextNodeId = currentNode.targetRef!!
-        if (currentNode.nodeType == NodeTypeEnum.START) {
-            instanceEvent = START
-        }
+        val nextNodeId =
+            if (currentNode.nodeType == NodeTypeEnum.START || currentNode.nodeType == NodeTypeEnum.USER_TASK) {
+                currentNode.targetRef!!
+            } else {
+                currentNode.nodeId!!
+            }
         //获取下一个或多个任务节点信息
         val nextNodeList = ProcessAnalysisUtil.nextNode(
             nextNodeId = nextNodeId,
@@ -56,6 +58,7 @@ open class ProcessParse(
         }
         //流程事件通知处理
         instanceEvent?.let {
+            hisInstanceService.closeInstance(flowContext, InstanceStateEnum.COMPLETE)
             flowContext.getInstanceListener()?.let { instanceListener ->
                 processNotify(instanceListener, flowContext, it)
             }
@@ -63,9 +66,10 @@ open class ProcessParse(
     }
 
     /**
-     * 生成任务
+     * 指定节点生成任务
      */
-    private fun taskProcess(nextNodeModels: List<NodeModel>, flowContext: FlowContext) {
+    @Transactional(rollbackFor = [Exception::class])
+    open fun taskProcess(nextNodeModels: List<NodeModel>, flowContext: FlowContext) {
         for (nextNode in nextNodeModels) {
             //获取任务用户
             val pair = flowContext.getTaskUser(nextNode)
@@ -98,7 +102,7 @@ open class ProcessParse(
     /**
      * 流程事件通知
      */
-    private fun processNotify(instanceListener: String, flowContext: FlowContext, instanceEvent: InstanceEventEnum) {
+    fun processNotify(instanceListener: String, flowContext: FlowContext, instanceEvent: InstanceEventEnum) {
         val processListener = Class.forName(instanceListener).getDeclaredConstructor()
             .newInstance() as ProcessListener
         processListener.doNotify(

@@ -34,6 +34,14 @@ open class RuVariableServiceImpl(
         initVariable(instanceNo, taskId, taskVariable)
     }
 
+    override fun deleteProcessRuVariable(instanceNo: String, keySet: Set<String>) {
+        deleteVariable(instanceNo, 0L, keySet)
+    }
+
+    override fun deleteTaskRuVariable(instanceNo: String, taskId: Long, keySet: Set<String>) {
+        deleteVariable(instanceNo, taskId, keySet)
+    }
+
     @Transactional(rollbackFor = [Exception::class])
     override fun processVariable(instanceNo: String): Map<String, String> {
         hisInstanceService.checkExistRuInstance(instanceNo)
@@ -54,9 +62,17 @@ open class RuVariableServiceImpl(
 
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteProcessRuVariable(instanceNo: String) {
-        hisInstanceService.checkExistRuInstance(instanceNo)
         deleteRuVariable(instanceNo)
     }
+
+    override fun deleteProcessVariable(instanceNo: String) {
+        deleteVariable(instanceNo, 0L)
+    }
+
+    override fun deleteTaskVariable(instanceNo: String, taskId: Long) {
+        deleteVariable(instanceNo, taskId)
+    }
+
 
     private fun deleteRuVariable(instanceNo: String, taskId: Long = 0L) {
         ruVariableMapper.delete(KtQueryWrapper(RuVariable::class.java).apply {
@@ -93,15 +109,18 @@ open class RuVariableServiceImpl(
 
     private fun deleteVariable(
         instanceNo: String,
-        taskId: Long
+        taskId: Long,
+        keySet: Set<String> = emptySet()
     ) {
         ruVariableMapper.delete(KtQueryWrapper(RuVariable::class.java).apply {
             eq(RuVariable::instanceNo, instanceNo)
             eq(RuVariable::taskId, taskId)
+            `in`(keySet.isNotEmpty(), RuVariable::varKey, keySet)
         })
         hisVariableMapper.delete(KtQueryWrapper(HisVariable::class.java).apply {
             eq(HisVariable::instanceNo, instanceNo)
             eq(HisVariable::taskId, taskId)
+            `in`(keySet.isNotEmpty(), HisVariable::varKey, keySet)
         })
     }
 

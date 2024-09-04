@@ -1,10 +1,11 @@
 # Flow工作流
 ## 支持功能
-- 流程定义
+> 流程定义
 - [X] 部署流程定义JSON数据(IProcessService.deploy)
 - [X] 停用流程定义(IProcessService.stopUse)
 - [X] 启用流程定义(IProcessService.startUse)
-- 流程实例
+
+> 流程实例
 - [X] 支持用户任务节点(USER_TASK [NodeModel.kt](flow-spring-starter/src/main/java/com/go/starter/core/model/NodeModel.kt))
 - [X] 支持排他网关(EXCLUSIVE_GATEWAY [NodeModel.kt](flow-spring-starter/src/main/java/com/go/starter/core/model/NodeModel.kt))
 - [X] 支持并行网关|包容网关(PARALLEL_GATEWAY [NodeModel.kt](flow-spring-starter/src/main/java/com/go/starter/core/model/NodeModel.kt))
@@ -14,17 +15,20 @@
 - [X] 动态添加用户任务节点(IHisInstanceService.addUserTaskNode) <span style="color:red;">待测试</span>
 - [X] 受让人变更(IHisInstanceService.changeNodeAssignee) <span style="color:red;">待测试</span>
 - [X] 候选人变更(IHisInstanceService.changeNodeCandidateUsers) <span style="color:red;">待测试</span>
+- [X] 流程变量删除(IRuVariableService.deleteProcessRuVariable) <span style="color:red;">待测试</span>
 
-- 运行时任务实例
+> 运行时任务实例
 - [X] 任务查询
 - [X] 支持任务节点开始事件回调([TaskListener.kt](flow-spring-starter/src/main/java/com/go/starter/core/listener/TaskListener.kt))
 - [X] SPEL表达式支持
 - [X] 领取任务(IRuTaskService.takeTask)
 - [X] 归还任务(IRuTaskService.giveBack)
-- [X] 获取可回退节点列表数据（按结束事件倒序）(IHisInstanceService.listBackNodes) <span style="color:red;">待测试</span>
-- [X] 回退或驳回到上一个任务节点(IRuTaskService.backPreNodeTask) <span style="color:red;">待测试</span>
-- [X] 回退或驳回到历史某个节点(IRuTaskService.backToPointNodeTask) <span style="color:red;">待测试</span>
-- [X] 任务变量变更(IRuVariableService.saveTaskVariable) <span style="color:red;">待测试</span>
+- [X] 审核任务(IRuTaskService.completeTask)
+- [X] 获取可回退节点列表数据（按结束事件倒序）(IHisInstanceService.listBackNodes)
+- [X] 回退或驳回到上一个任务节点(IRuTaskService.backPreNodeTask)
+- [X] 回退或驳回到历史某个节点(IRuTaskService.backToPointNodeTask)
+- [X] 任务变量新增或修改(IRuVariableService.saveTaskVariable)
+- [X] 任务变量删除(IRuVariableService.deleteTaskRuVariable)
 - [ ] 任务跳转任意节点
 
 ## 核心类说明
@@ -129,3 +133,4 @@ TRUNCATE TABLE fw_instance_ext;
 TRUNCATE TABLE fw_ru_task;
 TRUNCATE TABLE fw_ru_variable;
 ```
+

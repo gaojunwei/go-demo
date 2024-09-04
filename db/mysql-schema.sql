@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 本地
+ Source Server         : 舜翔-开发环境
  Source Server Type    : MySQL
- Source Server Version : 80300
- Source Host           : 127.0.0.1:3306
+ Source Server Version : 80100
+ Source Host           : 39.99.62.31:3306
  Source Schema         : my_flow
 
  Target Server Type    : MySQL
- Target Server Version : 80300
+ Target Server Version : 80100
  File Encoding         : 65001
 
- Date: 28/08/2024 10:03:22
+ Date: 03/09/2024 15:11:46
 */
 
 SET NAMES utf8mb4;
@@ -37,7 +37,7 @@ CREATE TABLE `fw_his_instance`  (
   `instance_state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态 0:审批中,1:审批完成,2:终止',
   `delete_reason` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '删除原因',
   PRIMARY KEY (`instance_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '历史流程实例表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '历史流程实例表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for fw_his_task
@@ -56,6 +56,7 @@ CREATE TABLE `fw_his_task`  (
   `assignee` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '受让人',
   `form_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '表单键',
   `delete_reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '删除原因',
+  `parent_task_id` bigint UNSIGNED NULL DEFAULT NULL COMMENT '父级任务ID',
   PRIMARY KEY (`task_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '历史任务表' ROW_FORMAT = DYNAMIC;
 
@@ -72,7 +73,7 @@ CREATE TABLE `fw_his_variable`  (
   `create_time` timestamp NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uq_instance_task_key`(`instance_no` ASC, `task_id` ASC, `var_key` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 76 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '历史变量表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '历史变量表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for fw_instance_ext
@@ -86,7 +87,7 @@ CREATE TABLE `fw_instance_ext`  (
   `model_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '流程模型定义JSON内容',
   PRIMARY KEY (`instance_id`) USING BTREE,
   UNIQUE INDEX `unique_instance_no`(`instance_no` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '扩展流程实例表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '扩展流程实例表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for fw_process
@@ -101,7 +102,7 @@ CREATE TABLE `fw_process`  (
   `model_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '流程模型定义JSON内容',
   `create_time` timestamp NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`process_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '流程定义表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '流程定义表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for fw_ru_task
@@ -118,8 +119,9 @@ CREATE TABLE `fw_ru_task`  (
   `candidates` json NULL COMMENT '候选人集合',
   `form_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '表单键',
   `process_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '流程定义KEY',
+  `parent_task_id` bigint UNSIGNED NULL DEFAULT NULL COMMENT '父级任务ID',
   PRIMARY KEY (`task_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for fw_ru_variable
@@ -134,6 +136,6 @@ CREATE TABLE `fw_ru_variable`  (
   `create_time` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uq_instance_task_key`(`instance_no` ASC, `task_id` ASC, `var_key` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 76 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '实例运行时变量' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '实例运行时变量' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;
