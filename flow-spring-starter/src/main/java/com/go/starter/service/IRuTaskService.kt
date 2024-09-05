@@ -75,12 +75,12 @@ interface IRuTaskService {
     fun backToPointNodeTask(taskId: Long, nodeId: String)
 
     /**
-     * 更新任务受让人
+     * 更新任务受让人-(流程变量数据不更新)
      */
     fun updateAssignee(taskId: Long, assignee: String)
 
     /**
-     * 更新任务候选人
+     * 更新任务候选人-(流程变量数据不更新)
      */
     fun updateCandidates(taskId: Long, candidates: List<String>)
 }

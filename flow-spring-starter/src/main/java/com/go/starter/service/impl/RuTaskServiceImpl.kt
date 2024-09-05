@@ -27,6 +27,9 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
+/**
+ * @formatter:off
+ */
 open class RuTaskServiceImpl(
     private val ruTaskMapper: RuTaskMapper,
     private val hisTaskMapper: HisTaskMapper,
@@ -272,22 +275,25 @@ open class RuTaskServiceImpl(
         processParse.taskProcess(arrayListOf(flowContext.getNodeModel(task.nodeId!!)), flowContext)
     }
 
+    @Transactional(rollbackFor = [Exception::class])
     override fun updateAssignee(taskId: Long, assignee: String) {
         KtUpdateChainWrapper(RuTask::class.java)
             .set(RuTask::assignee, assignee)
-            .set(RuTask::candidates, "")
+            .set(RuTask::candidates, emptyList<String>(),"javaType=string,jdbcType=ARRAY,typeHandler=com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler")
             .eq(RuTask::taskId, taskId).update()
+        KtUpdateChainWrapper(HisTask::class.java)
+            .set(HisTask::assignee, assignee)
+            .eq(HisTask::taskId, taskId).update()
     }
 
     override fun updateCandidates(taskId: Long, candidates: List<String>) {
         KtUpdateChainWrapper(RuTask::class.java)
-            .set(
-                RuTask::candidates,
-                candidates,
-                "javaType=string,jdbcType=ARRAY,typeHandler=com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler"
-            )
+            .set(RuTask::candidates, candidates, "javaType=string,jdbcType=ARRAY,typeHandler=com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler")
             .set(RuTask::assignee, "")
             .eq(RuTask::taskId, taskId).update()
+        KtUpdateChainWrapper(HisTask::class.java)
+            .set(HisTask::assignee, "")
+            .eq(HisTask::taskId, taskId).update()
     }
 
     private fun getTask(taskId: Long, force: Boolean = true): RuTask? {

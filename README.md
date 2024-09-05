@@ -12,10 +12,10 @@
 - [X] 支持流程开始和结束事件回调([ProcessListener.kt](flow-spring-starter/src/main/java/com/go/starter/core/listener/ProcessListener.kt))
 - [X] 流程关闭(IHisInstanceService.closeInstance)
 - [X] 流程变量变更(IRuVariableService.saveProcessVariable)
-- [X] 动态添加用户任务节点(IHisInstanceService.addUserTaskNode) <span style="color:red;">待测试</span>
-- [X] 受让人变更(IHisInstanceService.changeNodeAssignee) <span style="color:red;">待测试</span>
-- [X] 候选人变更(IHisInstanceService.changeNodeCandidateUsers) <span style="color:red;">待测试</span>
-- [X] 流程变量删除(IRuVariableService.deleteProcessRuVariable) <span style="color:red;">待测试</span>
+- [X] 动态添加用户任务节点(IHisInstanceService.addUserTaskNode)
+- [X] 受让人变更-流程变量数据会更新,流程进行中状态(IHisInstanceService.changeNodeAssignee) 
+- [X] 候选人变更-流程变量数据会更新,流程进行中状态(IHisInstanceService.changeNodeCandidateUsers)
+- [X] 流程变量删除(IRuVariableService.deleteProcessRuVariable)
 
 > 运行时任务实例
 - [X] 任务查询
@@ -29,7 +29,9 @@
 - [X] 回退或驳回到历史某个节点(IRuTaskService.backToPointNodeTask)
 - [X] 任务变量新增或修改(IRuVariableService.saveTaskVariable)
 - [X] 任务变量删除(IRuVariableService.deleteTaskRuVariable)
-- [ ] 任务跳转任意节点
+- [X] 更新任务受让人-流程变量数据不更新,流程状态不限制(IRuTaskService.updateAssignee)
+- [X] 更新任务候选人-流程变量数据不更新,流程状态不限制(IRuVariableService.updateCandidates)
+- [ ] <span style="color:red;">暂不支持：任务跳转任意节点</span>
 
 ## 核心类说明
 

@@ -230,7 +230,7 @@ open class HisInstanceServiceImpl(
     }
 
     /**
-     * 任务节点人员变更
+     * 任务节点人员变更(更新流程变量)
      */
     private fun changeNodeUsers(
         instanceNo: String,

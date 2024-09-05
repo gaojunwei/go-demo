@@ -4,26 +4,14 @@ import cn.hutool.core.util.IdUtil
 import cn.hutool.core.util.RandomUtil
 import com.alibaba.fastjson2.JSON
 import com.go.flow.AbstractSpringTest
-import com.go.starter.service.IHisInstanceService
-import com.go.starter.service.IProcessService
-import com.go.starter.service.IRuTaskService
 import com.go.starter.service.bo.CreateInstanceBo
-import jakarta.annotation.Resource
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import java.util.concurrent.TimeUnit
 
 /**
  * 并行网关测试
  */
-class RuTaskTwoTest: AbstractSpringTest() {
-    @Resource
-    lateinit var ruTaskService: IRuTaskService
-    @Resource
-    lateinit var processService: IProcessService
-
-    @Resource
-    lateinit var hisInstanceService: IHisInstanceService
+class RuTaskTwoTest : AbstractSpringTest() {
     val processKey = "qing_jia_v1"
     val instanceNo = "B_1831216993138737152"
 
@@ -33,6 +21,7 @@ class RuTaskTwoTest: AbstractSpringTest() {
     fun listBackNodes() {
         println("获取可回退节点列表数据（按结束事件倒序）：${JSON.toJSONString(hisInstanceService.listBackNodes(instanceNo))}")
     }
+
     //todo gjw 待测试
     @Test
     @DisplayName("当前任务回退到历史指定节点的任务")
@@ -40,6 +29,7 @@ class RuTaskTwoTest: AbstractSpringTest() {
         ruTaskService.backToPointNodeTask(5L, "n_2")
         listRuTaskByInstanceNo()
     }
+
     //todo gjw 待测试
     @Test
     @DisplayName("任务回退(默认删除历史任务)")

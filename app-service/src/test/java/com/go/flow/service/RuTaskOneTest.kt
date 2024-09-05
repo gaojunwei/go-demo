@@ -6,11 +6,7 @@ import com.alibaba.fastjson2.JSON
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.go.flow.AbstractSpringTest
 import com.go.starter.domain.RuTask
-import com.go.starter.service.IHisInstanceService
-import com.go.starter.service.IProcessService
-import com.go.starter.service.IRuTaskService
 import com.go.starter.service.bo.CreateInstanceBo
-import jakarta.annotation.Resource
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -19,15 +15,8 @@ import org.junit.jupiter.api.Test
  */
 class RuTaskOneTest : AbstractSpringTest() {
 
-    @Resource
-    lateinit var ruTaskService: IRuTaskService
-    @Resource
-    lateinit var processService: IProcessService
-
-    @Resource
-    lateinit var hisInstanceService: IHisInstanceService
     val processKey = "qing_jia_v1"
-    val instanceNo = "B_1831216993138737152"
+    val instanceNo = "B_1831521406118064128"
 
 
     @Test
@@ -39,9 +28,10 @@ class RuTaskOneTest : AbstractSpringTest() {
     @Test
     @DisplayName("当前任务回退到历史指定节点的任务")
     fun backToPointNodeTask() {
-        ruTaskService.backToPointNodeTask(5L, "n_2")
+        ruTaskService.backToPointNodeTask(4L, "n_0")
         listRuTaskByInstanceNo()
     }
+
     @Test
     @DisplayName("任务回退(默认删除历史任务)")
     fun backPreNodeTask() {
@@ -62,9 +52,17 @@ class RuTaskOneTest : AbstractSpringTest() {
     }
 
     @Test
+    @DisplayName("审核任务")
+    fun completeTask2() {
+        val taskVariable = mutableMapOf("leaveDays" to "任务变量_${RandomUtil.randomInt(1, 100000)}")
+        val instanceVariable = mutableMapOf("leaveDays" to "9")
+        ruTaskService.completeTask(6L, "user_001", taskVariable = taskVariable, instanceVariable = instanceVariable)
+    }
+
+    @Test
     @DisplayName("领取任务")
     fun takeTask() {
-        ruTaskService.takeTask(3L, "user_001")
+        ruTaskService.takeTask(5L, "user_001")
     }
 
     @Test
