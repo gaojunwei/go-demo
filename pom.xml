@@ -3,15 +3,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.go.flow</groupId>
-    <artifactId>go-flow-starter</artifactId>
+    <groupId>com.go.auth</groupId>
+    <artifactId>go-auth-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>flow-spring-starter</module>
+        <module>spring-authorization-server</module>
         <module>app-service</module>
+        <module>spring-security-server</module>
     </modules>
 
 
