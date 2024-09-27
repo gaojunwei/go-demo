@@ -1,7 +1,7 @@
-package com.go.security
+package com.go
 
 import cn.hutool.extra.spring.SpringUtil
-import com.go.security.config.SysConfig
+import com.go.config.SysConfig
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Configuration

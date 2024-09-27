@@ -1,18 +1,16 @@
+package com.go.config
 
-# spring-security-server项目
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.provisioning.InMemoryUserDetailsManager
+import org.springframework.security.web.SecurityFilterChain
 
-整合vue3、redis、jwt的前后端分离项目可在主页查看【前后端分离项目】。  
-文档资料：http://t.csdnimg.cn/SPM7K。  
-源码地址：https://gitee.com/stt0626/stt-study.git  
-原创不易，喜欢的朋友记得点点关注哦！
-
-- 基于请求的：在配置文件中配置路径，可以使用**的通配符
-- 基于方法的：在方法上使用注解
-- 动态权限的：在数据库中配置权限，权限更新后自动刷新
-
-## 基于请求的
-SecurityConfig.kt配置类：
-```kotlin
 @Configuration
 @EnableWebSecurity(debug = true)
 class SecurityConfig {
@@ -71,46 +69,3 @@ class SecurityConfig {
         return http.build()
     }
 }
-```
-IndexController.kt控制器：
-```kotlin
-@RestController
-@RequestMapping
-class IndexController {
-
-    @GetMapping("test")
-    fun index(): String {
-        return "Hello World"
-    }
-
-    @GetMapping("has_admin")
-    fun hasAdmin(): String {
-        return "admin 角色有访问权限"
-    }
-    @GetMapping("has_any")
-    fun hasAny(): String {
-        return "admin或user 角色有访问权限"
-    }
-    @GetMapping("has_authority")
-    fun hasAuthority(): String {
-        return "具有 ‘Authority’权限可以访问"
-    }
-}
-```
-PageController.kt控制器：
-```kotlin
-@Controller
-class PageController {
-    @GetMapping("to_login")
-    fun toLogin(): String {
-        println("跳转到登陆页面")
-        return "login"
-    }
-
-    @GetMapping("index")
-    fun index(): String {
-        println("跳转到index页面")
-        return "index"
-    }
-}
-```
