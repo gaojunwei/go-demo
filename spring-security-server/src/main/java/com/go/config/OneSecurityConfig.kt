@@ -1,3 +1,4 @@
+/*
 package com.go.config
 
 import org.springframework.context.annotation.Bean
@@ -11,9 +12,14 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 
+*/
+/**
+ * 基于请求鉴权
+ *//*
+
 @Configuration
 @EnableWebSecurity(debug = true)
-class SecurityConfig {
+class OneSecurityConfig {
     // 密码加密器
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -68,4 +74,4 @@ class SecurityConfig {
         }
         return http.build()
     }
-}
+}*/
