@@ -11,9 +11,8 @@ class UserMapperTest : AbstractSpringTest() {
     @DisplayName("新增用户")
     fun insert(){
         val user = User().apply {
-            userName = "test"
-            password = passwordEncoder.encode("132456")
-            loginName = "测试账号"
+            loginPassword = passwordEncoder.encode("tiger")
+            loginName = "admin"
         }
         userMapper.insert(user)
         println("新增用户： ${user.userId}")

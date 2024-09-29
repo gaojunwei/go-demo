@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController
  * 基于方法鉴权
  */
 @RestController
-@RequestMapping
-class TwoController {
+@RequestMapping("th")
+class ThreeController {
     /**
      * @PreAuthorize注解调用方法前，判断是否有权限
      * 作用：使用类或者方法上，拥有指定权限才可以访问

@@ -1,3 +1,4 @@
+/*
 package com.go.security.provider
 
 import org.springframework.security.authentication.AbstractAuthenticationToken
@@ -21,4 +22,4 @@ class LoginNameAuthenticationToken(
     override fun getPrincipal(): Any {
         return this.principal
     }
-}
+}*/

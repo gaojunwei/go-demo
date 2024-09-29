@@ -1,3 +1,4 @@
+/*
 package com.go.config
 
 import org.springframework.context.annotation.Bean
@@ -11,9 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 
+*/
 /**
  * 基于方法鉴权
- */
+ *//*
+
 @Configuration
 @EnableMethodSecurity
 class TwoSecurityConfig {
@@ -65,4 +68,4 @@ class TwoSecurityConfig {
         }
         return http.build()
     }
-}
+}*/

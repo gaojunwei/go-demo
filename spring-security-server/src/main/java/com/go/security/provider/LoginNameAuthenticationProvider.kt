@@ -1,13 +1,14 @@
+/*
 package com.go.security.provider
 
-import com.go.security.UserDetailsServiceImpl
+import com.go.security.GoUserDetailsServiceImpl
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 
 
 class LoginNameAuthenticationProvider(
-    private val userDetailsService: UserDetailsServiceImpl
+    private val userDetailsService: GoUserDetailsServiceImpl
 ) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication?): Authentication {
         // 从认证令牌中获取登录名和密码
@@ -27,4 +28,4 @@ class LoginNameAuthenticationProvider(
         // 当 LoginNameAuthenticationToken 认证时，匹配该类
         return LoginNameAuthenticationToken::class.java.isAssignableFrom(authentication)
     }
-}
+}*/
