@@ -22,7 +22,18 @@ class ThreeController {
     @PreAuthorize("hasAuthority('test:show') || hasAuthority('test:show2')")
     @GetMapping("/m_1")
     fun preAuthorizeHasAuthority(): String {
-        return "preAuthorizeHasAuthority，基于方法鉴权，测试@PreAuthorize注解"
+        return "preAuthorizeHasAuthority，基于方法鉴权，测试@PreAuthorize注解 m_1"
+    }
+
+    /**
+     * @PreAuthorize注解调用方法前，判断是否有权限
+     * 作用：使用类或者方法上，拥有指定权限才可以访问
+     * String类型参数：语法是spring的el表达式,hasRole中的权限字符为 Authority加ROLE_前缀规则；
+     */
+    @PreAuthorize("hasAuthority('test:show8')")
+    @GetMapping("/m_11")
+    fun preAuthorizeHasAuthority2(): String {
+        return "preAuthorizeHasAuthority，基于方法鉴权，测试@PreAuthorize注解 m_11"
     }
 
     /**

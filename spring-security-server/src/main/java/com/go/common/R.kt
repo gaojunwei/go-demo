@@ -35,16 +35,16 @@ class R<T> : Serializable {
             return restResult(null, FAIL, "操作失败")
         }
 
+        fun <T> fail(msg:String): R<T?> {
+            return restResult(null, FAIL, msg)
+        }
+
         private fun <T> restResult(data: T?, code: Int, msg: String): R<T> {
             val r = R<T>()
             r.code = code
             r.data = data
             r.msg = msg
             return r
-        }
-
-        fun <T> isError(ret: R<T>): Boolean {
-            return !isSuccess(ret)
         }
 
         fun <T> isSuccess(ret: R<T>): Boolean {

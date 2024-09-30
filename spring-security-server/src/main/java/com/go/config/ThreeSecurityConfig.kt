@@ -1,27 +1,33 @@
 package com.go.config
 
+import com.go.security.filter.JwtAuthFilter
 import jakarta.annotation.Resource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 /**
  * 动态权限鉴权
  */
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity
 class ThreeSecurityConfig {
 
     @Resource
     private lateinit var userDetailsService: UserDetailsService
+
+    @Resource
+    private lateinit var jwtAuthFilter: JwtAuthFilter
 
     /**
      * AuthenticationManager：负责认证
@@ -43,7 +49,6 @@ class ThreeSecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
     }
 
-
     // 定义一个过滤器链，该链能够与 HttpServletRequest. 匹配，以确定它是否适用于该请求
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -56,6 +61,8 @@ class ThreeSecurityConfig {
                 // 其他请求 登陆即可访问
                 .anyRequest().authenticated()
         }
+        // 将过滤器添加到过滤器链中,放置在 用户名密码认证过滤器之前
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
 }

@@ -1,4 +1,4 @@
-package com.go.security.test
+package com.go
 
 import com.go.mapper.UserMapper
 import jakarta.annotation.Resource

@@ -1,7 +1,7 @@
-package com.go.security.test.mapper
+package com.go.mapper
 
 import com.go.mapper.domain.User
-import com.go.security.test.AbstractSpringTest
+import com.go.AbstractSpringTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 

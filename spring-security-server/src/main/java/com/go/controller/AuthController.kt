@@ -1,5 +1,6 @@
 package com.go.controller
 
+import com.go.common.R
 import com.go.service.IUserService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -19,10 +20,9 @@ class AuthController(
      * 登陆接口返回token
      */
     @PostMapping("login")
-    fun login(@RequestBody loginParam: LoginParam): String {
+    fun login(@RequestBody loginParam: LoginParam): R<String> {
         val token = userService.login(loginParam)
-        println("登陆成功 token:$token")
-        return token
+        return R.ok(token)
     }
 }
 

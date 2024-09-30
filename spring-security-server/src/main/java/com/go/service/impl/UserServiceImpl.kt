@@ -1,12 +1,11 @@
 package com.go.service.impl
 
-import cn.hutool.core.util.IdUtil
 import com.go.controller.LoginParam
 import com.go.mapper.domain.User
+import com.go.security.JwtUtils
 import com.go.service.IUserService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.AuthenticationException
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,8 +22,14 @@ class UserServiceImpl(
         //返回的Authentication其实就是UserDetails
         val authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken)
         val user = authenticate.principal as User
-        println("$user 登陆成功")
-        // 生成token返回前端
-        return IdUtil.simpleUUID().toString()
+        println("********> ${user.loginName} 登陆成功")
+        // 生成token
+        return JwtUtils.createToken(
+            mutableMapOf(
+                "userId" to user.userId!!,
+                "loginName" to user.loginName!!,
+                "perms" to user.perms
+            )
+        )
     }
 }

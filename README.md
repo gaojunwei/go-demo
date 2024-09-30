@@ -265,3 +265,184 @@ class TwoController {
 }
 ```
 ## 动态权限鉴权
+### 集成JWT
+```xml
+<!-- JWT -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.9.1</version>
+</dependency>
+<!-- JWT JDK8以上需要加入以下依赖 -->
+<dependency>
+    <groupId>javax.xml.bind</groupId>
+    <artifactId>jaxb-api</artifactId>
+    <version>2.3.1</version>
+</dependency>
+```
+JwtUtils.kt
+```kotlin
+package com.go.security
+
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import java.util.*
+
+/**
+ * Jwt工具类
+ */
+class JwtUtils {
+    companion object {
+        private const val EXPIRE_TIME: Long = 1000 * 60 * 60 * 24 * 7 // 过期时间 7天
+        private const val SECRET: String = "dskfks3hfowifei3*t978" // 秘钥
+
+        /**
+         * 生成token
+         */
+        fun createToken(map: MutableMap<String, Any>): String {
+            return Jwts.builder()
+                .setClaims(map)
+                .setIssuedAt(Date())//创建 JWT 时的时间戳
+                .setExpiration(Date(System.currentTimeMillis() + EXPIRE_TIME))
+                .signWith(SignatureAlgorithm.HS256, SECRET)// 设置签名
+                .compact()
+        }
+
+        /**
+         * 根据token解析出用户信息
+         * @exception io.jsonwebtoken.ExpiredJwtException token过期异常
+         */
+        fun parseToken(token: String): Claims {
+            return Jwts.parser()
+                .setSigningKey(SECRET)
+                .parseClaimsJws(token)
+                .body
+        }
+    }
+}
+```
+JwtAuthFilter.kt过滤器：
+```kotlin
+package com.go.security.filter
+
+import com.go.mapper.domain.User
+import com.go.security.JwtUtils
+import com.go.security.MockData
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
+import org.springframework.web.filter.OncePerRequestFilter
+
+/**
+ * 捕获请求头中的token，解析token，获取用户信息
+ *
+ * 1、获取到用户信息，告知 springSecurity ，springSecurity 会根据访问的接口进行鉴权；
+ * 2、告知springSecurity 就是使用Authentication告知框架，springSecurity 会将信息放到SecurityContextHolder中->SecurityContextHolder;
+ *
+ */
+@Component
+class JwtAuthFilter : OncePerRequestFilter() {
+
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
+        val token = request.getHeader(MockData.TOKEN_HEADER)
+        //login接口不需要校验token，直接放行，因为后边还有其他的过滤器
+        if (token == null) {
+            doFilter(request, response, filterChain)
+            return
+        }
+        //解析token
+        val data = JwtUtils.parseToken(token)
+        //获取到用户信息, 放入到SecurityContext中
+        val user = User().apply {
+            loginName = data.get("loginName", String::class.java)
+            userId = data["userId"].toString().toLong()
+            perms = (data["perms"] as MutableList<String>).toMutableSet()
+        }
+        val authenticationToken = UsernamePasswordAuthenticationToken(user, null, user.authorities)
+        SecurityContextHolder.getContext().authentication = authenticationToken
+        // 放行
+        doFilter(request, response, filterChain)
+    }
+}
+```
+
+ThreeSecurityConfig.kt配置类：
+>- 将过滤器添加到过滤器链中,放置在 用户名密码认证过滤器之前
+```kotlin
+package com.go.config
+
+import com.go.security.filter.JwtAuthFilter
+import jakarta.annotation.Resource
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.ProviderManager
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+
+/**
+ * 动态权限鉴权
+ */
+@Configuration
+@EnableMethodSecurity
+class ThreeSecurityConfig {
+
+    @Resource
+    private lateinit var userDetailsService: UserDetailsService
+
+    @Resource
+    private lateinit var jwtAuthFilter: JwtAuthFilter
+
+    /**
+     * AuthenticationManager：负责认证
+     * DaoAuthenticationProvider：负责将userDetailsService、passwordEncoder融合起来送到AuthenticationManager中
+     */
+    @Bean
+    fun authenticationManager(passwordEncoder: PasswordEncoder): AuthenticationManager {
+        val provider = DaoAuthenticationProvider()
+        provider.setUserDetailsService(userDetailsService)
+        // 关联使用的密码加密器
+        provider.setPasswordEncoder(passwordEncoder)
+        // 将provider放置进AuthenticationManager中
+        return ProviderManager(provider)
+    }
+
+    // 密码加密器
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    }
+
+    // 定义一个过滤器链，该链能够与 HttpServletRequest. 匹配，以确定它是否适用于该请求
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        // 关闭csrf机制
+        http.csrf { it.disable() }
+        // 配置拦截方式-基于请求的授权
+        http.authorizeHttpRequests { auth ->
+            // to_login 接口允许任意访问（未登录也可访问）
+            auth.requestMatchers("/auth/login").permitAll()
+                // 其他请求 登陆即可访问
+                .anyRequest().authenticated()
+        }
+        // 将过滤器添加到过滤器链中,放置在 用户名密码认证过滤器之前
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
+        return http.build()
+    }
+}
+```

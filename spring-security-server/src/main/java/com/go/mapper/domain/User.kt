@@ -1,6 +1,8 @@
 package com.go.mapper.domain
 
 import com.baomidou.mybatisplus.annotation.IdType
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore
+import com.baomidou.mybatisplus.annotation.TableField
 import com.baomidou.mybatisplus.annotation.TableId
 import com.baomidou.mybatisplus.annotation.TableName
 import org.springframework.security.core.GrantedAuthority
@@ -14,11 +16,11 @@ class User : Serializable, UserDetails {
     @TableId(type = IdType.AUTO)
     var userId: Long? = null
 
-    //登录密码
-    var loginPassword: String? = null
-
     //登录用户名称
     var loginName: String? = null
+
+    //登录密码
+    var loginPassword: String? = null
 
     //性别
     var gender: Int? = null
@@ -42,9 +44,11 @@ class User : Serializable, UserDetails {
     var remark: String? = null
 
     // 权限信息
-    val perms: MutableSet<String> = mutableSetOf()
+    @TableField(exist = false)
+    var perms: MutableSet<String> = mutableSetOf()
 
     // 角色信息
+    @TableField(exist = false)
     val roleSet: MutableSet<String> = mutableSetOf()
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
