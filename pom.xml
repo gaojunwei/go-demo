@@ -13,6 +13,7 @@
         <module>spring-authorization-server</module>
         <module>app-service</module>
         <module>spring-security-server</module>
+        <module>spring-security-server-oauth2</module>
     </modules>
 
 
