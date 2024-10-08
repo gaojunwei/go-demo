@@ -14,5 +14,12 @@ class MockData {
         fun getPerms(): Set<String> {
             return setOf("test:show", "test:show1", "test:show2")
         }
+
+        /**
+         * 自定义认证管理器的菜单数据,权限数据 - 测试使用
+         */
+        fun goAuthorizationManagerMenuData(): Map<String, String> {
+            return mapOf("/four/m_1" to "test:show")
+        }
     }
 }

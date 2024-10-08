@@ -1,7 +1,7 @@
-/*
 package com.go.config
 
 import com.go.security.filter.JwtAuthFilter
+import com.go.security.manager.GoAuthorizationManager
 import jakarta.annotation.Resource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,14 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
-*/
 /**
  * 动态权限鉴权
- *//*
-
+ */
 @Configuration
 @EnableMethodSecurity
-class ThreeSecurityConfig {
+class FourSecurityConfig {
 
     @Resource
     private lateinit var userDetailsService: UserDetailsService
@@ -31,12 +29,13 @@ class ThreeSecurityConfig {
     @Resource
     private lateinit var jwtAuthFilter: JwtAuthFilter
 
-    */
-/**
+    @Resource
+    private lateinit var goAuthorizationManager: GoAuthorizationManager
+
+    /**
      * AuthenticationManager：负责认证
      * DaoAuthenticationProvider：负责将userDetailsService、passwordEncoder融合起来送到AuthenticationManager中
-     *//*
-
+     */
     @Bean
     fun authenticationManager(passwordEncoder: PasswordEncoder): AuthenticationManager {
         val provider = DaoAuthenticationProvider()
@@ -63,10 +62,10 @@ class ThreeSecurityConfig {
             // to_login 接口允许任意访问（未登录也可访问）
             auth.requestMatchers("/auth/login").permitAll()
                 // 其他请求 登陆即可访问
-                .anyRequest().authenticated()
+                .anyRequest().access(goAuthorizationManager)
         }
         // 将过滤器添加到过滤器链中,放置在 用户名密码认证过滤器之前
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
-}*/
+}
