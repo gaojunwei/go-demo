@@ -2,11 +2,9 @@ package com.go.controller
 
 import com.go.common.R
 import com.go.common.extension.log
-import com.go.mapper.domain.User
 import io.jsonwebtoken.SignatureException
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.access.AccessDeniedException
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -24,7 +22,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException::class)
     fun handleException(e: AccessDeniedException, request: HttpServletRequest): R<Any?> {
-        log.error("未授权异常 ${e.message},用户:${(SecurityContextHolder.getContext().authentication.principal as User).loginName},URL:${request.requestURI}")
+        log.error("未授权异常 ${e.message},URL:${request.requestURI}")
         return R.fail("资源未授权")
     }
 

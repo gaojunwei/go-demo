@@ -1,5 +1,5 @@
 server:
-  port: 9001
+  port: 9002
 # 项目版本
 project:
   version: @project.version@
@@ -7,19 +7,28 @@ project:
 # spring配置
 spring:
   # 安全配置
-  #security:
-    #user:
-      #name: admin
-      #password: tiger
-      #roles: ['admin','user']
-  # 数据源配置
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/security_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
-    username: root
-    password: tiger
-# mybatis-plus 配置
-mybatis-plus:
-  configuration:
-    logImpl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  security:
+    oauth2:
+      client:
+        registration:
+          # oauth授权平台
+          gitee:
+            client-id: 4acc995f3b994fe11d5cca9c4d2a942211afd732c391fc6da739bb5274dd22af
+            client-secret: 55b243f5af4f8238d23c7233d6b3263aaa6ade6b7cd67b43026c9cf7a7169b09
+            # 授权模式，固定为 authorization_code，其他值可以参考 AuthorizationGrantType
+            authorization-grant-type: authorization_code
+            # 回调地址，接收授权码
+            redirect-uri: http://localhost:9002/oauth/notify
+            # 权限范围
+            scope:
+              - user_info # 个人信息
+        provider:
+          gitee:
+            # 申请授权地址
+            authorization-uri: https://gitee.com/oauth/authorize
+            # 获取访问令牌地址
+            token-uri: https://gitee.com/oauth/token
+            # 查询用户信息地址
+            user-info-uri: https://gitee.com/api/v5/user
+            # gitee用户信息中的用户名字段
+            user-name-attribute: name
