@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration
 
 @SpringBootApplication
 @Configuration
-class Oauth2SecurityApp
+class Oauth2SecurityApp01
 
 fun main(args: Array<String>) {
-    SpringApplication(Oauth2SecurityApp::class.java).run(*args)
+    SpringApplication(Oauth2SecurityApp01::class.java).run(*args)
     println("******* SecurityServer:${SpringUtil.getBean(SysConfig::class.java).version} 启动成功!!!")
 }
 
