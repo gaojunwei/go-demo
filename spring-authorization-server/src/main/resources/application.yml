@@ -1,5 +1,0 @@
-server:
-  port: 9002
-# 项目版本
-project:
-  version: @project.version@

@@ -1,0 +1,16 @@
+server:
+  port: 9002
+# 项目版本
+project:
+  version: @project.version@
+
+spring:
+  # 指定数据库
+  data:
+    neo4j:
+      database: test
+  neo4j:
+    uri: bolt://127.0.0.1:7687
+    authentication:
+      username: neo4j
+      password: neo4j123456

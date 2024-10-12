@@ -10,11 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>spring-authorization-server</module>
-        <module>app-service</module>
-        <module>spring-security-server</module>
-        <module>spring-security-server-oauth2-go01</module>
-        <module>spring-security-server-oauth2-go02</module>
+        <module>neo4j-server</module>
     </modules>
 
 
@@ -28,7 +24,7 @@
         <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
 
-        <spring-boot.version>3.1.5</spring-boot.version>
+        <spring-boot.version>3.2.0</spring-boot.version>
         <mysql-connector.version>8.0.33</mysql-connector.version>
 
         <kotlin.version>1.9.25</kotlin.version>
