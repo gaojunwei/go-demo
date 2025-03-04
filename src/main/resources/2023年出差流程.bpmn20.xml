@@ -4,8 +4,9 @@
     <documentation>2023年出差流程描述</documentation>
     <!--流程事件监听器-->
     <extensionElements>
-      <flowable:eventListener class="com.gjw.go.flowable.task.listener.MyFlowableEventListener"/>
+      <flowable:eventListener events="PROCESS_CREATED" class="com.gjw.go.flowable.task.listener.MyFlowableEventListener"/>
     </extensionElements>
+
     <startEvent id="startEvent1" flowable:formFieldValidation="true"/>
     <userTask id="sid-zuzhang" name="组长审批" flowable:candidateUsers="${zuzhang}" flowable:formFieldValidation="true" flowable:formKey="zuzhang_form_key">
       <extensionElements>
