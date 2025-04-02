@@ -15,5 +15,9 @@ spring:
           connections:
             server1:
               url: http://127.0.0.1:8080
+    # 通义大模型配置
     dashscope:
       api-key: sk-4bb06acbc78146aabbef23a1a8d94339
+      chat:
+        options:
+          model: qwen-max
