@@ -34,7 +34,9 @@ public class ChatController {
 
     public ChatController(ChatClient.Builder chatClientBuilder, List<McpSyncClient> mcpSyncClients, ToolCallbackProvider tools) {
         this.chatClient = chatClientBuilder
-                .defaultSystem("以特朗普的风格回答问题。")
+                // 它定义了聊天机器人在回答问题时应当遵循的风格和角色定位。
+                .defaultSystem("以专业天气预报主持人的风格回答问题。")
+                // 指定聊天客户端可用的工具
                 .defaultTools(tools)
                 .defaultOptions(DashScopeChatOptions.builder().withTopP(0.7).build())
                 .build();

@@ -10,12 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class IndexController {
-
     @GetMapping("/")
     public String chat(Model model) {
-        //model.addAttribute("name", "User");
-        // 返回视图名称，对应 templates/index.html
         return "index";
     }
-
 }
