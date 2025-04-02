@@ -2,19 +2,19 @@ package com.ahucoding.rocket.mcpserver.cfg;
 
 import com.ahucoding.rocket.mcpserver.service.BookService;
 import com.ahucoding.rocket.mcpserver.service.WeatherService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.modelcontextprotocol.server.McpServerFeatures;
-import io.modelcontextprotocol.spec.McpSchema;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * @author jianzhang
@@ -24,81 +24,111 @@ import java.util.function.Consumer;
 @EnableWebMvc
 public class McpServerConfig implements WebMvcConfigurer {
 
-    // 将服务暴露出去
+    // 允许服务器公开可由语言模型调用的工具
     @Bean
     public ToolCallbackProvider openLibraryToolsOne(BookService bookService) {
         return MethodToolCallbackProvider.builder().toolObjects(bookService).build();
     }
-    // 将服务暴露出去
+
+    // 允许服务器公开可由语言模型调用的工具
     @Bean
     public ToolCallbackProvider openLibraryToolsTwo(WeatherService weatherService) {
         return MethodToolCallbackProvider.builder().toolObjects(weatherService).build();
     }
 
-    /*@Bean
-    public List<McpServerFeatures.SyncResourceRegistration> resourceRegistrations() {
+    // 允许服务器公开可由语言模型调用的工具
+    @Bean
+    public ToolCallbackProvider openLibraryToolsThree() {
+        return ToolCallbackProvider.from(Arrays.asList(toolCallbackOne, toolCallbackTwo));
+    }
 
-        // Create a resource registration for system information
-        var systemInfoResource = new McpSchema.Resource(
-                "system://info",
-                "System Information",
-                "Provides basic system information including Java version, OS, etc.",
-                "application/json", null
-        );
+    private ToolCallback toolCallbackOne = new ToolCallback() {
+        @Override
+        public ToolDefinition getToolDefinition() {
+            return ToolDefinition.builder()
+                    .name("Weather1")
+                    .description("大龙电台，根据城市名称获取天气预报")
+                    .inputSchema("""
+                        {
+                            "type": "object",
+                            "properties": {
+                                "cityName": {
+                                    "type": "string",
+                                    "description": "城市名称，例如：西安、北京、上海等"
+                                }
+                            },
+                            "required": ["cityName"]
+                        }
+                        """)
+                    .build();
+        }
+        public record TianQi(String cityName) {
+        }
 
-        var resourceRegistration = new McpServerFeatures.SyncResourceRegistration(systemInfoResource, (request) -> {
+        @Override
+        public String call(String toolInput) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            TianQi tq= null;
             try {
-                var systemInfo = Map.of(
-                        "javaVersion", System.getProperty("java.version"),
-                        "osName", System.getProperty("os.name"),
-                        "osVersion", System.getProperty("os.version"),
-                        "osArch", System.getProperty("os.arch"),
-                        "processors", Runtime.getRuntime().availableProcessors(),
-                        "timestamp", System.currentTimeMillis());
-
-                String jsonContent = new ObjectMapper().writeValueAsString(systemInfo);
-
-                return new McpSchema.ReadResourceResult(
-                        List.of(new McpSchema.TextResourceContents(request.uri(), "application/json", jsonContent)));
+                tq = objectMapper.readValue(toolInput,TianQi.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
             }
-            catch (Exception e) {
-                throw new RuntimeException("Failed to generate system info", e);
+            Map<String, String> mockData = Map.of(
+                    "西安", "晴天",
+                    "北京", "小雨",
+                    "上海", "大雨",
+                    "河北", "阴天",
+                    "邢台", "大暴雨",
+                    "邯郸", "暴雪"
+            );
+            System.out.println("ToolCallback 大龙电台,天气服务，查询城市："+tq.cityName);
+            return mockData.getOrDefault(tq.cityName, "抱歉：未查询到对应城市！");
+        }
+    };
+
+    private ToolCallback toolCallbackTwo = new ToolCallback() {
+        @Override
+        public ToolDefinition getToolDefinition() {
+            return ToolDefinition.builder()
+                    .name("Weather2")
+                    .description("巨龙电台，根据城市名称获取天气预报")
+                    .inputSchema("""
+                        {
+                            "type": "object",
+                            "properties": {
+                                "cityName": {
+                                    "type": "string",
+                                    "description": "城市名称，例如：西安、北京、上海等"
+                                }
+                            },
+                            "required": ["cityName"]
+                        }
+                        """)
+                    .build();
+        }
+        public record TianQi(String cityName) {
+        }
+
+        @Override
+        public String call(String toolInput) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            TianQi tq= null;
+            try {
+                tq = objectMapper.readValue(toolInput,TianQi.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
             }
-        });
-
-        return List.of(resourceRegistration);
-    }*/
-
-
-
-   /* @Bean
-    public List<McpServerFeatures.SyncPromptRegistration> promptRegistrations() {
-
-        var prompt = new McpSchema.Prompt("greeting", "A friendly greeting prompt",
-                List.of(new McpSchema.PromptArgument("name", "The name to greet", true)));
-
-        var promptRegistration = new McpServerFeatures.SyncPromptRegistration(prompt, getPromptRequest -> {
-
-            String nameArgument = (String) getPromptRequest.arguments().get("name");
-            if (nameArgument == null) {
-                nameArgument = "friend";
-            }
-
-            var userMessage = new McpSchema.PromptMessage(McpSchema.Role.USER,
-                    new McpSchema.TextContent("Hello " + nameArgument + "! How can I assist you today?"));
-
-            return new McpSchema.GetPromptResult("A personalized greeting message", List.of(userMessage));
-        });
-
-        return List.of(promptRegistration);
-    }*/
-
-
-    /*@Bean
-    public Consumer<List<McpSchema.Root>> rootsChangeConsumer() {
-        return roots -> {
-            System.out.println("rootsChange");
-        };
-    }*/
-
+            Map<String, String> mockData = Map.of(
+                    "西安", "晴天",
+                    "北京", "小雨",
+                    "上海", "大雨",
+                    "河北", "阴天",
+                    "邢台", "大暴雨",
+                    "邯郸", "暴雪"
+            );
+            System.out.println("ToolCallback 巨龙电台,天气服务，查询城市："+tq.cityName);
+            return mockData.getOrDefault(tq.cityName, "抱歉：未查询到对应城市！");
+        }
+    };
 }

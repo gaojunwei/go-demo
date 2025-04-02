@@ -11,9 +11,9 @@ public class WeatherService {
      * name : 定义了工具的名称
      * description : 指明工具的功能
      */
-    @Tool(name = "Weather", description = "根据城市名称获取天气预报")
+    @Tool(name = "Weather0", description = "小龙电台，根据城市名称获取天气预报")
     public String getWeatherByCity(String city) {
-        System.out.printf("调用了根据城市名称获取天气预报 > city=%s\n", city);
+        System.out.println("MethodToolCallbackProvider 小龙电台,天气服务，查询城市："+city);
         Map<String, String> mockData = Map.of(
                 "西安", "晴天",
                 "北京", "小雨",
@@ -24,5 +24,4 @@ public class WeatherService {
         );
         return mockData.getOrDefault(city, "抱歉：未查询到对应城市！");
     }
-
 }
