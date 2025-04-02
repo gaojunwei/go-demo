@@ -4,6 +4,9 @@ spring:
   ai:
     mcp:
       client:
+        request-timeout: 60s
+        toolcallback:
+          enabled: true
         enabled: true
         name: call-mcp-server
 #        stdio:
@@ -13,4 +16,4 @@ spring:
             server1:
               url: http://127.0.0.1:8080
     dashscope:
-      api-key: {阿里云千问apiKey}
+      api-key: sk-4bb06acbc78146aabbef23a1a8d94339

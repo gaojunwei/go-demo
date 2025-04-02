@@ -14,6 +14,7 @@ import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/dashscope/chat-client")
+@CrossOrigin("*")
 public class ChatController {
 
     private final ChatClient chatClient;
@@ -32,6 +34,7 @@ public class ChatController {
 
     public ChatController(ChatClient.Builder chatClientBuilder, List<McpSyncClient> mcpSyncClients, ToolCallbackProvider tools) {
         this.chatClient = chatClientBuilder
+                .defaultSystem("以特朗普的风格回答问题。")
                 .defaultTools(tools)
                 .defaultOptions(DashScopeChatOptions.builder().withTopP(0.7).build())
                 .build();
@@ -43,10 +46,15 @@ public class ChatController {
     public Flux<ChatResponse> generateStream(HttpServletResponse response, @RequestParam("id") String id, @RequestParam("prompt") String prompt) {
         response.setCharacterEncoding("UTF-8");
         var messageChatMemoryAdvisor = new MessageChatMemoryAdvisor(chatMemory, id, 10);
-        return this.chatClient.prompt(prompt)
+        return this.chatClient.prompt()
+                .user(prompt)
                 .advisors(messageChatMemoryAdvisor)
                 .stream()
-                .chatResponse();
+                .chatResponse()
+                .onErrorResume(e -> {
+                    System.out.println("Error: " + e.getMessage());
+                    return Mono.empty();
+                });
     }
 
 
@@ -58,7 +66,8 @@ public class ChatController {
 
         response.setCharacterEncoding("UTF-8");
         var messageChatMemoryAdvisor = new MessageChatMemoryAdvisor(chatMemory, id, 10);
-        return this.chatClient.prompt(prompt)
+        return this.chatClient.prompt()
+                .user(prompt)
                 .advisors(messageChatMemoryAdvisor).stream().content();
     }
 

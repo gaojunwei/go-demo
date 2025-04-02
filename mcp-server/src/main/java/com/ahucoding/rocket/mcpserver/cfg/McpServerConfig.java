@@ -1,6 +1,7 @@
 package com.ahucoding.rocket.mcpserver.cfg;
 
 import com.ahucoding.rocket.mcpserver.service.BookService;
+import com.ahucoding.rocket.mcpserver.service.WeatherService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.modelcontextprotocol.server.McpServerFeatures;
 import io.modelcontextprotocol.spec.McpSchema;
@@ -23,12 +24,18 @@ import java.util.function.Consumer;
 @EnableWebMvc
 public class McpServerConfig implements WebMvcConfigurer {
 
+    // 将服务暴露出去
     @Bean
-    public ToolCallbackProvider openLibraryTools(BookService bookService) {
+    public ToolCallbackProvider openLibraryToolsOne(BookService bookService) {
         return MethodToolCallbackProvider.builder().toolObjects(bookService).build();
     }
-
+    // 将服务暴露出去
     @Bean
+    public ToolCallbackProvider openLibraryToolsTwo(WeatherService weatherService) {
+        return MethodToolCallbackProvider.builder().toolObjects(weatherService).build();
+    }
+
+    /*@Bean
     public List<McpServerFeatures.SyncResourceRegistration> resourceRegistrations() {
 
         // Create a resource registration for system information
@@ -60,11 +67,11 @@ public class McpServerConfig implements WebMvcConfigurer {
         });
 
         return List.of(resourceRegistration);
-    }
+    }*/
 
 
 
-    @Bean
+   /* @Bean
     public List<McpServerFeatures.SyncPromptRegistration> promptRegistrations() {
 
         var prompt = new McpSchema.Prompt("greeting", "A friendly greeting prompt",
@@ -84,17 +91,14 @@ public class McpServerConfig implements WebMvcConfigurer {
         });
 
         return List.of(promptRegistration);
-    }
+    }*/
 
 
-    @Bean
+    /*@Bean
     public Consumer<List<McpSchema.Root>> rootsChangeConsumer() {
         return roots -> {
             System.out.println("rootsChange");
         };
-    }
-
-
-
+    }*/
 
 }
