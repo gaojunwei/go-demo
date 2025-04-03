@@ -8,10 +8,10 @@ spring:
       client:
         enabled: true # 是否启用MCP客户端,默认：true
         request-timeout: 60s # MCP客户端请求超时时间,默认：20s
-        type: ASYNC # MCP客户端类型,默认：SYNC(同步)
+        type: SYNC # MCP客户端类型,默认：SYNC(同步)
         name: call-mcp-server # MCP客户端名称,默认：spring-ai-mcp-client
-#        stdio:
-#          servers-configuration: classpath:mcp-server.json
+        stdio:
+          servers-configuration: classpath:mcp-server.json
         # SSE配置
         sse:
           connections:

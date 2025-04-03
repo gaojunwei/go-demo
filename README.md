@@ -18,5 +18,9 @@ call-mcp-server模块可以充当cursor或者Claude的角色，直接调用各�
 修改call-mcp-server/src/main/resources/mcp-server.json中的内容即可  
 详情参考：[掘金技术社区 10分钟带你集成百度地图MCP服务](https://juejin.cn/post/7485758756913266707)
 
+## 快速接入百度地图MCP Server
+详情参考：[百度地图开放平台获取key](https://lbsyun.baidu.com/apiconsole/key)
+详情参考：[快速接入百度地图MCP Server](https://lbs.baidu.com/faq/api?title=mcpserver/quickstart)
+
 ## 帮助文档
 - [掘金技术社区 SpringAI-MCP技术初探](https://juejin.cn/post/7483127098352877579)

@@ -1,20 +1,18 @@
 {
   "mcpServers": {
-    "fileSystem": {
-      "command": "D:\\software\\nodeJs\\npx.cmd",
+    "baidu-map": {
+      "command": "uv",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "D:\\software\\sqlite"
-      ]
-    },
-    "sqlLite": {
-      "command": "D:\\Program Files\\python3.12.3\\Scripts\\uvx.exe",
-      "args": [
-        "mcp-server-sqlite",
-        "--db-path",
-        "D:\\work-space-study\\spring-ai-mcp-demo\\mcp-client\\src\\main\\resources\\test.db"
-      ]
+        "run",
+        "--with",
+        "mcp[cli]",
+        "mcp",
+        "run",
+        "D:\\anzhuang\\baidu_map_mcp_server\\map.py"
+      ],
+      "env": {
+        "BAIDU_MAPS_API_KEY": "RZ3KPgVtjqYrlmmtGuw3qJkpGExA9amF"
+      }
     }
   }
 }
