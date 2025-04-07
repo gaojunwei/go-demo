@@ -70,6 +70,9 @@ public class ChatController {
                 .advisors(messageChatMemoryAdvisor).stream().content();
     }
 
-
+    @GetMapping("/test")
+    public String test() {
+        return "hello world";
+    }
 
 }

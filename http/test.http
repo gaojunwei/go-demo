@@ -1,0 +1,4 @@
+GET {{host}}/dashscope/chat-client/test
+Accept: application/json
+
+###
