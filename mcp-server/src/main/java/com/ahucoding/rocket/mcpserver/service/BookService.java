@@ -16,7 +16,7 @@ public class BookService {
 	public List<Book> getBooks(String title) {
 		System.out.printf("调用了 根据书名获取数的列表 > title=%s\n", title);
 		// 这里模拟查询DB操作
-		return List.of(new Book(List.of("ISBN-88888888888"), "SpringAI教程", List.of("红专写的书")));
+		return List.of(new Book(List.of("ISBN-88888888888"), "小肥羊历险记", List.of("作者:小肥羊")));
 	}
 
 	@Tool(description = "通过作者名获取数据列表")

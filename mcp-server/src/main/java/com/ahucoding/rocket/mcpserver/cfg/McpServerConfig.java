@@ -16,10 +16,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 import java.util.Map;
 
-/**
- * @author jianzhang
- * 2025/03/18/下午3:23
- */
 @Configuration
 @EnableWebMvc
 public class McpServerConfig implements WebMvcConfigurer {

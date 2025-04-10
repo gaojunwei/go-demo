@@ -40,7 +40,6 @@ public class ChatController {
     }
 
 
-
     @RequestMapping(value = "/generate_stream", method = RequestMethod.GET)
     public Flux<ChatResponse> generateStream(HttpServletResponse response, @RequestParam("id") String id, @RequestParam("prompt") String prompt) {
         response.setCharacterEncoding("UTF-8");
@@ -54,20 +53,6 @@ public class ChatController {
                     System.out.println("Error: " + e.getMessage());
                     return Mono.empty();
                 });
-    }
-
-
-    @GetMapping("/advisor/chat/{id}/{prompt}")
-    public Flux<String> advisorChat(
-            HttpServletResponse response,
-            @PathVariable String id,
-            @PathVariable String prompt) {
-
-        response.setCharacterEncoding("UTF-8");
-        var messageChatMemoryAdvisor = new MessageChatMemoryAdvisor(chatMemory, id, 10);
-        return this.chatClient.prompt()
-                .user(prompt)
-                .advisors(messageChatMemoryAdvisor).stream().content();
     }
 
     @GetMapping("/test")

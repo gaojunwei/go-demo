@@ -6,10 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 
-/**
- * @author jianzhang
- * 2025/03/18/下午8:02
- */
 @Configuration
 public class McpClientCfg implements McpSyncClientCustomizer {
 
