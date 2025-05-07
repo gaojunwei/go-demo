@@ -59,4 +59,14 @@ moveActivityIdToParentActivityId(String currentActivityId, String newActivityId)
 moveActivityIdToSubProcessInstanceActivityId(String currentActivityId, String newActivityId, String callActivityId)
 moveActivityIdToSubProcessInstanceActivityId(String currentActivityId, String newActivityId, String callActivityId,Integer subProcessDefinitionVersion)
 ```
+5.事务和任务监听器
+```xml
+<userTask id="createBill" name="创建请假单" flowable:candidateUsers="${dagongzai}">
+  <extensionElements>
+    <flowable:taskListener event="create" delegateExpression="${my03TaskListener}"/><!-- 事务中，执行的任务监听器 -->
+    <flowable:taskListener event="create" delegateExpression="${my03TransactionCommittedTaskListener}" onTransaction="committed"/><!-- 事务提交后，执行的任务监听器 -->
+    <flowable:taskListener event="create" delegateExpression="${my03TransactionRolledBackTaskListener}" onTransaction="rolled-back"/><!-- 事务回滚后，执行的任务监听器 -->
+  </extensionElements>
+</userTask>
+```
 原文链接：https://blog.csdn.net/zhongzk69/article/details/90740662

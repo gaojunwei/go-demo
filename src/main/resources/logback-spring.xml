@@ -2,11 +2,11 @@
 
 <configuration>
     <springProperty scope="context" name="log.path" source="logging.file.path"/>
+    <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread traceId:%X{requestId}] %-5level %logger{36} [%L] - %msg%n"/>
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%5p: %d{yyyy-MM-dd HH:mm:ss} [traceId=%X{traceId}] [uri=%X{uri}] [method=%X{method}] [%t] [%c]
-                [%X{user}] %m%n
-            </pattern>
+            <pattern>${log.pattern}</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -17,9 +17,7 @@
         <file>${log.path}/spring-error.log</file>
         <append>true</append>
         <encoder>
-            <pattern>%5p: %d{yyyy-MM-dd HH:mm:ss.SSS} [pfinderId=%X{PFTID}] [traceId=%X{traceId}] [uri=%X{uri}]
-                [method=%X{method}] [%t] [%c] [%X{user}] %m%n
-            </pattern>
+            <pattern>${log.pattern}</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -40,9 +38,7 @@
         <file>${log.path}/spring-info.log</file>
         <append>true</append>
         <encoder>
-            <pattern>%5p: %d{yyyy-MM-dd HH:mm:ss.SSS} [pfinderId=%X{PFTID}] [traceId=%X{traceId}] [uri=%X{uri}]
-                [method=%X{method}] [%t] [%c] [%X{user}] %m%n
-            </pattern>
+            <pattern>${log.pattern}</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">

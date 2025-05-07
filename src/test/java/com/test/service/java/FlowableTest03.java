@@ -43,10 +43,8 @@ public class FlowableTest03 {
         // 部署流程 获取RepositoryService对象
         RepositoryService repositoryService = processEngine.getRepositoryService();
         Deployment deployment = repositoryService.createDeployment()// 创建Deployment对象
-                .addClasspathResource("2023集团请假申请流程_form.bpmn20.xml") // 添加流程部署文件
-                .name("2023集团请假申请流程_form") // 设置部署流程的名称
-                //.addClasspathResource("2023集团请假申请流程-并行网关.bpmn20.xml") // 添加流程部署文件
-                //.name("2023集团请假申请流程-并行网关") // 设置部署流程的名称
+                .addClasspathResource("spring-2023集团请假申请流程_form.bpmn20.xml") // 添加流程部署文件
+                .name("spring-2023集团请假申请流程_form") // 设置部署流程的名称
                 .deploy(); // 执行部署操作
 
         System.out.println("deployment.getId() = " + deployment.getId());
@@ -84,28 +82,8 @@ public class FlowableTest03 {
         //删除流程，指定流程ID,如果部署的流程启动了就不允许删除了
         //repositoryService.deleteDeployment("2501");
         //第二个参数是级联删除，如果流程启动了 相关的任务一并被删除
-        repositoryService.deleteDeployment("40001",true);
-    }
-
-    @Test
-    @DisplayName("挂起/激活流程")
-    public void test05(){
-        RepositoryService repositoryService = processEngine.getRepositoryService();
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionId("a2023chuchai:1:20004")
-                .singleResult();
-        // 获取流程定义的状态
-        boolean suspended = processDefinition.isSuspended();
-        System.out.println("suspended = " + suspended);
-        if(suspended){
-            // 表示被挂起
-            repositoryService.activateProcessDefinitionById(processDefinition.getId(),true,null);
-            System.out.println("激活流程定义");
-        }else{
-            // 表示激活状态
-            repositoryService.suspendProcessDefinitionById(processDefinition.getId(),true,null);
-            System.out.println("挂起流程");
-        }
+        repositoryService.deleteDeployment("7501",true);
+        repositoryService.deleteDeployment("10001",true);
     }
 
 
