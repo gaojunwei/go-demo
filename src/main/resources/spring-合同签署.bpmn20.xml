@@ -2,6 +2,10 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
   <process id="spring_he_tong" name="合同签署流程" isExecutable="true">
     <documentation>2023合同签署流程</documentation>
+    <extensionElements>
+      <!-- 设置流程的业务版本 -->
+      <flowable:executionListener event="start" expression="${execution.setVariable('_process_version', 'v1.0')}"/>
+    </extensionElements>
     <startEvent id="startEvent1" flowable:formFieldValidation="true"/>
     <!--
     会签流程模式：
