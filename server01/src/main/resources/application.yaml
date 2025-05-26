@@ -1,0 +1,11 @@
+server:
+  port: 9999
+  compression: # 响应压缩配置
+    enabled: true
+    min-response-size: 1024
+    mime-types: text/html,application/json,text/plain,text/css,application/javascript,application/xml
+
+spring:
+  jackson:
+    mapper:
+      default-view-inclusion: false

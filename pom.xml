@@ -8,13 +8,11 @@
         <version>3.4.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.ahucoding.rocket</groupId>
-    <artifactId>spring-ai-mcp-demo</artifactId>
+    <groupId>com.gjw.code</groupId>
+    <artifactId>go-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-ai-mcp-demo</name>
-    <description>spring-ai-mcp-demo</description>
+    <name>spring-demo</name>
     <packaging>pom</packaging>
-
 
     <properties>
         <java.version>17</java.version>
@@ -51,8 +49,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-
-
 </project>

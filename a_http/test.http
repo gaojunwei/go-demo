@@ -1,4 +1,22 @@
-GET {{host}}/dashscope/chat-client/test
+### flux接口
+GET {{host}}/api/flux
 Accept: application/json
+### greet public接口
+GET {{host}}/api/greet/public
+Accept: application/json
+### greet private接口
+GET {{host}}/api/greet/private
+Accept: application/json
+### deserialize_json private接口
+POST {{host}}/api/deserialize_json
+Content-Type: application/json
 
-###
+{
+  "id": 2,
+  "name": "pack",
+  "address": "四川乌鲁木齐市",
+  "email": "bob456@ii.com",
+  "emailOne": "bob456One@ii.com",
+  "password": "123465",
+  "idCard": "1234567890123456789"
+}
