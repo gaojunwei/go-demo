@@ -18,7 +18,7 @@
 ![本地路径](img/1.png "流程图")
 
 ## 二、flowable实现：
-
+### 回退
 1.普通串行路线上的退回（此流程中没有并行网关的退回时），此方法支持普通串行节点/会签多实例节点/排他网关节点：
 ```java
 runtimeService.createChangeActivityStateBuilder()
@@ -59,7 +59,8 @@ moveActivityIdToParentActivityId(String currentActivityId, String newActivityId)
 moveActivityIdToSubProcessInstanceActivityId(String currentActivityId, String newActivityId, String callActivityId)
 moveActivityIdToSubProcessInstanceActivityId(String currentActivityId, String newActivityId, String callActivityId,Integer subProcessDefinitionVersion)
 ```
-5.事务和任务监听器
+原文链接：https://blog.csdn.net/zhongzk69/article/details/90740662
+### 事务和任务监听器
 ```xml
 <userTask id="createBill" name="创建请假单" flowable:candidateUsers="${dagongzai}">
   <extensionElements>
@@ -69,4 +70,68 @@ moveActivityIdToSubProcessInstanceActivityId(String currentActivityId, String ne
   </extensionElements>
 </userTask>
 ```
-原文链接：https://blog.csdn.net/zhongzk69/article/details/90740662
+### 子流程
+#### 流程图：
+![sub_process_01.png](data/img/sub_process_01.png)
+![sub_process_02.png](data/img/sub_process_02.png)
+![sub_process_03.png](data/img/sub_process_03.png)
+
+#### 核心配置：
+- 主流程 [spring-call-activity.bpmn20.xml](src/main/resources/spring-call-activity.bpmn20.xml)
+```xml
+<process id="spring_call_activity" name="子流程调用" isExecutable="true">
+    <extensionElements>
+      <!-- 设置流程的业务版本 -->
+      <flowable:executionListener event="start" expression="${execution.setVariable('_processVersion', 'v1.0')}"/>
+    </extensionElements>
+    
+    <userTask id="createBill" name="发起合同审批" flowable:assignee="${dagongzai}">
+        <extensionElements>
+            <flowable:taskListener event="create" delegateExpression="${my03TaskListener}"/>
+            <!-- 事务中，执行的任务监听器 -->
+            <flowable:taskListener event="create" delegateExpression="${my03TransactionCommittedTaskListener}" onTransaction="committed"/>
+            <!-- 事务提交后，执行的任务监听器 -->
+            <flowable:taskListener event="create" delegateExpression="${my03TransactionRolledBackTaskListener}" onTransaction="rolled-back"/>
+            <!-- 事务回滚后，执行的任务监听器 -->
+        </extensionElements>
+    </userTask>
+    <!-- 子流程1 -->
+    <callActivity id="sub_one" name="大设备流程" calledElement="spring_sub_one">
+        <extensionElements>
+            <!-- 向子流程传递变量 -->
+            <flowable:in target="objInfo" source="objInfo"/>
+            <flowable:in target="dagongzai" source="b_dagongzai"/>
+        </extensionElements>
+    </callActivity>
+    <!--
+      子流程2:
+     flowable:calledElementType="id" 表示调用的子流程是通过id来引用的
+     calledElement="${spring_sub_two_process_id}" 表示调用的子流程是通过变量来引用的 processDefinitionId
+     -->
+    <callActivity id="sub_two" name="小设备流程" calledElement="${spring_sub_two_process_id}" flowable:calledElementType="id">
+        <extensionElements>
+            <!-- 向子流程传递变量 -->
+            <flowable:in target="objInfo" source="objInfo"/>
+            <flowable:in target="dagongzaiList" source="s_dagongzaiList"/>
+        </extensionElements>
+    </callActivity>
+</process>
+```
+- 子流程2[spring-sub-two.bpmn20.xml](src/main/resources/spring-sub-two.bpmn20.xml)
+```xml
+<userTask id="createBill" name="发起合同审批" flowable:assignee="${dagongzai}">
+  <extensionElements>
+    <flowable:taskListener event="create" delegateExpression="${my03TaskListener}"/>
+    <!-- 事务中，执行的任务监听器 -->
+    <flowable:taskListener event="create" delegateExpression="${my03TransactionCommittedTaskListener}" onTransaction="committed"/>
+    <!-- 事务提交后，执行的任务监听器 -->
+    <flowable:taskListener event="create" delegateExpression="${my03TransactionRolledBackTaskListener}" onTransaction="rolled-back"/>
+    <!-- 事务回滚后，执行的任务监听器 -->
+  </extensionElements>
+  <!-- 动态人员审核 -->
+  <multiInstanceLoopCharacteristics isSequential="false" flowable:collection="${dagongzaiList}" flowable:elementVariable="dagongzai">
+    <completionCondition><![CDATA[${nrOfInstances == nrOfCompletedInstances}]]></completionCondition>
+  </multiInstanceLoopCharacteristics>
+</userTask>
+```
+

@@ -39,12 +39,20 @@ public class FlowableTest03 {
 
     @Test
     @DisplayName("部署流程")
-    public void testDeploy() throws IOException {
+    public void testDeploy() {
         // 部署流程 获取RepositoryService对象
-        RepositoryService repositoryService = processEngine.getRepositoryService();
-        Deployment deployment = repositoryService.createDeployment()// 创建Deployment对象
-                .addClasspathResource("spring-2023集团请假申请流程_form.bpmn20.xml") // 添加流程部署文件
-                .name("spring-2023集团请假申请流程_form") // 设置部署流程的名称
+        deploy("spring-call-activity.bpmn20.xml","spring-call-activity");
+        System.out.println("**********");
+        deploy("spring-sub-one.bpmn20.xml","spring-sub-one");
+        System.out.println("**********");
+        deploy("spring-sub-two.bpmn20.xml","spring-sub-two");
+        System.out.println("**********");
+    }
+
+    private void deploy(String resourceName,String name) {
+        Deployment deployment = processEngine.getRepositoryService().createDeployment()// 创建Deployment对象
+                .addClasspathResource(resourceName) // 添加流程部署文件
+                .name(name) // 设置部署流程的名称
                 .deploy(); // 执行部署操作
 
         System.out.println("deployment.getId() = " + deployment.getId());
@@ -237,7 +245,7 @@ public class FlowableTest03 {
                 .orderByProcessInstanceStartTime().desc().list();
         for (HistoricProcessInstance historicProcessInstance : list) {
             System.out.println("发起人历史*****流程   "+processInstanceBusinessKey);
-            System.out.println("getId = "+historicProcessInstance.getId());
+            System.out.println("getId = "+historicProcessInstance.getProcessDefinitionVersion());
             System.out.println("getName = "+historicProcessInstance.getName());
             System.out.println("getStartTime = "+historicProcessInstance.getStartTime());
             System.out.println("getEndTime = "+historicProcessInstance.getEndTime());

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <process id="spring_call_activity" name="子流程调用" isExecutable="true">
+    <documentation>子流程调用</documentation>
+    <extensionElements>
+      <!-- 设置流程的业务版本 -->
+      <flowable:executionListener event="start" expression="${execution.setVariable('_processVersion', 'v1.0')}"/>
+    </extensionElements>
+    <startEvent id="startEvent1" flowable:formFieldValidation="true"/>
+
+    <userTask id="createBill" name="发起合同审批" flowable:assignee="${dagongzai}">
+      <extensionElements>
+        <flowable:taskListener event="create" delegateExpression="${my03TaskListener}"/>
+        <!-- 事务中，执行的任务监听器 -->
+        <flowable:taskListener event="create" delegateExpression="${my03TransactionCommittedTaskListener}" onTransaction="committed"/>
+        <!-- 事务提交后，执行的任务监听器 -->
+        <flowable:taskListener event="create" delegateExpression="${my03TransactionRolledBackTaskListener}" onTransaction="rolled-back"/>
+        <!-- 事务回滚后，执行的任务监听器 -->
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-409F929D-E529-4C99-8735-95803943879E" sourceRef="startEvent1" targetRef="createBill"/>
+    <exclusiveGateway id="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84"/>
+    <sequenceFlow id="sid-6fd71239-1276-4b06-bbce-644f040a7666" sourceRef="createBill" targetRef="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84"/>
+    <!-- 子流程 -->
+    <callActivity id="sub_one" name="大设备流程" calledElement="spring_sub_one">
+      <extensionElements>
+        <!-- 向子流程传递变量 -->
+        <flowable:in target="objInfo" source="objInfo"/>
+        <flowable:in target="dagongzai" source="b_dagongzai"/>
+      </extensionElements>
+    </callActivity>
+    <sequenceFlow id="sid-c105e19d-a0ce-4acf-90a7-4678c1871702" sourceRef="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84" targetRef="sub_one">
+      <conditionExpression xsi:type="tFormalExpression">${subFlag}</conditionExpression>
+    </sequenceFlow>
+    <!--
+      子流程:
+     flowable:calledElementType="id" 表示调用的子流程是通过id来引用的
+     calledElement="${spring_sub_two_process_id}" 表示调用的子流程是通过变量来引用的 processDefinitionId
+     -->
+    <callActivity id="sub_two" name="小设备流程" calledElement="${spring_sub_two_process_id}" flowable:calledElementType="id">
+        <extensionElements>
+          <!-- 向子流程传递变量 -->
+            <flowable:in target="objInfo" source="objInfo"/>
+            <flowable:in target="dagongzaiList" source="s_dagongzaiList"/>
+        </extensionElements>
+    </callActivity>
+    <sequenceFlow id="sid-632a5434-c987-4f4e-81f0-b1869652ffd1" sourceRef="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84" targetRef="sub_two">
+      <conditionExpression xsi:type="tFormalExpression">${!subFlag}</conditionExpression>
+    </sequenceFlow>
+    <endEvent id="_endNode"/>
+    <sequenceFlow id="sid-d1f54f36-2557-437f-9fbf-8ac0ed6f38e3" sourceRef="sub_one" targetRef="_endNode"/>
+    <sequenceFlow id="sid-61997764-9a0e-4ef2-a3bf-e87b4b0fbb35" sourceRef="sub_two" targetRef="_endNode"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_a2023_ask_for_leave">
+    <bpmndi:BPMNPlane bpmnElement="a2023_ask_for_leave_form" id="BPMNPlane_a2023_ask_for_leave">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.0" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="createBill" id="BPMNShape_createBill">
+        <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="125.000015"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-409F929D-E529-4C99-8735-95803943879E" id="BPMNEdge_sid-409F929D-E529-4C99-8735-95803943879E" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="119.94999848995758" y="165.0"/>
+        <omgdi:waypoint x="165.0" y="165.00002"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape-59eb2090-83b6-46d7-b5a6-c151b187e74b" bpmnElement="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84">
+        <omgdc:Bounds x="345.0" y="145.00005" width="40.0" height="40.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-db91272f-b5cd-4b7a-9a40-3d3f9d485cd6" bpmnElement="sid-6fd71239-1276-4b06-bbce-644f040a7666">
+        <omgdi:waypoint x="265.0" y="165.00002"/>
+        <omgdi:waypoint x="345.0" y="165.00005"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape-0c944370-0cb4-45fe-a023-4ec18132e8b1" bpmnElement="sub_one">
+        <omgdc:Bounds x="435.0" y="35.0" width="100.0" height="80.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-eb1efe27-dd6b-4f1f-8611-86ade0013cfd" bpmnElement="sid-c105e19d-a0ce-4acf-90a7-4678c1871702">
+        <omgdi:waypoint x="365.0" y="145.00005"/>
+        <omgdi:waypoint x="435.0" y="95.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape-40b9870f-b3a4-4d5c-9e1d-7803c231f00c" bpmnElement="sub_two">
+        <omgdc:Bounds x="435.0" y="220.0" width="100.0" height="80.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-146b0e6b-5efa-4005-9251-db24c5dd6e80" bpmnElement="sid-632a5434-c987-4f4e-81f0-b1869652ffd1">
+        <omgdi:waypoint x="365.0" y="185.00005"/>
+        <omgdi:waypoint x="435.0" y="240.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape-c8070f27-cce8-4495-8cd8-4aa4d37e4bd0" bpmnElement="_endNode">
+        <omgdc:Bounds x="695.0" y="160.0" width="30.0" height="30.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-cdbb396a-1e7d-42a0-837a-fee221ceb22d" bpmnElement="sid-d1f54f36-2557-437f-9fbf-8ac0ed6f38e3">
+        <omgdi:waypoint x="535.0" y="95.0"/>
+        <omgdi:waypoint x="695.0" y="167.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge-ee97f84f-044a-4501-9350-7f3af8f8169a" bpmnElement="sid-61997764-9a0e-4ef2-a3bf-e87b4b0fbb35">
+        <omgdi:waypoint x="535.0" y="240.0"/>
+        <omgdi:waypoint x="695.0" y="182.5"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
