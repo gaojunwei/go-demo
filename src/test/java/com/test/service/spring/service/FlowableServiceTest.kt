@@ -109,9 +109,9 @@ class FlowableServiceTest : AbstractSpringTest() {
     @Test
     fun processInfo() {
         val process =
-            runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).includeProcessVariables()
+            runtimeService.createProcessInstanceQuery().superProcessInstanceId(processInstanceId).includeProcessVariables()
                 .singleResult()
-        println("流程定义的ID：" + process.processInstanceId)
+        println("流程定义的ID：${process.processInstanceId}> ${process.parentId}")
         process.processVariables.keys.forEach {
             if (Objects.equals(it, "objInfo")) {
                 val objInfo = process.processVariables[it] as ObjInfo

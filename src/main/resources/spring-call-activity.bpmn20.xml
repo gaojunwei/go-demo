@@ -35,13 +35,15 @@
     <!--
       子流程:
      flowable:calledElementType="id" 表示调用的子流程是通过id来引用的
-     calledElement="${spring_sub_two_process_id}" 表示调用的子流程是通过变量来引用的 processDefinitionId
+     calledElement="${spring_sub_two_process_id}" 表示调用的子流程是通过变量来引用的 processDefinitionId（控制主子流程版本）
      -->
     <callActivity id="sub_two" name="小设备流程" calledElement="${spring_sub_two_process_id}" flowable:calledElementType="id">
         <extensionElements>
           <!-- 向子流程传递变量 -->
-            <flowable:in target="objInfo" source="objInfo"/>
-            <flowable:in target="dagongzaiList" source="s_dagongzaiList"/>
+          <flowable:in target="objInfo" source="objInfo"/>
+          <flowable:in target="dagongzaiList" source="s_dagongzaiList"/>
+          <!-- 通过变量传递父级实例ID -->
+          <flowable:in target="parentProcessInstanceId" source="execution.processInstanceId"/>
         </extensionElements>
     </callActivity>
     <sequenceFlow id="sid-632a5434-c987-4f4e-81f0-b1869652ffd1" sourceRef="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84" targetRef="sub_two">
