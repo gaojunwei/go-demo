@@ -135,3 +135,74 @@ moveActivityIdToSubProcessInstanceActivityId(String currentActivityId, String ne
 </userTask>
 ```
 
+### 主流程+多个子流程且子流程是多实例
+![master_msub_minstance.png](data/img/master_msub_minstance.png)
+>- smallDevices 和 bigDevices 是两个集合变量，分别存储小设备和大设备的信息，为空时，流程会自动跳过子流程，进入下一个节点任务。
+>- 子流程被关闭后，也认为为完成继续下一个节点任务。
+
+- 主流程 [spring-call-activity.bpmn20.xml](src/main/resources/spring-call-activity.bpmn20.xml)
+```xml
+<process id="spring_call_activity" name="子流程调用" isExecutable="true">
+    <documentation>子流程调用</documentation>
+    <extensionElements>
+        <!-- 设置流程的业务版本 -->
+        <flowable:executionListener event="start" expression="${execution.setVariable('_processVersion', 'v1.0')}"/>
+    </extensionElements>
+    <startEvent id="startEvent1" flowable:formFieldValidation="true"/>
+    <userTask id="createBill" name="主流程-发起合同审批" flowable:assignee="${dagongzai}">
+        <extensionElements>
+            <flowable:taskListener event="create" delegateExpression="${my03TaskListener}"/>
+            <!-- 事务中，执行的任务监听器 -->
+            <flowable:taskListener event="create" delegateExpression="${my03TransactionCommittedTaskListener}" onTransaction="committed"/>
+            <!-- 事务提交后，执行的任务监听器 -->
+            <flowable:taskListener event="create" delegateExpression="${my03TransactionRolledBackTaskListener}" onTransaction="rolled-back"/>
+            <!-- 事务回滚后，执行的任务监听器 -->
+        </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-409F929D-E529-4C99-8735-95803943879E" sourceRef="startEvent1" targetRef="createBill"/>
+    <!-- 子流程 -->
+    <!--
+      子流程:
+     flowable:calledElementType="id" 表示调用的子流程是通过id来引用的
+     calledElement="${spring_sub_two_process_id}" 表示调用的子流程是通过变量来引用的 processDefinitionId（控制主子流程版本）
+     -->
+    <callActivity id="sub_small" name="小设备流程" calledElement="${spring_sub_two_process_id}" flowable:calledElementType="id">
+        <extensionElements>
+            <!-- ********************************************************* -->
+            <flowable:in source="device" target="deviceInfo"/>
+            <!-- 通过变量传递父级实例ID -->
+            <flowable:in source="${execution.processInstanceId}" target="parentProcessInstanceId"/>
+        </extensionElements>
+        <multiInstanceLoopCharacteristics flowable:collection="${smallDevices}" flowable:elementVariable="device"></multiInstanceLoopCharacteristics>
+    </callActivity>
+    <callActivity id="sub_big" name="大设备流程" calledElement="${spring_sub_one_process_id}" flowable:calledElementType="id">
+        <extensionElements>
+            <!-- ********************************************************* -->
+            <!-- 向子流程传递变量 -->
+            <flowable:in source="device" target="deviceInfo"/>
+            <!-- 通过变量传递父级实例ID -->
+            <flowable:in source="${execution.processInstanceId}" target="parentProcessInstanceId"/>
+        </extensionElements>
+        <multiInstanceLoopCharacteristics flowable:collection="${bigDevices}" flowable:elementVariable="device"></multiInstanceLoopCharacteristics>
+    </callActivity>
+    <endEvent id="_endNode"/>
+    <sequenceFlow id="sid-fafd20e0-00ca-490c-8b23-33a0d9d429d9" sourceRef="createBill" targetRef="p_gateway_start"/>
+    <userTask id="end_boos" name="老板审批"/>
+    <sequenceFlow id="sid-668a2279-597d-4a6b-8c9b-46071f9670c7" sourceRef="sub_small" targetRef="p_gateway_end"/>
+    <sequenceFlow id="sid-69dc6ebd-6ee4-4309-8ed4-de41183b29a3" sourceRef="end_boos" targetRef="_endNode"/>
+    <parallelGateway id="p_gateway_start"/>
+    <sequenceFlow id="sid-7e2673c9-ac62-41e5-8401-82793eaae6d7" sourceRef="p_gateway_start" targetRef="sub_small">
+        <conditionExpression xsi:type="tFormalExpression"/>
+    </sequenceFlow>
+
+    <sequenceFlow id="sid-5a22986e-1d66-4ddf-b54d-cb37f1629d07" sourceRef="p_gateway_start" targetRef="sub_big">
+        <conditionExpression xsi:type="tFormalExpression"/>
+    </sequenceFlow>
+    <parallelGateway id="p_gateway_end"/>
+    <sequenceFlow id="sid-77ae039c-cbd0-4689-b65a-aa3971d2b454" sourceRef="sub_big" targetRef="p_gateway_end"/>
+    <sequenceFlow id="sid-7b557569-ad09-40c1-8292-a8972d443691" sourceRef="p_gateway_end" targetRef="end_boos">
+        <conditionExpression xsi:type="tFormalExpression"/>
+    </sequenceFlow>
+</process>
+```
+

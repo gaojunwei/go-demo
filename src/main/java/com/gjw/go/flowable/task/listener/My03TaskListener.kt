@@ -15,8 +15,7 @@ class My03TaskListener(
 ) : TaskListener {
 
     override fun notify(delegateTask: DelegateTask) {
-        log.info("事务中执行的 任务监听器")
         val list = taskService.getIdentityLinksForTask(delegateTask.id).stream().map { identityLink: IdentityLink -> identityLink.userId }.collect(Collectors.toList())
-        log.info("processId: " + delegateTask.processInstanceId + "，任务ID=" + delegateTask.id + "，任务候选人列表：" + JSON.toJSONString(list))
+        log.info("事务中执行的 任务监听器 processId: " + delegateTask.processInstanceId + "，任务ID=" + delegateTask.id + "，任务候选人列表：" + JSON.toJSONString(list))
     }
 }

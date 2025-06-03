@@ -7,8 +7,7 @@
       <flowable:executionListener event="start" expression="${execution.setVariable('_processVersion', 'v1.0')}"/>
     </extensionElements>
     <startEvent id="startEvent1" flowable:formFieldValidation="true"/>
-
-    <userTask id="createBill" name="发起合同审批" flowable:assignee="${dagongzai}">
+    <userTask id="createBill" name="主流程-发起合同审批" flowable:assignee="${dagongzai}">
       <extensionElements>
         <flowable:taskListener event="create" delegateExpression="${my03TaskListener}"/>
         <!-- 事务中，执行的任务监听器 -->
@@ -19,39 +18,49 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-409F929D-E529-4C99-8735-95803943879E" sourceRef="startEvent1" targetRef="createBill"/>
-    <exclusiveGateway id="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84"/>
-    <sequenceFlow id="sid-6fd71239-1276-4b06-bbce-644f040a7666" sourceRef="createBill" targetRef="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84"/>
     <!-- 子流程 -->
-    <callActivity id="sub_one" name="大设备流程" calledElement="spring_sub_one">
-      <extensionElements>
-        <!-- 向子流程传递变量 -->
-        <flowable:in target="objInfo" source="objInfo"/>
-        <flowable:in target="dagongzai" source="b_dagongzai"/>
-      </extensionElements>
-    </callActivity>
-    <sequenceFlow id="sid-c105e19d-a0ce-4acf-90a7-4678c1871702" sourceRef="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84" targetRef="sub_one">
-      <conditionExpression xsi:type="tFormalExpression">${subFlag}</conditionExpression>
-    </sequenceFlow>
     <!--
       子流程:
      flowable:calledElementType="id" 表示调用的子流程是通过id来引用的
      calledElement="${spring_sub_two_process_id}" 表示调用的子流程是通过变量来引用的 processDefinitionId（控制主子流程版本）
      -->
-    <callActivity id="sub_two" name="小设备流程" calledElement="${spring_sub_two_process_id}" flowable:calledElementType="id">
-        <extensionElements>
-          <!-- 向子流程传递变量 -->
-          <flowable:in target="objInfo" source="objInfo"/>
-          <flowable:in target="dagongzaiList" source="s_dagongzaiList"/>
-          <!-- 通过变量传递父级实例ID -->
-          <flowable:in target="parentProcessInstanceId" source="execution.processInstanceId"/>
-        </extensionElements>
+    <callActivity id="sub_small" name="小设备流程" calledElement="${spring_sub_two_process_id}" flowable:calledElementType="id">
+      <extensionElements>
+        <!-- ********************************************************* -->
+        <flowable:in source="device" target="deviceInfo"/>
+        <!-- 通过变量传递父级实例ID -->
+        <flowable:in source="${execution.processInstanceId}" target="parentProcessInstanceId"/>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics flowable:collection="${smallDevices}" flowable:elementVariable="device"></multiInstanceLoopCharacteristics>
     </callActivity>
-    <sequenceFlow id="sid-632a5434-c987-4f4e-81f0-b1869652ffd1" sourceRef="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84" targetRef="sub_two">
-      <conditionExpression xsi:type="tFormalExpression">${!subFlag}</conditionExpression>
-    </sequenceFlow>
+    <callActivity id="sub_big" name="大设备流程" calledElement="${spring_sub_one_process_id}" flowable:calledElementType="id">
+      <extensionElements>
+        <!-- ********************************************************* -->
+        <!-- 向子流程传递变量 -->
+        <flowable:in source="device" target="deviceInfo"/>
+        <!-- 通过变量传递父级实例ID -->
+        <flowable:in source="${execution.processInstanceId}" target="parentProcessInstanceId"/>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics flowable:collection="${bigDevices}" flowable:elementVariable="device"></multiInstanceLoopCharacteristics>
+    </callActivity>
     <endEvent id="_endNode"/>
-    <sequenceFlow id="sid-d1f54f36-2557-437f-9fbf-8ac0ed6f38e3" sourceRef="sub_one" targetRef="_endNode"/>
-    <sequenceFlow id="sid-61997764-9a0e-4ef2-a3bf-e87b4b0fbb35" sourceRef="sub_two" targetRef="_endNode"/>
+    <sequenceFlow id="sid-fafd20e0-00ca-490c-8b23-33a0d9d429d9" sourceRef="createBill" targetRef="p_gateway_start"/>
+    <userTask id="end_boos" name="老板审批"/>
+    <sequenceFlow id="sid-668a2279-597d-4a6b-8c9b-46071f9670c7" sourceRef="sub_small" targetRef="p_gateway_end"/>
+    <sequenceFlow id="sid-69dc6ebd-6ee4-4309-8ed4-de41183b29a3" sourceRef="end_boos" targetRef="_endNode"/>
+    <parallelGateway id="p_gateway_start"/>
+    <sequenceFlow id="sid-7e2673c9-ac62-41e5-8401-82793eaae6d7" sourceRef="p_gateway_start" targetRef="sub_small">
+      <conditionExpression xsi:type="tFormalExpression"/>
+    </sequenceFlow>
+
+    <sequenceFlow id="sid-5a22986e-1d66-4ddf-b54d-cb37f1629d07" sourceRef="p_gateway_start" targetRef="sub_big">
+      <conditionExpression xsi:type="tFormalExpression"/>
+    </sequenceFlow>
+    <parallelGateway id="p_gateway_end"/>
+    <sequenceFlow id="sid-77ae039c-cbd0-4689-b65a-aa3971d2b454" sourceRef="sub_big" targetRef="p_gateway_end"/>
+    <sequenceFlow id="sid-7b557569-ad09-40c1-8292-a8972d443691" sourceRef="p_gateway_end" targetRef="end_boos">
+      <conditionExpression xsi:type="tFormalExpression"/>
+    </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_a2023_ask_for_leave">
     <bpmndi:BPMNPlane bpmnElement="a2023_ask_for_leave_form" id="BPMNPlane_a2023_ask_for_leave">
@@ -59,43 +68,57 @@
         <omgdc:Bounds height="30.0" width="30.0" x="90.0" y="150.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="createBill" id="BPMNShape_createBill">
-        <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="125.000015"/>
+        <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="124.999985"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="sid-409F929D-E529-4C99-8735-95803943879E" id="BPMNEdge_sid-409F929D-E529-4C99-8735-95803943879E" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
         <omgdi:waypoint x="119.94999848995758" y="165.0"/>
-        <omgdi:waypoint x="165.0" y="165.00002"/>
+        <omgdi:waypoint x="165.0" y="164.99998"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="shape-59eb2090-83b6-46d7-b5a6-c151b187e74b" bpmnElement="sid-c8b787bc-13b9-4c18-9a21-a79cb1a26c84">
-        <omgdc:Bounds x="345.0" y="145.00005" width="40.0" height="40.0"/>
+      <bpmndi:BPMNShape id="shape-40b9870f-b3a4-4d5c-9e1d-7803c231f00c" bpmnElement="sub_small">
+        <omgdc:Bounds x="415.00003" y="20.0" width="100.0" height="80.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="edge-db91272f-b5cd-4b7a-9a40-3d3f9d485cd6" bpmnElement="sid-6fd71239-1276-4b06-bbce-644f040a7666">
-        <omgdi:waypoint x="265.0" y="165.00002"/>
-        <omgdi:waypoint x="345.0" y="165.00005"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="shape-0c944370-0cb4-45fe-a023-4ec18132e8b1" bpmnElement="sub_one">
-        <omgdc:Bounds x="435.0" y="35.0" width="100.0" height="80.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="edge-eb1efe27-dd6b-4f1f-8611-86ade0013cfd" bpmnElement="sid-c105e19d-a0ce-4acf-90a7-4678c1871702">
-        <omgdi:waypoint x="365.0" y="145.00005"/>
-        <omgdi:waypoint x="435.0" y="95.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="shape-40b9870f-b3a4-4d5c-9e1d-7803c231f00c" bpmnElement="sub_two">
-        <omgdc:Bounds x="435.0" y="220.0" width="100.0" height="80.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="edge-146b0e6b-5efa-4005-9251-db24c5dd6e80" bpmnElement="sid-632a5434-c987-4f4e-81f0-b1869652ffd1">
-        <omgdi:waypoint x="365.0" y="185.00005"/>
-        <omgdi:waypoint x="435.0" y="240.0"/>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="shape-c8070f27-cce8-4495-8cd8-4aa4d37e4bd0" bpmnElement="_endNode">
-        <omgdc:Bounds x="695.0" y="160.0" width="30.0" height="30.0"/>
+        <omgdc:Bounds x="805.0" y="149.99998" width="30.0" height="30.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="edge-cdbb396a-1e7d-42a0-837a-fee221ceb22d" bpmnElement="sid-d1f54f36-2557-437f-9fbf-8ac0ed6f38e3">
-        <omgdi:waypoint x="535.0" y="95.0"/>
-        <omgdi:waypoint x="695.0" y="167.5"/>
+      <bpmndi:BPMNEdge id="edge-9f220943-47af-4fa9-828d-b2706f01b6cf" bpmnElement="sid-fafd20e0-00ca-490c-8b23-33a0d9d429d9">
+        <omgdi:waypoint x="264.99997" y="164.99997"/>
+        <omgdi:waypoint x="319.99997" y="165.00002"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="edge-ee97f84f-044a-4501-9350-7f3af8f8169a" bpmnElement="sid-61997764-9a0e-4ef2-a3bf-e87b4b0fbb35">
-        <omgdi:waypoint x="535.0" y="240.0"/>
-        <omgdi:waypoint x="695.0" y="182.5"/>
+      <bpmndi:BPMNShape id="shape-3f244574-7885-4bd2-8e8e-b5ca587affd2" bpmnElement="end_boos">
+        <omgdc:Bounds x="655.0" y="125.0" width="100.0" height="80.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-787f207b-b036-4069-8e5b-21d43e4b6dcd" bpmnElement="sid-668a2279-597d-4a6b-8c9b-46071f9670c7">
+        <omgdi:waypoint x="515.0" y="60.0"/>
+        <omgdi:waypoint x="594.9883" y="145.00002"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge-befc57c4-ce44-4f5a-8eba-1b06060487e7" bpmnElement="sid-69dc6ebd-6ee4-4309-8ed4-de41183b29a3">
+        <omgdi:waypoint x="755.0" y="165.0"/>
+        <omgdi:waypoint x="805.0" y="164.99998"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape-97732989-e214-4db7-9656-85263030e96e" bpmnElement="p_gateway_start">
+        <omgdc:Bounds x="320.0" y="145.0" width="40.0" height="40.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-8683da51-27a8-47cd-b410-f16c8f6dc80c" bpmnElement="sid-7e2673c9-ac62-41e5-8401-82793eaae6d7">
+        <omgdi:waypoint x="340.0" y="145.0"/>
+        <omgdi:waypoint x="415.00003" y="80.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="sid-e1b4a98a-0fed-4de6-ad0d-b37e37f409e3" bpmnElement="sub_big">
+        <omgdc:Bounds x="408.46866" y="219.39804" width="100.0" height="80.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-ac38a47f-6bc7-4d49-af63-8c2e095e67e1" bpmnElement="sid-5a22986e-1d66-4ddf-b54d-cb37f1629d07">
+        <omgdi:waypoint x="339.99997" y="185.0"/>
+        <omgdi:waypoint x="408.46866" y="239.39804"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="sid-bb0dcc45-d013-408c-959b-99975c08d2dc" bpmnElement="p_gateway_end">
+        <omgdc:Bounds x="574.9883" y="145.00002" width="40.0" height="40.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-ce8b60a3-1d02-441d-9f97-c40f8c73dd74" bpmnElement="sid-77ae039c-cbd0-4689-b65a-aa3971d2b454">
+        <omgdi:waypoint x="508.46866" y="239.39804"/>
+        <omgdi:waypoint x="594.9883" y="185.00002"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge-477fbd09-2ecb-4e12-a1c5-8e341e728b36" bpmnElement="sid-7b557569-ad09-40c1-8292-a8972d443691">
+        <omgdi:waypoint x="614.9883" y="165.00002"/>
+        <omgdi:waypoint x="655.0" y="165.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

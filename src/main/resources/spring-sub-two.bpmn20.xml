@@ -14,7 +14,7 @@
         2、可设置驳回机制，任一人拒绝即可终止流程，(产生多个任务，流程变量审核集合添加审核结果，判断条件改为：${nrOfInstances == nrOfCompletedInstances || (nrOfCompletedInstances > 0 && auditList.contains(false))}。)
         3、可配置顺序执行或并行执行，isSequential="false" 表示并行执行
     -->
-    <userTask id="createBill" name="发起合同审批" flowable:assignee="${dagongzai}">
+    <userTask id="createBill" name="two-发起合同审批" flowable:assignee="${dagongzai}">
       <extensionElements>
         <flowable:taskListener event="create" delegateExpression="${my03TaskListener}"/>
         <!-- 事务中，执行的任务监听器 -->
@@ -24,7 +24,7 @@
         <!-- 事务回滚后，执行的任务监听器 -->
       </extensionElements>
       <!-- 动态人员审核 -->
-      <multiInstanceLoopCharacteristics isSequential="false" flowable:collection="${dagongzaiList}" flowable:elementVariable="dagongzai">
+      <multiInstanceLoopCharacteristics flowable:collection="${deviceInfo.twoDagongzaiList}" flowable:elementVariable="dagongzai">
         <completionCondition><![CDATA[${nrOfInstances == nrOfCompletedInstances}]]></completionCondition>
       </multiInstanceLoopCharacteristics>
     </userTask>

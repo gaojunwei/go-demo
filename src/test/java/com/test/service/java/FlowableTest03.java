@@ -43,8 +43,6 @@ public class FlowableTest03 {
         // 部署流程 获取RepositoryService对象
         deploy("spring-call-activity.bpmn20.xml","spring-call-activity");
         System.out.println("**********");
-        deploy("spring-sub-one.bpmn20.xml","spring-sub-one");
-        System.out.println("**********");
         deploy("spring-sub-two.bpmn20.xml","spring-sub-two");
         System.out.println("**********");
     }
