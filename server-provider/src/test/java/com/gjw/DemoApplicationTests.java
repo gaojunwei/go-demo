@@ -1,4 +1,4 @@
-package com.gjw.demo;
+package com.gjw;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

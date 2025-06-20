@@ -14,33 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package org.consumer.demos.nacosdiscoveryconsumer;
+package com.gjw.demo.nacosdiscoveryprovider;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gjw.demo.config.SysConfig;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @RestController
-public class OpenFeignController {
+public class EchoServiceController {
 
-    @Autowired
-    private EchoService echoService;
+    @Resource
+    private SysConfig sysConfig;
 
-    @GetMapping("/feign/echo/{message}")
-    public String feignEcho(@PathVariable String message) throws ExecutionException, InterruptedException {
-        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync
-                (()-> echoService.echo(message));
-        return completableFuture.get();
+    @GetMapping("/echo/{message}")
+    public String echo(@PathVariable(name = "message") String message) {
+        return message + "[ECHO] : " + sysConfig.getUserName();
     }
 
-    @GetMapping("/feign/exception")
-    public String exception() throws ExecutionException, InterruptedException {
-        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync
-                (()-> echoService.exception());
-        return completableFuture.get();
+    @GetMapping("/exception")
+    public String exception() throws InterruptedException {
+        System.out.println("有人调用我 exception");
+        TimeUnit.SECONDS.sleep(10);
+        int a = 1 / 0;
+        return "[ECHO] : exception" + a;
     }
 }

@@ -1,4 +1,4 @@
-package org.consumer.demos.config;
+package com.gjw.demo.config;
 
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;

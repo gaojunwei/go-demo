@@ -14,21 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.consumer.demos.nacosdiscoveryconsumer;
+package com.gjw.demo.nacosdiscoveryconsumer;
 
-import org.consumer.demos.config.SysConstant;
-import org.springframework.cloud.openfeign.FeignClient;
+import com.gjw.demo.config.SysConstant;
+import jakarta.annotation.Resource;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
-@FeignClient(contextId = SysConstant.ServerName.SERVICE_PROVIDER,
-        value = SysConstant.ServerName.SERVICE_PROVIDER,
-        fallbackFactory = RemoteServerProviderFallbackFactory.class)
-public interface EchoService {
+@RestController
+public class RestTemplateController {
 
-    @GetMapping("/echo/{message}")
-    String echo(@PathVariable("message") String message);
+    @LoadBalanced
+    @Resource
+    public RestTemplate restTemplate;
 
-    @GetMapping("/exception")
-    String exception();
+    @GetMapping("/call/echo/{message}")
+    public String callEcho(@PathVariable(name = "message") String message) {
+        return restTemplate.getForObject("http://" + SysConstant.ServerName.SERVICE_PROVIDER + "/echo/" + message, String.class);
+    }
 }

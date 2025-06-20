@@ -14,30 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.consumer.demos.nacosdiscoveryconsumer;
+package com.gjw.demo.nacosdiscoveryconsumer;
 
-import org.consumer.demos.config.SysConstant;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-public class RestTemplateController {
+public class OpenFeignController {
 
-    @LoadBalanced
     @Resource
-    public RestTemplate restTemplate;
+    private EchoService echoService;
 
-    @GetMapping("/call/echo/{message}")
-    public String callEcho(@PathVariable String message) throws ExecutionException, InterruptedException {
-        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync
-                (()-> restTemplate.getForObject("http://"+SysConstant.ServerName.SERVICE_PROVIDER+"/echo/" + message, String.class));
-        return completableFuture.get();
+    @GetMapping("/feign/echo/{message}")
+    public String feignEcho(@PathVariable(name = "message") String message) throws ExecutionException, InterruptedException {
+        return echoService.echo(message);
+    }
+
+    @GetMapping("/feign/exception")
+    public String exception() throws ExecutionException, InterruptedException {
+        return echoService.exception();
     }
 }

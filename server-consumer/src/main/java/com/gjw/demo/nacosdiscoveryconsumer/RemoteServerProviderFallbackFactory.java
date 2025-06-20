@@ -1,7 +1,7 @@
-package org.consumer.demos.nacosdiscoveryconsumer;
+package com.gjw.demo.nacosdiscoveryconsumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.consumer.demos.config.SysConstant;
+import com.gjw.demo.config.SysConstant;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 

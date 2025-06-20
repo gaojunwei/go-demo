@@ -1,0 +1,17 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: server-provider
+  config:
+    import: optional:nacos:nacos-config-example.properties
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        username: nacos
+        password: tiger
+      config:
+        username: nacos
+        password: tiger
+        server-addr: localhost:8848

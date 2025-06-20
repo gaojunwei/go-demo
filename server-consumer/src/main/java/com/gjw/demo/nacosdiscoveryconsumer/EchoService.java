@@ -14,32 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.gjw.demo.demos.nacosdiscoveryprovider;
+package com.gjw.demo.nacosdiscoveryconsumer;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.gjw.demo.config.SysConstant;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.TimeUnit;
-
-@RestController
-public class EchoServiceController {
-
-    @Value("${user.name.xxx}")
-    private String userName;
+@FeignClient(contextId = SysConstant.ServerName.SERVICE_PROVIDER,
+        value = SysConstant.ServerName.SERVICE_PROVIDER,
+        fallbackFactory = RemoteServerProviderFallbackFactory.class)
+public interface EchoService {
 
     @GetMapping("/echo/{message}")
-    public String echo(@PathVariable String message) {
-        System.out.println(userName+"有人调用我 echo：" + message);
-        return userName+ "[ECHO] : " + message;
-    }
+    String echo(@PathVariable("message") String message);
 
     @GetMapping("/exception")
-    public String exception() throws InterruptedException {
-        System.out.println("有人调用我 exception");
-        TimeUnit.SECONDS.sleep(10);
-        int a = 1 / 0;
-        return "[ECHO] : exception" + a;
-    }
+    String exception();
 }

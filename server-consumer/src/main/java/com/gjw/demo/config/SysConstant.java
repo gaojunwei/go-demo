@@ -1,4 +1,4 @@
-package org.consumer.demos.config;
+package com.gjw.demo.config;
 
 public class SysConstant {
 
@@ -7,6 +7,6 @@ public class SysConstant {
      */
     public static class ServerName{
         //服务提供者
-        public static final String SERVICE_PROVIDER = "service-provider";
+        public static final String SERVICE_PROVIDER = "server-provider";
     }
 }
