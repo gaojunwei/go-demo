@@ -1,17 +1,53 @@
 server:
-  port: 8080
+  port: 9999  # 当前服务启动的端口号
 spring:
   application:
-    name: server-provider
+    name: server-provider  # 微服务名称，在注册中心中标识该服务
   config:
-    import: optional:nacos:nacos-config-example.properties
+    import:
+      # 可选：从 Nacos 加载指定配置文件（用于外部化配置）
+      - optional:nacos:nacos-config-example.properties?group=DEFAULT_GROUP&namespace=public
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
-        username: nacos
-        password: tiger
+        server-addr: localhost:8848  # Nacos 注册中心地址
+        username: nacos              # 登录 Nacos 的用户名
+        password: tiger              # 登录 Nacos 的密码
+        group: dev                   # 注册到 Nacos 的分组
+        namespace: 1a8cfe82-7389-4d23-aa3f-9509cfe1f50b  # 命名空间 ID（用于多环境隔离）
       config:
-        username: nacos
-        password: tiger
-        server-addr: localhost:8848
+        username: nacos              # Nacos 配置中心用户名
+        password: tiger              # Nacos 配置中心密码
+        server-addr: localhost:8848  # Nacos 配置中心地址
+    sentinel:
+      #transport:  # 将 Sentinel 规则存储到 Nacos 配置中心后 Sentinel Dashboard（可选）
+      #  dashboard: 127.0.0.1:8080    # Sentinel 控制台地址（Dashboard）
+      #  port: 8719                   # Sentinel 客户端与 Dashboard 通信端口（默认自动）
+      datasource:
+        flow:                        # 流控规则数据源配置
+          nacos:
+            server-addr: localhost:8848
+            data-id: sentinel-flow-rule  # Nacos 中流控规则对应的 Data ID
+            namespace: public             # 命名空间（public 表示公共命名空间）
+            group-id: DEFAULT_GROUP       # 分组
+            data-type: json               # 数据格式为 JSON
+            rule-type: flow               # 表示是流控规则
+            username: nacos
+            password: tiger
+        degrade:                     # 降级规则数据源配置
+          nacos:
+            server-addr: localhost:8848
+            data-id: sentinel-degrade-rule  # Nacos 中降级规则对应的 Data ID
+            namespace: public
+            group-id: DEFAULT_GROUP
+            data-type: json
+            rule-type: degrade              # 表示是降级规则
+            username: nacos
+            password: tiger
+
+
+
+logging:
+  level:
+    com.alibaba.csp.sentinel: DEBUG
+    com.alibaba.cloud.sentinel: DEBUG

@@ -16,30 +16,22 @@
  */
 package com.gjw.demo.nacosdiscoveryprovider;
 
-import com.gjw.demo.config.SysConfig;
-import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.TimeUnit;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class EchoServiceController {
 
-    @Resource
-    private SysConfig sysConfig;
-
     @GetMapping("/echo/{message}")
+    @SentinelResource(value = "echo", fallback = "echoFallback")
     public String echo(@PathVariable(name = "message") String message) {
-        return message + "[ECHO] : " + sysConfig.getUserName();
+        return message + "[ECHO] : Hello from provider";
     }
 
-    @GetMapping("/exception")
-    public String exception() throws InterruptedException {
-        System.out.println("有人调用我 exception");
-        TimeUnit.SECONDS.sleep(10);
-        int a = 1 / 0;
-        return "[ECHO] : exception" + a;
+    // 限流或降级时调用的方法
+    public String echoFallback(String message, BlockException ex) {
+        System.out.println("系统繁忙，请稍后再试。");
+        return "系统繁忙，请稍后再试。";
     }
 }

@@ -7,9 +7,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableDiscoveryClient
+@EnableDiscoveryClient // 启用服务注册与发现功能
 @EnableFeignClients // 激活 @FeignClient
-@EnableScheduling
+@EnableScheduling // 启用定时任务功能
 public class ProviderApplication {
 
     public static void main(String[] args) {
