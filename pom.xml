@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.go.auth</groupId>
-    <artifactId>go-auth-starter</artifactId>
+    <artifactId>go-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>neo4j-server</module>
+        <module>module-one</module>
     </modules>
 
 
@@ -29,7 +29,7 @@
 
         <kotlin.version>1.9.25</kotlin.version>
         <kotlinx-coroutines-core.version>1.8.1</kotlinx-coroutines-core.version>
-        <lombok.version>1.18.34</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jwt.version>0.9.1</jwt.version>
         <jaxb.version>2.3.1</jaxb.version>
@@ -76,12 +76,12 @@
             <dependency>
                 <groupId>com.alibaba.fastjson2</groupId>
                 <artifactId>fastjson2</artifactId>
-                <version>2.0.51</version>
+                <version>2.0.57</version>
             </dependency>
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>5.8.29</version>
+                <version>5.8.38</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>

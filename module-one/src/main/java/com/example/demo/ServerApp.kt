@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration
 
 @SpringBootApplication
 @Configuration
-class AuthorizationServerApp
+class ServerApp
 
 fun main(args: Array<String>) {
-    SpringApplication(AuthorizationServerApp::class.java).run(*args)
-    println("******* AuthorizationServer:${SpringUtil.getBean(SysConfig::class.java).version} 启动成功!!!")
+    SpringApplication(ServerApp::class.java).run(*args)
+    println("******* SERVER 启动成功! VERSION:${SpringUtil.getBean(SysConfig::class.java).version}!!!")
 }
 
