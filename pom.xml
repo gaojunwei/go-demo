@@ -20,10 +20,6 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <os.maven.plugin.version>1.7.1</os.maven.plugin.version>
-        <com.google.protobuf.version>3.25.1</com.google.protobuf.version>
-        <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
-
         <spring-boot.version>3.3.2</spring-boot.version>
 
         <kotlin.version>1.9.25</kotlin.version>
