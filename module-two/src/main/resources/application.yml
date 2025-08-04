@@ -5,26 +5,70 @@ project:
   version: @project.version@
 
 resilience4j:
-  bulkhead: # 隔舱模式
-    configs: # 隔舱模式的默认配置
+  # 批隔离策略(限制并发访问资源的线程数或请求数，防止某个耗时操作占满所有线程，导致整个系统不可用。)
+  bulkhead:
+    # 隔舱模式的默认配置
+    configs:
       default:
-        maxConcurrentCalls: 100 # 默认隔舱允许的最大并发调用数为10
-        maxWaitDuration: 1s # 默认等待许可的最大时间为1秒
-        writableStackTraceEnabled: false # 默认值为true，设置为 false 可以减少异常的堆栈跟踪开销，适合生产环境以提高性能
+        # 默认隔舱允许的最大并发调用数为10
+        maxConcurrentCalls: 100
+        # 默认等待许可的最大时间为1秒
+        maxWaitDuration: 1s
+        # 默认值为true，设置为 false 可以减少异常的堆栈跟踪开销，适合生产环境以提高性能
+        writableStackTraceEnabled: false
     instances:
       bulkheadService:
-        maxConcurrentCalls: 5 # 批隔离允许的最大并发调用数为5
-        maxWaitDuration: 200ms # 等待许可的最大时间为1秒
+        # 批隔离允许的最大并发调用数为5
+        maxConcurrentCalls: 5
+        # 等待许可的最大时间为1秒
+        maxWaitDuration: 200ms
         writableStackTraceEnabled: false
-        baseConfig:
         eventConsumerBufferSize: 100
-  circuitbreaker: # 熔断器模式  https://grok.com/chat/ac498d67-30d1-4448-9c24-104ef3cb95a4
+        base-config:  default
+  # 熔断器模式(防止一个服务的故障“雪崩”式地蔓延到整个系统，提升系统的容错性和稳定性。)
+  circuitbreaker:
     configs:
-        default:
-            slidingWindowSize: 10 # 默认滑动窗口大小为10
-            minimumNumberOfCalls: 5 # 最小调用次数为5
-            failureRateThreshold: 50 # 失败率阈值为50%
-            waitDurationInOpenState: 60s # 打开状态下等待时间为60秒
-            writableStackTraceEnabled: false # 设置为 false 可以减少异常的堆栈跟踪开销，适合生产环境以提高性能
-
-
+      default:
+        # 滑动窗口模式：COUNT_BASED（默认）或 TIME_BASED
+        slidingWindowType: COUNT_BASED
+        # 滑动窗口大小（基于调用次数）
+        slidingWindowSize: 10
+        # 计算失败率前所需的最小调用次数
+        minimumNumberOfCalls: 5
+        # 触发熔断的失败率阈值（百分比）(0-100),当失败率超过此阈值时，熔断器进入 OPEN 状态。
+        failureRateThreshold: 50
+        # 熔断后等待多久进入半开状态（支持 ms, s, m 等单位）
+        waitDurationInOpenState: 30s
+        # 是否启用异常堆栈（生产建议关闭）
+        writableStackTraceEnabled: false
+        # 半开状态 HALF_OPEN 下允许的试探请求数（可选）
+        # 全部成功 → 熔断器回到 CLOSED，恢复正常
+        # 有任何失败 → 熔断器重新进入 OPEN，再等 30 秒
+        permittedNumberOfCallsInHalfOpenState: 3
+  # 限流模式(防止突发流量压垮服务,防止系统过载、保护下游服务的重要手段,保护数据库或慢服务)
+  ratelimiter:
+    configs:
+      default:
+        # 每秒允许的请求数（即 QPS）
+        limitForPeriod: 5
+        # 限流周期（单位时间,支持 ms, s, m）,多久刷新一次令牌桶（即补充令牌的时间间隔）
+        # 例如：1s：每秒补充 limitForPeriod 个令牌
+        limitRefreshPeriod: 1s
+        # 超时等待时间：请求最多等待多久获取令牌
+        timeoutDuration: 5s
+        # 是否启用异常堆栈（生产建议关闭）
+        writableStackTraceEnabled: false
+    instances:
+      # 第三方支付接口限流
+      # 动态调整限流规则 rateLimiterRegistry.rateLimiter("paymentApi").changeLimitForPeriod(20);
+      paymentApi:
+        baseConfig: default
+        limitForPeriod: 5
+        limitRefreshPeriod: 1s
+        timeoutDuration: 2s
+      # 内部高吞吐服务
+      internalService:
+        limitForPeriod: 100
+        limitRefreshPeriod: 1s
+        timeoutDuration: 1s
+        writableStackTraceEnabled: false
