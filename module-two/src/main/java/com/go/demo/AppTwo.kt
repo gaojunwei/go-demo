@@ -1,17 +1,17 @@
-package com.example.demo
+package com.go.demo
 
 import cn.hutool.extra.spring.SpringUtil
-import com.example.demo.config.SysConfig
+import com.go.demo.config.SysConfig
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Configuration
 
 @SpringBootApplication
 @Configuration
-class ServerApp
+class AppTwo
 
 fun main(args: Array<String>) {
-    SpringApplication(ServerApp::class.java).run(*args)
+    SpringApplication(AppTwo::class.java).run(*args)
     println("******* SERVER 启动成功! VERSION:${SpringUtil.getBean(SysConfig::class.java).version}!!!")
 }
 

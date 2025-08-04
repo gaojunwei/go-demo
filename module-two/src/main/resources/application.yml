@@ -1,0 +1,30 @@
+server:
+  port: 9001
+# 项目版本
+project:
+  version: @project.version@
+
+resilience4j:
+  bulkhead: # 隔舱模式
+    configs: # 隔舱模式的默认配置
+      default:
+        maxConcurrentCalls: 100 # 默认隔舱允许的最大并发调用数为10
+        maxWaitDuration: 1s # 默认等待许可的最大时间为1秒
+        writableStackTraceEnabled: false # 默认值为true，设置为 false 可以减少异常的堆栈跟踪开销，适合生产环境以提高性能
+    instances:
+      bulkheadService:
+        maxConcurrentCalls: 5 # 批隔离允许的最大并发调用数为5
+        maxWaitDuration: 200ms # 等待许可的最大时间为1秒
+        writableStackTraceEnabled: false
+        baseConfig:
+        eventConsumerBufferSize: 100
+  circuitbreaker: # 熔断器模式  https://grok.com/chat/ac498d67-30d1-4448-9c24-104ef3cb95a4
+    configs:
+        default:
+            slidingWindowSize: 10 # 默认滑动窗口大小为10
+            minimumNumberOfCalls: 5 # 最小调用次数为5
+            failureRateThreshold: 50 # 失败率阈值为50%
+            waitDurationInOpenState: 60s # 打开状态下等待时间为60秒
+            writableStackTraceEnabled: false # 设置为 false 可以减少异常的堆栈跟踪开销，适合生产环境以提高性能
+
+
