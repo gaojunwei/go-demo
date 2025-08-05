@@ -4,7 +4,7 @@ server:
 project:
   version: @project.version@
 
-resilience4j:
+esilience4j:
   # 批隔离策略(限制并发访问资源的线程数或请求数，防止某个耗时操作占满所有线程，导致整个系统不可用。)
   bulkhead:
     # 隔舱模式的默认配置
@@ -72,3 +72,48 @@ resilience4j:
         limitRefreshPeriod: 1s
         timeoutDuration: 1s
         writableStackTraceEnabled: false
+  # 重试机制(自动重试失败的操作，提升系统的鲁棒性和用户体验。)
+  retry:
+    configs:
+      default:
+        # 重试最大尝试次数（包含首次调用）
+        maxAttempts: 3
+        # 每次重试之间的等待时间（基础等待时间）
+        # 支持的时间单位：ms, s, m, h（毫秒、秒、分钟、小时）
+        waitDuration: 500ms
+        # 是否启用指数退避策略（推荐开启）
+        # 第一次等待 1s，第二次 2s，第三次 4s（基于 multiplier）
+        enableExponentialBackoff: true
+        # 指数退避的乘数因子
+        # 等待时间 = wait-duration * (multiplier ^ (attempt - 1))
+        # 例如：1s * (2^0)=1s, 1s * (2^1)=2s, 1s * (2^2)=4s
+        exponentialBackoffMultiplier: 2
+        # 明确指定需要触发重试的异常类型
+        # 注意：必须是全类名，且运行时能抛出这些异常
+        retry-exceptions:
+          - java.net.SocketTimeoutException          # 网络连接超时
+          - java.util.concurrent.TimeoutException    # 并发任务超时
+          - java.io.IOException                      # IO 异常（如连接断开）
+          - org.springframework.web.client.ResourceAccessException  # Spring 封装的底层网络异常
+          - org.springframework.web.client.HttpServerErrorException  # 5xx 服务端错误，可重试
+          - com.go.common.exception.ServiceException  # 自定义服务异常（如业务逻辑错误）
+      # 明确指定**不重试**的异常类型（即使在 retry-exceptions 中）
+      # 特别是 4xx 客户端错误，通常表示请求本身有问题，不应重试
+      ignore-exceptions:
+        - org.springframework.web.client.HttpClientErrorException  # 4xx 错误（如 400, 404, 409）
+    # 定义具体的重试实例（建议按业务或服务命名）
+    instances:
+      # 第三方支付接口重试
+      paymentApi:
+        # 继承 default 配置
+        baseConfig: default
+  # 限时器模式(限制操作的最大执行时间，防止长时间阻塞或等待，提升系统响应速度和用户体验。)
+  timelimiter:
+    configs:
+      default:
+        # 默认超时时间为 2 秒
+        # 示例：2秒内未完成则中断，抛出 TimeoutException
+        timeoutDuration: 2s
+        # 是否取消正在执行的线程任务（仅对 CompletableFuture 有效）
+        # 若为 true，超时后会调用 Future.cancel() 尝试中断任务
+        # cancel-running-future: truer

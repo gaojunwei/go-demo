@@ -25,4 +25,13 @@ class IndexController {
             this.data = msg
         }
     }
+    @GetMapping("timeLimiter")
+    fun timeLimiter(): R<String> {
+        var id = IdUtil.nanoId()
+        var msg = indexService.processTwo(id).get()
+        log.info("响应数据: {}", msg)
+        return R<String>().apply {
+            this.data = msg
+        }
+    }
 }
